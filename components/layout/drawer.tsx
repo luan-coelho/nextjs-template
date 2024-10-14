@@ -12,7 +12,7 @@ export default function Drawer() {
       <Menu.Root>
         <Menu.Label>Menu</Menu.Label>
         <Menu.List>
-          <Menu.Item href="#" icon={<UsersRound size={20} />}>
+          <Menu.Item href="#" icon={<UsersRound size={16} />}>
             Item 1
           </Menu.Item>
         </Menu.List>
