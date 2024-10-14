@@ -9,10 +9,11 @@ interface MenuItemProps {
 
 export function Item({ icon, children, href }: MenuItemProps) {
   return (
-    <li className="h-[30px] px-4 py-3 hover:bg-blue-600">
-      <Link className="flex items-center justify-start gap-2" href={href}>
-        {icon} {children}
-      </Link>
-    </li>
+    <Link href={href} className="flex h-11 items-center justify-start gap-2.5 px-6 py-2.5">
+      <div className="relative h-3.5">
+        <div>{icon}</div>
+      </div>
+      <div className="text-sm font-normal leading-snug text-white">{children}</div>
+    </Link>
   )
 }
