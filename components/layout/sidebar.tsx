@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useSidebar } from "@/contexts/sidebar-context"
-import { UsersRound } from "lucide-react"
+import { Gauge, Rocket, UsersRound } from "lucide-react"
 
 import { Drawer } from "@/components/layout/drawer"
 import { Menu } from "@/components/layout/menu"
@@ -10,13 +10,18 @@ export default function Sidebar() {
 
   return (
     <Drawer.Root
-      className={`${isSidebarExpanded ? "block w-[260px]" : "w-0 overflow-hidden"} transition-all duration-200 ease-in-out`}>
-      <Drawer.Menu.Root
-        className={`${isSidebarExpanded ? "block" : "hidden w-0 overflow-hidden"} transition-all duration-200 ease-in-out`}>
+      className={`${isSidebarExpanded ? "min-w-64" : "min-w-7"} transition-all delay-100 duration-300 ease-in-out`}>
+      {/*<Drawer.Logo className="flex items-center justify-center">
+        <Rocket /> {isSidebarExpanded && <h1>Logo</h1>}
+      </Drawer.Logo>*/}
+      <Drawer.Menu.Root>
         <Menu.Label>Menu</Menu.Label>
         <Menu.List>
-          <Menu.Item href="#" icon={<UsersRound size={16} />}>
+          <Menu.Item href="#" icon={<Gauge size={isSidebarExpanded ? 16 : 20} />}>
             Dashboard
+          </Menu.Item>
+          <Menu.Item href="#" icon={<UsersRound size={isSidebarExpanded ? 16 : 20} />}>
+            Users
           </Menu.Item>
         </Menu.List>
       </Drawer.Menu.Root>

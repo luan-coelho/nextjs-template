@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <SidebarProvider>
             <Sidebar />
 
-            <div className="ml-[260px] flex w-full flex-col">
+            <div className="flex w-full flex-col">
               <Header />
               <Content>{children}</Content>
               <Footer />
