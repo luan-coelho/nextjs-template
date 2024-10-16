@@ -5,6 +5,7 @@ import "@/styles/globals.css"
 import { ReactNode } from "react"
 import { Public_Sans as FontSans } from "next/font/google"
 import { SidebarProvider } from "@/contexts/sidebar-context"
+import NextTopLoader from "nextjs-toploader"
 
 import { cn } from "@/lib/utils"
 import Content from "@/components/layout/content"
@@ -21,12 +22,22 @@ const fontSans = FontSans({
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-br" suppressHydrationWarning>
-      <body className={cn("flex min-h-screen flex-row bg-gray-100 font-sans antialiased", fontSans.variable)}>
+      <body className={cn("flex min-h-screen bg-gray-100 font-sans antialiased", fontSans.variable)}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <SidebarProvider>
             <Sidebar />
 
             <div className="flex w-full flex-col">
+              <NextTopLoader
+                color="#1677FF"
+                initialPosition={0.08}
+                crawlSpeed={200}
+                height={4}
+                crawl={true}
+                showSpinner={false}
+                easing="ease"
+                speed={200}
+              />
               <Header />
               <Content>{children}</Content>
               <Footer />

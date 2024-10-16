@@ -1,5 +1,8 @@
+"use client"
+
 import * as React from "react"
 import { ReactNode } from "react"
+import { useSidebar } from "@/contexts/sidebar-context"
 
 import { cn } from "@/lib/utils"
 
@@ -8,10 +11,12 @@ interface LogoProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function Logo({ children, className }: LogoProps) {
+  const { isSidebarExpanded } = useSidebar()
+
   return (
     <div
       className={cn(
-        "inline-flex h-20 w-full items-center justify-start gap-3 p-6 py-5 text-xl font-semibold text-white",
+        `inline-flex h-20 w-full items-center ${isSidebarExpanded ? "justify-start" : "justify-center"} gap-3 p-6 py-5 text-xl font-semibold text-white`,
         className,
       )}>
       {children}

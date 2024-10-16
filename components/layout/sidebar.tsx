@@ -11,9 +11,9 @@ export default function Sidebar() {
   return (
     <Drawer.Root
       className={`${isSidebarExpanded ? "min-w-64" : "min-w-7"} transition-all delay-100 duration-300 ease-in-out`}>
-      {/*<Drawer.Logo className="flex items-center justify-center">
+      <Drawer.Logo>
         <Rocket /> {isSidebarExpanded && <h1>Logo</h1>}
-      </Drawer.Logo>*/}
+      </Drawer.Logo>
       <Drawer.Menu.Root>
         <Menu.Label>Menu</Menu.Label>
         <Menu.List>
