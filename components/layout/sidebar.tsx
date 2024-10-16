@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useSidebar } from "@/contexts/sidebar-context"
-import { Gauge, Rocket, UsersRound } from "lucide-react"
+import { Gauge, House, Rocket, UsersRound } from "lucide-react"
 
 import { Drawer } from "@/components/layout/drawer"
 import { Menu } from "@/components/layout/menu"
@@ -17,10 +17,13 @@ export default function Sidebar() {
       <Drawer.Menu.Root>
         <Menu.Label>Menu</Menu.Label>
         <Menu.List>
-          <Menu.Item href="#" icon={<Gauge size={isSidebarExpanded ? 16 : 20} />}>
+          <Menu.Item href="/" icon={<House size={isSidebarExpanded ? 18 : 20} />}>
+            Inicio
+          </Menu.Item>
+          <Menu.Item href="/dashboard" icon={<Gauge size={isSidebarExpanded ? 18 : 20} />}>
             Dashboard
           </Menu.Item>
-          <Menu.Item href="#" icon={<UsersRound size={isSidebarExpanded ? 16 : 20} />}>
+          <Menu.Item href="/users" icon={<UsersRound size={isSidebarExpanded ? 18 : 20} />}>
             Users
           </Menu.Item>
         </Menu.List>
