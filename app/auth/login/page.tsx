@@ -42,7 +42,7 @@ export default function AuthenticationPage() {
               <p className="text-sm text-muted-foreground">Digite seu e-mail abaixo para criar sua conta</p>
             </div>
             <UserAuthForm />
-            <p className="px-8 text-center text-sm text-muted-foreground">
+            <div className="px-8 text-center text-sm text-muted-foreground">
               Ao clicar em continuar, você concorda com nossos
               <div className="flex gap-2">
                 <Link href="/#" className="underline underline-offset-4 hover:text-primary">
@@ -53,7 +53,7 @@ export default function AuthenticationPage() {
                 </Link>
               </div>
               .
-            </p>
+            </div>
           </div>
         </div>
       </div>
