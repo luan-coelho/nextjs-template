@@ -4,8 +4,8 @@ import { List } from "@/components/layout/menu/list"
 import { Root } from "@/components/layout/menu/root"
 
 export const Menu = {
+  Item,
   Label,
   List,
-  Item,
   Root,
 }

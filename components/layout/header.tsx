@@ -7,10 +7,9 @@ export default function Header() {
   const { toggleSidebar } = useSidebar()
 
   return (
-    <header className={`min-h-11 bg-white px-6 py-4 shadow-sm transition-all duration-300`}>
-      <div>
-        <Menu size={20} onClick={toggleSidebar} className="cursor-pointer" />
-      </div>
+    <header
+      className={`flex min-h-11 items-center justify-end bg-white px-6 py-4 shadow-sm transition-all duration-300 md:justify-start`}>
+      <Menu size={20} onClick={toggleSidebar} className="cursor-pointer" />
     </header>
   )
 }
