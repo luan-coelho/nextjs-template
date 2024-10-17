@@ -1,34 +1,16 @@
-"use client"
-
 import React from "react"
-import Link from "next/link"
+import { BreadcrumbContentItem } from "@/types"
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import BreadcrumbContent from "@/components/layout/content-breadcrumb"
 
 export default function DashboardHome() {
+  const breadcrumbItems: BreadcrumbContentItem[] = [{ label: "Dashboard", href: "/dashboard" }, { label: "Cadastrar" }]
+
   return (
     <>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <Link className="text-[var(--breadcrumb-link)] transition-colors hover:text-foreground" href="/">
-              Home
-            </Link>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+      <BreadcrumbContent items={breadcrumbItems} />
 
       <div className="mt-4">
         <Card className="w-[350px]">

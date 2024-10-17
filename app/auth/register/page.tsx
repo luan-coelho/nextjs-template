@@ -1,16 +1,15 @@
 import React from "react"
 import { Metadata } from "next"
-import Image from "next/image"
 import Link from "next/link"
 import { Rocket } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
-import { UserAuthForm } from "@/app/auth/login/_components/user-auth-form"
+import { UserAuthForm } from "@/app/auth/register/_components/user-auth-form"
 
 export const metadata: Metadata = {
-  title: "Authentication",
-  description: "Authentication forms built using the components.",
+  title: "Cadastro",
+  description: "Cadastro de usuário",
 }
 
 export default function AuthenticationPage() {
@@ -42,18 +41,6 @@ export default function AuthenticationPage() {
               <p className="text-sm text-muted-foreground">Digite seu e-mail abaixo para criar sua conta</p>
             </div>
             <UserAuthForm />
-            <div className="px-8 text-center text-sm text-muted-foreground">
-              Ao clicar em continuar, você concorda com nossos
-              <div className="flex gap-2">
-                <Link href="/#" className="underline underline-offset-4 hover:text-primary">
-                  Termos de Serviço
-                </Link>
-                <Link href="/#" className="underline underline-offset-4 hover:text-primary">
-                  política de Privacidade
-                </Link>
-              </div>
-              .
-            </div>
           </div>
         </div>
       </div>
