@@ -38,7 +38,7 @@ export function Item({ icon, children, href, subItems }: ItemProps) {
         <Then>
           <div
             onClick={subItems ? toggleSubMenu : undefined}
-            className={`flex h-11 cursor-pointer items-center ${isSidebarExpanded ? "justify-start" : "justify-center"} gap-2.5 px-6 py-2.5 text-[#bfbfbf] ${
+            className={`flex min-h-11 cursor-pointer items-center ${isSidebarExpanded ? "justify-start" : "justify-center"} gap-2.5 px-6 py-2.5 text-[#bfbfbf] ${
               parentOrChildActive && subItems == undefined ? "border-r-4 border-primary bg-[#ffffff0d] text-white" : ""
             } ${
               parentOrChildActive && subItems != undefined ? "text-primary" : ""
@@ -57,7 +57,7 @@ export function Item({ icon, children, href, subItems }: ItemProps) {
           <Link
             href={href || "#"}
             onClick={subItems ? toggleSubMenu : undefined}
-            className={`flex h-11 cursor-pointer items-center ${isSidebarExpanded ? "justify-start" : "justify-center"} gap-2.5 px-6 py-2.5 text-[#bfbfbf] ${
+            className={`flex min-h-11 cursor-pointer items-center ${isSidebarExpanded ? "justify-start" : "justify-center"} gap-2.5 px-6 py-2.5 text-[#bfbfbf] ${
               parentOrChildActive ? "border-r-4 border-primary bg-[#ffffff0d] text-white" : ""
             } w-full delay-150 hover:bg-[#262626]`}>
             <div className={parentOrChildActive ? "text-primary" : ""}>{icon}</div>
@@ -80,7 +80,7 @@ export function Item({ icon, children, href, subItems }: ItemProps) {
               <Link
                 key={index}
                 href={subItem.href}
-                className={`flex h-11 items-center justify-start gap-2.5 px-6 py-1.5 text-[#bfbfbf] ${
+                className={`flex min-h-11 items-center justify-start gap-2.5 px-6 py-1.5 text-[#bfbfbf] ${
                   isActive(subItem.href) ? "bg-[#ffffff0d] text-white" : ""
                 } hover:bg-[#262626]`}>
                 <span className="pl-7 text-sm">{subItem.label}</span>
