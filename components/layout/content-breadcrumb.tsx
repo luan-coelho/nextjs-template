@@ -16,7 +16,7 @@ interface BreadcrumbContentProps {
 
 export default function BreadcrumbContent({ items }: BreadcrumbContentProps) {
   return (
-    <>
+    <div className="mb-7">
       <Breadcrumb>
         <BreadcrumbList>
           {items.map((item, index) => {
@@ -47,6 +47,6 @@ export default function BreadcrumbContent({ items }: BreadcrumbContentProps) {
           })}
         </BreadcrumbList>
       </Breadcrumb>
-    </>
+    </div>
   )
 }

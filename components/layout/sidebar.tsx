@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useSidebar } from "@/contexts/sidebar-context"
-import { ChevronRight, Gauge, House, Rocket, UsersRound } from "lucide-react"
+import { ChevronRight, Gauge, House, Rocket } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Drawer } from "@/components/layout/drawer"
@@ -17,14 +17,16 @@ export default function Sidebar() {
       <Drawer.Menu.Root className="flex-1">
         <Menu.Label>Menu</Menu.Label>
         <Menu.List>
-          <Menu.Item href="/" icon={<House size={isSidebarExpanded ? 18 : 20} />}>
+          <Menu.Item href="#" icon={<House size={isSidebarExpanded ? 18 : 20} />}>
             Inicio
           </Menu.Item>
           <Menu.Item href="/dashboard" icon={<Gauge size={isSidebarExpanded ? 18 : 20} />}>
             Dashboard
           </Menu.Item>
-          <Menu.Item href="/users" icon={<UsersRound size={isSidebarExpanded ? 18 : 20} />}>
-            Users
+          <Menu.Item
+            icon={<House size={isSidebarExpanded ? 18 : 20} />}
+            subItems={[{ href: "/dashboard/profile", label: "Perfil" }]}>
+            Configurações
           </Menu.Item>
         </Menu.List>
       </Drawer.Menu.Root>
