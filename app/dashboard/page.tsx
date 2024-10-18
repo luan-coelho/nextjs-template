@@ -13,7 +13,7 @@ export default function DashboardHome() {
       <BreadcrumbContent items={breadcrumbItems} />
 
       <div className="mt-4">
-        <Card className="w-[350px]">
+        <Card className="w-auto md:w-[350px]">
           <CardHeader>
             <CardTitle>Criando template para Next.js</CardTitle>
             <CardDescription>Template padrão que será usado em outros projetos.</CardDescription>
