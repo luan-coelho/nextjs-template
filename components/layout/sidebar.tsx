@@ -12,7 +12,7 @@ export default function Sidebar() {
   return (
     <Drawer.Root className={`${isSidebarExpanded ? "min-w-64" : "min-w-7"} flex flex-col`}>
       <Drawer.Logo>
-        <Rocket className="text-[#1668dc]" /> {isSidebarExpanded && <h1>Logo</h1>}
+        <Rocket className="text-primary" /> {isSidebarExpanded && <h1>Logo</h1>}
       </Drawer.Logo>
       <Drawer.Menu.Root className="flex-1">
         <Menu.Label>Menu</Menu.Label>
@@ -31,14 +31,16 @@ export default function Sidebar() {
         </Menu.List>
       </Drawer.Menu.Root>
       <Drawer.User>
-        <div className="flex w-full items-center gap-2">
+        <div className={`flex w-full items-center gap-2 ${isSidebarExpanded ? "justify-start" : "justify-center"}`}>
           <Avatar>
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <span className="text-sm font-medium text-white">Luan Coêlho</span>
+          <span className={`${isSidebarExpanded ? "block" : "hidden"} text-sm font-medium text-white`}>
+            Luan Coêlho
+          </span>
         </div>
-        <div className="cursor-pointer rounded p-2 hover:bg-[#303030]">
+        <div className={`${isSidebarExpanded ? "block" : "hidden"} cursor-pointer rounded p-2 hover:bg-[#303030]`}>
           <ChevronRight size={16} />
         </div>
       </Drawer.User>

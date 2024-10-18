@@ -8,8 +8,10 @@ export default function Header() {
 
   return (
     <header
-      className={`flex min-h-11 items-center justify-end bg-white px-6 py-4 shadow-sm transition-all duration-300 md:justify-start`}>
-      <Menu size={20} onClick={toggleSidebar} className="cursor-pointer" />
+      className={`flex min-h-11 items-center justify-end bg-white px-4 py-3 shadow-sm transition-all duration-300 md:justify-start`}>
+      <div className="cursor-pointer rounded p-2 hover:bg-[#f5f5f5]">
+        <Menu size={18} onClick={toggleSidebar} />
+      </div>
     </header>
   )
 }
