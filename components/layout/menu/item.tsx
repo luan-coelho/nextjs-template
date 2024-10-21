@@ -38,13 +38,15 @@ export function Item({ icon, children, href, subItems }: ItemProps) {
         <Then>
           <div
             onClick={subItems ? toggleSubMenu : undefined}
-            className={`flex min-h-11 cursor-pointer items-center ${isSidebarExpanded ? "justify-start" : "justify-center"} gap-2.5 px-6 py-2.5 text-[#bfbfbf] ${
+            className={`flex min-h-11 cursor-pointer items-center ${isSidebarExpanded ? "justify-between" : "justify-center"} gap-2.5 px-6 py-2.5 text-[#bfbfbf] ${
               parentOrChildActive && subItems == undefined ? "border-r-4 border-primary bg-[#ffffff0d] text-white" : ""
             } ${
               parentOrChildActive && subItems != undefined ? "text-primary" : ""
             } w-full delay-150 hover:bg-[#262626]`}>
-            <div className={parentOrChildActive ? "text-primary" : ""}>{icon}</div>
-            {isSidebarExpanded && <div className="text-sm font-normal leading-snug">{children}</div>}
+            <div className="flex items-center justify-start gap-2.5">
+              <div className={parentOrChildActive ? "text-primary" : ""}>{icon}</div>
+              {isSidebarExpanded && <div className="text-sm font-normal leading-snug">{children}</div>}
+            </div>
             {subItems && isSidebarExpanded && (
               <ChevronDown
                 className={`transition-transform duration-300 ${isOpen ? "rotate-180" : "rotate-0"}`}

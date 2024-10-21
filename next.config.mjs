@@ -1,10 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ["lucide-react"],
   async redirects() {
     return [
       {
         source: "/",
-        destination: "/auth/login",
+        destination: "/auth/register",
         permanent: false,
       },
     ]

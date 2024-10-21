@@ -1,5 +1,6 @@
 import * as React from "react"
 import { useSidebar } from "@/contexts/sidebar-context"
+import { LucideIcon } from "@/utils/lucide-icon"
 import { ChevronRight, Gauge, House, Rocket } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -9,6 +10,8 @@ import { Menu } from "@/components/layout/menu"
 export default function Sidebar() {
   const { isSidebarExpanded } = useSidebar()
 
+  const size = isSidebarExpanded ? 18 : 20
+
   return (
     <Drawer.Root className={`${isSidebarExpanded ? "flex min-w-64 max-w-64" : "hidden min-w-7 max-w-7"} flex-col`}>
       <Drawer.Logo>
@@ -17,14 +20,14 @@ export default function Sidebar() {
       <Drawer.Menu.Root className="flex-1">
         <Menu.Label>Menu</Menu.Label>
         <Menu.List>
-          <Menu.Item href="#" icon={<House size={isSidebarExpanded ? 18 : 20} />}>
+          <Menu.Item href="#" icon={<House size={size} />}>
             Inicio
           </Menu.Item>
-          <Menu.Item href="/dashboard" icon={<Gauge size={isSidebarExpanded ? 18 : 20} />}>
+          <Menu.Item href="/dashboard" icon={<Gauge size={size} />}>
             Dashboard
           </Menu.Item>
           <Menu.Item
-            icon={<House size={isSidebarExpanded ? 18 : 20} />}
+            icon={<LucideIcon name="house" size={size} />}
             subItems={[{ href: "/dashboard/profile", label: "Perfil" }]}>
             Configurações
           </Menu.Item>

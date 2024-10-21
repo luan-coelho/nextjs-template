@@ -24,7 +24,7 @@ export default function BreadcrumbContent({ items }: BreadcrumbContentProps) {
               <>
                 {index != items.length - 1 && (
                   <>
-                    <BreadcrumbItem>
+                    <BreadcrumbItem key={index}>
                       <Link
                         className="text-[var(--breadcrumb-link)] transition-colors hover:text-foreground"
                         href={item.href ? item.href : "#"}>
@@ -37,7 +37,7 @@ export default function BreadcrumbContent({ items }: BreadcrumbContentProps) {
 
                 {index == items.length - 1 && (
                   <>
-                    <BreadcrumbItem>
+                    <BreadcrumbItem key={index}>
                       <BreadcrumbPage>{item.label}</BreadcrumbPage>
                     </BreadcrumbItem>
                   </>
