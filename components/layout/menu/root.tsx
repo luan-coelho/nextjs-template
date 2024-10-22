@@ -7,5 +7,5 @@ interface RootProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function Root({ children, className }: RootProps) {
-  return <aside className={cn("bg-[#1E1E1E] text-white", className)}>{children}</aside>
+  return <aside className={cn("flex-1 bg-[#1E1E1E] text-white", className)}>{children}</aside>
 }
