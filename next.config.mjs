@@ -5,10 +5,18 @@ const nextConfig = {
     return [
       {
         source: "/",
-        destination: "/auth/register",
+        destination: "/auth/signin",
         permanent: false,
       },
     ]
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+    ],
   },
 }
 

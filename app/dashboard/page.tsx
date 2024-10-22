@@ -1,30 +1,22 @@
 import React from "react"
+import { auth } from "@/auth"
 import { BreadcrumbContentItem } from "@/types"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import BreadcrumbContent from "@/components/layout/content-breadcrumb"
+import { Card, CardContent } from "@/components/ui/card"
 
-export default function DashboardHome() {
+export default async function DashboardHome() {
   const breadcrumbItems: BreadcrumbContentItem[] = [{ label: "Dashboard", href: "/dashboard" }, { label: "Cadastrar" }]
+
+  const session = await auth()
+  if (!session) return <div>Not authenticated</div>
 
   return (
     <>
-      <BreadcrumbContent items={breadcrumbItems} />
-
       <div className="mt-4">
-        <Card className="w-auto md:w-[350px]">
-          <CardHeader>
-            <CardTitle>Criando template para Next.js</CardTitle>
-            <CardDescription>Template padrão que será usado em outros projetos.</CardDescription>
-          </CardHeader>
+        <Card className="w-auto">
           <CardContent>
-            <span>Teste</span>
+            <pre>{JSON.stringify(session, null, 2)}</pre>
           </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline">Cancel</Button>
-            <Button>Deploy</Button>
-          </CardFooter>
         </Card>
       </div>
     </>

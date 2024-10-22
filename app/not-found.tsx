@@ -13,7 +13,7 @@ export default function NotFound() {
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center">
       <div>
-        <Image src="/404.svg" alt="404 Error" width={500} height={500} className="h-72" />
+        <Image src="/images/404.svg" alt="404 Error" width={500} height={500} className="h-72" />
       </div>
       <div className="w-4/5 text-center md:w-1/2">
         <h1 className="mt-8 text-3xl font-semibold text-gray-800">Que pena!</h1>
