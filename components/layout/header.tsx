@@ -3,7 +3,7 @@
 import { useSidebar } from "@/contexts/sidebar-context"
 import { LogOut, Menu } from "lucide-react"
 
-import { logout } from "@/components/layout/menu/actions"
+import { logout } from "@/app/auth/actions"
 
 export default function Header() {
   const { toggleSidebar } = useSidebar()

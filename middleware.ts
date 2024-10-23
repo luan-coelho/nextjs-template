@@ -5,10 +5,8 @@ export const config = {
 }
 
 export default auth(req => {
-  console.log("middleware.ts", req.url)
-
-  if (!req.auth && req.nextUrl.pathname !== "/auth/signin") {
-    const newUrl = new URL("/auth/signin", req.nextUrl.origin)
+  if (!req.auth && req.nextUrl.pathname !== "/auth/login") {
+    const newUrl = new URL("/auth/login", req.nextUrl.origin)
     return Response.redirect(newUrl)
   }
 })

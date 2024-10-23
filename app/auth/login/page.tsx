@@ -1,15 +1,17 @@
-import React from "react"
 import { Metadata } from "next"
+import Link from "next/link"
 import { Rocket } from "lucide-react"
 
-import { login } from "@/components/layout/menu/actions"
+import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
+import { login } from "@/app/auth/actions"
 
 export const metadata: Metadata = {
   title: "SignIn",
   description: "SignIn page",
 }
 
-export default function SignInPage() {
+export default function LoginPage() {
   return (
     <>
       <div className="container relative h-full flex-col items-center justify-center sm:flex md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
@@ -27,6 +29,11 @@ export default function SignInPage() {
               <form action={login}>
                 <button type="submit">Entrar com Google</button>
               </form>
+              <Link
+                href="/auth/register"
+                className={cn(buttonVariants({ variant: "ghost" }), "absolute right-4 top-4 md:right-8 md:top-8")}>
+                Criar Conta
+              </Link>
             </div>
           </div>
         </div>
