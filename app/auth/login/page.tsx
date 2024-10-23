@@ -3,6 +3,7 @@ import Link from "next/link"
 import { Rocket } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import BoxIcon from "@/components/ui/boxi-icon"
 import { buttonVariants } from "@/components/ui/button"
 import { login } from "@/app/auth/actions"
 
@@ -27,7 +28,10 @@ export default function LoginPage() {
             <div className="flex flex-col space-y-2 text-center">
               <h1 className="text-2xl font-semibold tracking-tight">Login</h1>
               <form action={login}>
-                <button type="submit">Entrar com Google</button>
+                <button type="submit">
+                  <BoxIcon name={"google"} size="24px" />
+                  Entrar com Google
+                </button>
               </form>
               <Link
                 href="/auth/register"

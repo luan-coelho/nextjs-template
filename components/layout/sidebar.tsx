@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { useSidebar } from "@/contexts/sidebar-context"
-import { LucideIcon } from "@/utils/lucide-icon"
+import { LucideIcon } from "@/components/ui/lucide-icon"
 import { Rocket } from "lucide-react"
 
 import { Drawer } from "@/components/layout/drawer"

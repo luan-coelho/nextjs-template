@@ -1,6 +1,7 @@
 "use client"
 
 import "@/styles/globals.css"
+import "boxicons"
 
 import { ReactNode } from "react"
 import { Public_Sans as FontSans } from "next/font/google"
