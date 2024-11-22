@@ -17,7 +17,7 @@ const fontSans = FontSans({
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-br" suppressHydrationWarning>
-      <body className={cn("flex min-h-screen bg-gray-100 font-sans antialiased", fontSans.variable)}>
+      <body className={cn("flex min-h-screen bg-white font-sans antialiased", fontSans.variable)}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <div className="flex w-full flex-col">
             <NextTopLoader

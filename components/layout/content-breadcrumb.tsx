@@ -1,3 +1,4 @@
+import React from "react"
 import Link from "next/link"
 import { BreadcrumbContentItem } from "@/types"
 
@@ -20,13 +21,13 @@ export default function BreadcrumbContent({ items }: BreadcrumbContentProps) {
         <BreadcrumbList>
           {items.map((item, index) => {
             return (
-              <>
-                <BreadcrumbItem key={index}>
+              <React.Fragment key={index}>
+                <BreadcrumbItem>
                   {index != items.length - 1 ? (
                     <>
                       <Link
                         className="text-[var(--breadcrumb-link)] transition-colors hover:text-foreground"
-                        href={item.href ? item.href : "#"}>
+                        href={item.href || "#"}>
                         {item.label}
                       </Link>
                     </>
@@ -35,7 +36,7 @@ export default function BreadcrumbContent({ items }: BreadcrumbContentProps) {
                   )}
                 </BreadcrumbItem>
                 {index != items.length - 1 && <BreadcrumbSeparator />}
-              </>
+              </React.Fragment>
             )
           })}
         </BreadcrumbList>

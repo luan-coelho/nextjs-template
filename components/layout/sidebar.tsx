@@ -2,9 +2,9 @@
 
 import * as React from "react"
 import { useSidebar } from "@/contexts/sidebar-context"
-import { LucideIcon } from "@/components/ui/lucide-icon"
 import { Rocket } from "lucide-react"
 
+import { LucideIcon } from "@/components/ui/lucide-icon"
 import { Drawer } from "@/components/layout/drawer"
 import { Menu } from "@/components/layout/menu"
 

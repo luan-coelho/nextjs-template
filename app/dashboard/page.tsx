@@ -15,17 +15,15 @@ export default async function DashboardHome() {
     <>
       <BreadcrumbContent items={breadcrumbItems} />
 
-      <div className="mt-4">
-        <Card className="w-auto">
-          <CardContent>
-            <pre>{JSON.stringify(session, null, 2)}</pre>
+      <Card className="mt-4">
+        <CardContent>
+          <pre>{JSON.stringify(session, null, 2)}</pre>
 
-            {session.user?.name && (
-              <Image src={session.user.image || ""} alt={session.user.name} width={100} height={100} />
-            )}
-          </CardContent>
-        </Card>
-      </div>
+          {session.user?.name && (
+            <Image src={session.user.image || ""} alt={session.user.name} width={100} height={100} />
+          )}
+        </CardContent>
+      </Card>
     </>
   )
 }
