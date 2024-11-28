@@ -1,26 +1,40 @@
 import { createContext, ReactNode, useContext, useState } from "react"
 
+import { changeCurrentModuleCookie } from "@/app/dashboard/_sidebar/actions"
+
 type SidebarContextType = {
   isSidebarExpanded: boolean
   toggleSidebar: () => void
+  changeCurrentModule: (module: Module) => void
+  currentModule: Module
 }
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined)
 
 export const SidebarProvider = ({ children }: { children: ReactNode }) => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true)
+  const [currentModule, setCurrentModule] = useState<Module>({} as Module)
 
-  const toggleSidebar = () => {
+  function toggleSidebar() {
     setIsSidebarExpanded(prev => !prev)
   }
 
-  return <SidebarContext.Provider value={{ isSidebarExpanded, toggleSidebar }}>{children}</SidebarContext.Provider>
+  async function changeCurrentModule(module: Module) {
+    await changeCurrentModuleCookie(module)
+    setCurrentModule(module)
+  }
+
+  return (
+    <SidebarContext.Provider value={{ isSidebarExpanded, toggleSidebar, currentModule, changeCurrentModule }}>
+      {children}
+    </SidebarContext.Provider>
+  )
 }
 
 export const useSidebar = (): SidebarContextType => {
   const context = useContext(SidebarContext)
   if (context === undefined) {
-    throw new Error("useSidebar must be used within a SidebarProvider")
+    throw new Error("useSidebar deve ser usado dentro de um SidebarProvider")
   }
   return context
 }

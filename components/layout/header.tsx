@@ -1,12 +1,25 @@
 "use client"
 
+import React from "react"
 import { useSidebar } from "@/contexts/sidebar-context"
-import { LogOut, Menu } from "lucide-react"
+import { Menu } from "lucide-react"
 
-import { logout } from "@/app/auth/actions"
+import { useModules } from "@/hooks/use-users"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function Header() {
-  const { toggleSidebar } = useSidebar()
+  const { toggleSidebar, changeCurrentModule } = useSidebar()
+  const { modules, isLoading, error } = useModules()
+
+  if (!isLoading && modules) {
+    changeCurrentModule(modules[0])
+  }
+
+  function handleModuleChange(value: string) {
+    const modulez: Module = modules!.find(module => module.id == value)!
+    changeCurrentModule(modulez)
+  }
 
   return (
     <header
@@ -14,9 +27,26 @@ export default function Header() {
       <div onClick={toggleSidebar} className="cursor-pointer rounded p-2 hover:bg-[#f5f5f5]">
         <Menu size={18} />
       </div>
-      <div onClick={() => logout()} className="cursor-pointer rounded p-2 hover:bg-[#f5f5f5]">
-        <LogOut size={18} />
-      </div>
+      <Select onValueChange={value => handleModuleChange(value)}>
+        <SelectTrigger className="w-auto">
+          <SelectValue placeholder="Módulo" />
+        </SelectTrigger>
+        {isLoading && (
+          <SelectContent>
+            <Skeleton className="h-[10px] w-auto" />
+          </SelectContent>
+        )}
+        {error && <SelectContent>Erro ao carregar</SelectContent>}
+        {modules && (
+          <SelectContent>
+            {modules.map(module => (
+              <SelectItem key={module.id} value={module.id}>
+                {module.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        )}
+      </Select>
     </header>
   )
 }

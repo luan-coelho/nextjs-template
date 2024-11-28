@@ -59,6 +59,9 @@ export default function LoginPage() {
               <Link href="/auth/register" className={cn(buttonVariants({ variant: "ghost" }), "border-zinc-900")}>
                 Criar Conta
               </Link>
+              <Link href="/dashboard" className={cn(buttonVariants({ variant: "ghost" }))}>
+                Dashboard
+              </Link>
             </div>
           </div>
         </div>
