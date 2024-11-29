@@ -4,17 +4,10 @@ import React from "react"
 import { useSidebar } from "@/contexts/sidebar-context"
 import { Menu } from "lucide-react"
 
-import { useModules } from "@/hooks/use-users"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Skeleton } from "@/components/ui/skeleton"
 
 export default function Header() {
-  const { toggleSidebar, changeCurrentModule } = useSidebar()
-  const { modules, isLoading, error } = useModules()
-
-  if (!isLoading && modules) {
-    changeCurrentModule(modules[0])
-  }
+  const { toggleSidebar, changeCurrentModule, modules, currentModule } = useSidebar()
 
   function handleModuleChange(value: string) {
     const modulez: Module = modules!.find(module => module.id == value)!
@@ -27,18 +20,13 @@ export default function Header() {
       <div onClick={toggleSidebar} className="cursor-pointer rounded p-2 hover:bg-[#f5f5f5]">
         <Menu size={18} />
       </div>
-      <Select onValueChange={value => handleModuleChange(value)}>
-        <SelectTrigger className="w-auto">
+      <Select value={currentModule.id} onValueChange={value => handleModuleChange(value)}>
+        <SelectTrigger className="w-auto max-w-[200px]">
           <SelectValue placeholder="Módulo" />
         </SelectTrigger>
-        {isLoading && (
-          <SelectContent>
-            <Skeleton className="h-[10px] w-auto" />
-          </SelectContent>
-        )}
-        {error && <SelectContent>Erro ao carregar</SelectContent>}
         {modules && (
           <SelectContent>
+            {modules.length == 0 && <span>Nenhum módulo vinculado</span>}
             {modules.map(module => (
               <SelectItem key={module.id} value={module.id}>
                 {module.name}

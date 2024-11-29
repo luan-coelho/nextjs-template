@@ -20,12 +20,12 @@ export default function NotFound() {
         <p className="mt-4 font-sans text-lg leading-7">Não encontramos a página que você procura :(</p>
         <div className="mt-4 flex flex-col items-center justify-center gap-2 md:flex-row">
           <Button
-            className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700"
+            className="flex items-center justify-center gap-2 bg-zinc-600 hover:bg-zinc-700"
             onClick={router.back}>
             <CircleArrowLeft /> Voltar para a página anterior
           </Button>
           <Button asChild>
-            <Link className="flex items-center justify-center gap-2" href="/dashboard/">
+            <Link className="flex items-center justify-center gap-2" href="/">
               <House /> Página inicial
             </Link>
           </Button>

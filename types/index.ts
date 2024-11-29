@@ -16,3 +16,9 @@ export interface DataPagination<T> {
   content: T[]
   pagination: Pagination
 }
+
+export interface Pageable {
+  page?: number
+  size?: number
+  sort?: string
+}

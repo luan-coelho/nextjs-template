@@ -8,6 +8,8 @@ export default function Profile() {
 
   return (
     <>
+      <BreadcrumbContent items={breadcrumbItems} />
+
       <h1>Perfil</h1>
     </>
   )

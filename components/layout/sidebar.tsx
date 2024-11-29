@@ -14,7 +14,7 @@ export default function Sidebar() {
   const size = isSidebarExpanded ? 18 : 20
 
   return (
-    <Drawer.Root className={`${isSidebarExpanded ? "flex min-w-64 max-w-64" : "hidden min-w-7 max-w-7"} flex-col`}>
+    <Drawer.Root className={`${isSidebarExpanded ? "flex min-w-64 max-w-64" : "hidden min-w-7 max-w-7"} z-50 flex-col`}>
       <Drawer.Logo>
         <Rocket className="text-primary" /> {isSidebarExpanded && <h1>Logo</h1>}
       </Drawer.Logo>
