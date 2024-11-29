@@ -2,12 +2,14 @@
 
 import "@/styles/globals.css"
 
-import { ReactNode } from "react"
+import React, { ReactNode } from "react"
 import { Public_Sans as FontSans } from "next/font/google"
 import { SidebarProvider } from "@/contexts/sidebar-context"
+import { Ban, CircleCheckBig, CircleEllipsis, Info, TriangleAlert } from "lucide-react"
 import NextTopLoader from "nextjs-toploader"
 
 import { cn } from "@/lib/utils"
+import { Toaster } from "@/components/ui/sonner"
 import Content from "@/components/layout/content"
 import Footer from "@/components/layout/footer"
 import Header from "@/components/layout/header"
@@ -39,6 +41,25 @@ export default function DashBoardLayout({ children }: { children: ReactNode }) {
             />
             <Header />
             <Content>{children}</Content>
+            <Toaster
+              toastOptions={{
+                classNames: {
+                  error: "bg-red-400",
+                  success: "text-green-400",
+                  warning: "text-yellow-400",
+                  info: "bg-blue-400",
+                },
+              }}
+              icons={{
+                success: <CircleCheckBig />,
+                info: <Info />,
+                warning: <TriangleAlert />,
+                error: <Ban />,
+                loading: <CircleEllipsis />,
+              }}
+              position="top-right"
+              theme="dark"
+            />
             <Footer />
           </div>
         </SidebarProvider>
