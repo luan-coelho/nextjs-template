@@ -1,13 +1,11 @@
 "use client"
 
-import React, { useCallback, useState } from "react"
+import React, { useCallback } from "react"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { ApiError } from "@/types"
 import { AlertCircle, Eye, Pencil, Trash } from "lucide-react"
-import { FormProvider, useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { z } from "zod"
 
 import apiClient from "@/lib/api-client"
 import { cn } from "@/lib/utils"
@@ -25,28 +23,20 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Form } from "@/components/ui/form"
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import PageTitle from "@/components/layout/page-title"
 import Paginator from "@/components/layout/pagination"
 
-const schema = z.object({
-  name: z.string().min(1, "Nome é obrigatório"),
-})
-
-type FormData = z.infer<typeof schema>
-
-export default function ModulesHome() {
-  const [openRegistrationModal, setOpenRegistrationModal] = useState<boolean>(false)
+export default function ModulesPage() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const page = Number(searchParams.get("page")) || 0
   const size = Number(searchParams.get("size")) || 25
   const sort = searchParams.get("sort") ?? "id,desc"
+  const { modules, isLoading, error, pagination, mutate } = useModules({ page, size, sort })
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -62,23 +52,15 @@ export default function ModulesHome() {
     router.push(pathname + "?" + createQueryString("page", page.toString()))
   }
 
-  const { modules, isLoading, error, pagination, mutate } = useModules({ page, size, sort })
-
-  const form = useForm<FormData>({
-    resolver: zodResolver(schema),
-  })
-
-  async function onSubmit(data: FormData) {
-    await apiClient.post("/module", data)
-    toast.success("Módulo cadastrado com sucesso.")
-    await mutate()
-    setOpenRegistrationModal(false)
-  }
-
-  async function handleDelete(id: number) {
-    await apiClient.delete(`/module/${id}`)
-    toast.success("Módulo deletado com sucesso.")
-    await mutate()
+  async function handleDelete(id: string) {
+    try {
+      await apiClient.delete(`/module/${id}`)
+      toast.success("Módulo deletado com sucesso.")
+      await mutate()
+    } catch (error) {
+      const apiError = error as ApiError
+      toast.error(`Erro ao deletar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
+    }
   }
 
   return (
@@ -89,32 +71,9 @@ export default function ModulesHome() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Listagem</CardTitle>
-            <Dialog open={openRegistrationModal} onOpenChange={setOpenRegistrationModal}>
-              <DialogTrigger asChild>
-                <Button>Cadastrar</Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[525px]">
-                <DialogHeader>
-                  <DialogTitle>Cadastrar Módulo</DialogTitle>
-                </DialogHeader>
-                <FormProvider {...form}>
-                  <form className="grid grid-cols-12 gap-4">
-                    <div className="col-span-12">
-                      <Form.Field>
-                        <Form.Label htmlFor="name">Nome</Form.Label>
-                        <Form.TextField name="name" />
-                        <Form.ErrorMessage field="name" />
-                      </Form.Field>
-                    </div>
-                  </form>
-                </FormProvider>
-                <DialogFooter>
-                  <Button onClick={form.handleSubmit(onSubmit)} className="w-full md:w-auto" type="submit">
-                    Cadastrar
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+            <Link className={buttonVariants({ variant: "default" })} href="/modules/create">
+              Novo módulo
+            </Link>
           </div>
         </CardHeader>
         <CardContent>
@@ -199,20 +158,21 @@ export default function ModulesHome() {
                     </TableRow>
                   ))}
                 </TableBody>
-                <TableFooter>
-                  <TableRow>
-                    <TableCell colSpan={2}>
-                      {!isLoading && pagination && (
+                {!isLoading && pagination && pagination.totalPages > 1 && (
+                  <TableFooter>
+                    <TableRow>
+                      <TableCell className="mt-10" colSpan={12}>
                         <Paginator
+                          className="my-1"
                           currentPage={pagination.currentPage}
                           totalPages={pagination.totalPages}
                           onPageChange={page => handlePageChange(page)}
                           showPreviousNext
                         />
-                      )}
-                    </TableCell>
-                  </TableRow>
-                </TableFooter>
+                      </TableCell>
+                    </TableRow>
+                  </TableFooter>
+                )}
               </Table>
             </>
           )}

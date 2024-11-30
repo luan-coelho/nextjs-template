@@ -1,3 +1,5 @@
+import { ApiError } from "@/types"
+
 export const fetcher = async <T>(endpoint: string, options?: RequestInit): Promise<T> => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
     ...options,
@@ -8,8 +10,23 @@ export const fetcher = async <T>(endpoint: string, options?: RequestInit): Promi
     },
   })
 
+  let errorBody: ApiError | undefined
+
   if (!res.ok) {
-    throw new Error(`Erro na requisição: ${res.statusText}`)
+    try {
+      // Tenta parsear o corpo do erro
+      errorBody = await res.json()
+    } catch {
+      // Fallback para um erro genérico caso o parse falhe
+      errorBody = {
+        title: "Erro desconhecido",
+        detail: res.statusText,
+        status: res.status,
+      }
+    }
+
+    // Lança o erro com a tipagem ApiError
+    throw errorBody
   }
 
   return res.json()
@@ -25,8 +42,20 @@ export const fetcherWithoutResponse = async (endpoint: string, options?: Request
     },
   })
 
+  let errorBody: ApiError | undefined
+
   if (!res.ok) {
-    throw new Error(`Erro na requisição: ${res.statusText}`)
+    try {
+      errorBody = await res.json()
+    } catch {
+      errorBody = {
+        title: "Erro desconhecido",
+        detail: res.statusText,
+        status: res.status,
+      }
+    }
+
+    throw errorBody
   }
 }
 

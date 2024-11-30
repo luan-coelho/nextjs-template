@@ -1,3 +1,6 @@
+import React from "react"
+
+import { cn } from "@/lib/utils"
 import {
   Pagination,
   PaginationContent,
@@ -12,11 +15,17 @@ type PaginatorProps = {
   totalPages: number
   onPageChange: (pageNumber: number) => void
   showPreviousNext: boolean
-}
+} & React.HTMLAttributes<HTMLDivElement>
 
-export default function Paginator({ currentPage, totalPages, onPageChange, showPreviousNext }: PaginatorProps) {
+export default function Paginator({
+  currentPage,
+  totalPages,
+  onPageChange,
+  showPreviousNext,
+  className,
+}: PaginatorProps) {
   return (
-    <Pagination>
+    <Pagination className={cn(className)}>
       <PaginationContent>
         {showPreviousNext && totalPages ? (
           <PaginationItem>

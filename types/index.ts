@@ -22,3 +22,11 @@ export interface Pageable {
   size?: number
   sort?: string
 }
+
+export interface ApiError {
+  type?: string
+  title: string
+  status: number
+  detail: string
+  instance?: string
+}

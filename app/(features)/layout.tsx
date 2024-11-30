@@ -43,11 +43,12 @@ export default function DashBoardLayout({ children }: { children: ReactNode }) {
             <Content>{children}</Content>
             <Toaster
               toastOptions={{
+                duration: 5000,
                 classNames: {
-                  error: "bg-red-400",
-                  success: "text-green-400",
-                  warning: "text-yellow-400",
-                  info: "bg-blue-400",
+                  error: "bg-red-500 text-white border border-red-500",
+                  success: "bg-green-500 text-white border border-green-500",
+                  warning: "bg-yellow-400 text-black border border-yellow-400",
+                  info: "bg-blue-500 text-white border border-blue-500",
                 },
               }}
               icons={{
