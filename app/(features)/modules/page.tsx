@@ -3,13 +3,13 @@
 import React, { useCallback } from "react"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { ApiError } from "@/types"
+import { ApiError, DataPagination, Pagination } from "@/types"
 import { AlertCircle, Eye, Pencil, Trash } from "lucide-react"
 import { toast } from "sonner"
 
 import apiClient from "@/lib/api-client"
 import { cn } from "@/lib/utils"
-import { useModules } from "@/hooks/use-users"
+import { useModules } from "@/hooks/use-modules"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import {
   AlertDialog,
@@ -56,7 +56,14 @@ export default function ModulesPage() {
     try {
       await apiClient.delete(`/module/${id}`)
       toast.success("Módulo deletado com sucesso.")
-      await mutate()
+      await mutate(function (dataPagination): DataPagination<Module> {
+        return {
+          content: (dataPagination?.content || []).filter(
+            item => item.id !== id, // Remove o módulo com o ID correspondente
+          ),
+          pagination: dataPagination?.pagination || ({} as Pagination),
+        }
+      }, false)
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao deletar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -121,7 +128,7 @@ export default function ModulesPage() {
                               }),
                               "rounded-full bg-purple-500 hover:bg-purple-600",
                             )}
-                            href={`/modules/${module.id}`}>
+                            href={`/modules/edit/${module.id}`}>
                             <Pencil className="w-5" />
                           </Link>
                           <AlertDialog>

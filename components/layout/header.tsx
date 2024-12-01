@@ -21,12 +21,11 @@ export default function Header() {
         <Menu size={18} />
       </div>
       <Select value={currentModule.id} onValueChange={value => handleModuleChange(value)}>
-        <SelectTrigger className="w-auto max-w-[200px]">
-          <SelectValue placeholder="Módulo" />
+        <SelectTrigger className="w-auto" disabled={!modules || modules.length == 0}>
+          <SelectValue placeholder={modules && modules.length > 0 ? "Módulo" : "Nenhum módulo vinculado"} />
         </SelectTrigger>
         {modules && (
           <SelectContent>
-            {modules.length == 0 && <span>Nenhum módulo vinculado</span>}
             {modules.map(module => (
               <SelectItem key={module.id} value={module.id}>
                 {module.name}

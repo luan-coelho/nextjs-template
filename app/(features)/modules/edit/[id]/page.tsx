@@ -1,7 +1,8 @@
 "use client"
 
+import { useEffect } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
 import { ApiError, DataPagination, Pagination } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormProvider, useForm } from "react-hook-form"
@@ -9,7 +10,7 @@ import { toast } from "sonner"
 import { z } from "zod"
 
 import apiClient from "@/lib/api-client"
-import { useModules } from "@/hooks/use-modules"
+import { useModule, useModules } from "@/hooks/use-modules"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form } from "@/components/ui/form"
@@ -22,35 +23,54 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>
 
-export default function CreateModulePage() {
+export default function EditModulePage() {
+  const params = useParams<{ id: string }>()
+
+  const { module, isLoading } = useModule(params.id)
   const { mutate } = useModules()
-  const router = useRouter()
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
+    defaultValues: module,
   })
+
+  const { setValue } = form
+
+  // Atualiza os valores do formulário quando os dados forem carregados
+  useEffect(() => {
+    if (module) {
+      Object.keys(module).forEach(key => {
+        setValue(key as keyof FormData, module[key as keyof FormData])
+      })
+    }
+  }, [module, setValue])
 
   async function onSubmit(data: FormData) {
     try {
-      const modulez = await apiClient.post<Module>("/module", data)
-      toast.success("Módulo cadastrado com sucesso.")
+      const modulez = await apiClient.put<Module>(`/module/${params.id}`, data)
+      toast.success("Módulo atualizado com sucesso.")
       await mutate(function (dataPagination): DataPagination<Module> {
         return {
-          content: [...(dataPagination?.content || []), modulez!],
+          content: (dataPagination?.content || []).map(
+            item => (item.id === modulez!.id ? modulez! : item), // Substitui o módulo correspondente
+          ),
           pagination: dataPagination?.pagination || ({} as Pagination),
         }
       }, false)
-      router.push("/modules")
     } catch (error) {
       const apiError = error as ApiError
-      toast.error(`Erro ao cadastrar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
+      toast.error(`Erro ao atualizar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
     }
+  }
+
+  if (isLoading) {
+    return <span>Carregando...</span>
   }
 
   return (
     <div>
-      <BreadcrumbContent items={[{ label: "Módulos", href: "/modules" }, { label: "Cadastrar" }]} />
-      <PageTitle>Cadastrar módulo</PageTitle>
+      <BreadcrumbContent items={[{ label: "Módulos", href: "/modules" }, { label: "Editar" }]} />
+      <PageTitle>Editar módulo</PageTitle>
 
       <Card className="mt-4">
         <CardHeader>
@@ -71,7 +91,7 @@ export default function CreateModulePage() {
                   Cancelar
                 </Link>
                 <Button className="w-full md:w-auto" type="submit">
-                  Cadastrar
+                  Salvar
                 </Button>
               </div>
             </form>

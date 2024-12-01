@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react"
 
-import { useModules } from "@/hooks/use-users"
+import { useModules } from "@/hooks/use-modules"
 import { changeCurrentModuleCookie, getCurrentModuleCookieId } from "@/components/layout/_sidebar/actions"
 
 type SidebarContextType = {
@@ -35,9 +35,9 @@ export const SidebarProvider = ({ children }: { children: ReactNode }) => {
           const foundModule = modulesApi.find(module => module.id == cookie.value)
           if (foundModule) {
             setCurrentModule(foundModule)
-          } else {
-            setCurrentModule(modulesApi[0])
           }
+        } else {
+          setCurrentModule(modulesApi[0])
         }
       })
       setModules(modulesApi || [])
