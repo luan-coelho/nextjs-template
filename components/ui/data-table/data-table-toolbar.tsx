@@ -1,11 +1,10 @@
 "use client"
 
 import { Table } from "@tanstack/react-table"
-import { ArrowDown, ArrowRight, ArrowUp, CheckCircle, Circle, CircleOff, HelpCircle, Timer, X } from "lucide-react"
+import { Activity, CheckCircle, Circle, CircleOff, CircleSlash2, HelpCircle, Timer, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { DataTableViewOptions } from "@/components/ui/data-table/data-table-view-options"
-import { Input } from "@/components/ui/input"
 
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 
@@ -39,19 +38,14 @@ export const statuses = [
 
 export const priorities = [
   {
-    label: "Low",
+    label: "Ativado",
     value: "low",
-    icon: ArrowDown,
+    icon: Activity,
   },
   {
-    label: "Medium",
-    value: "medium",
-    icon: ArrowRight,
-  },
-  {
-    label: "High",
+    label: "Desativado",
     value: "high",
-    icon: ArrowUp,
+    icon: CircleSlash2,
   },
 ]
 
@@ -65,17 +59,11 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
-        <Input
-          placeholder="Filter tasks..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-          onChange={event => table.getColumn("title")?.setFilterValue(event.target.value)}
-          className="h-8 w-[150px] lg:w-[250px]"
-        />
-        {table.getColumn("status") && (
-          <DataTableFacetedFilter column={table.getColumn("status")} title="Status" options={statuses} />
+        {table.getColumn("name") && (
+          <DataTableFacetedFilter column={table.getColumn("name")} title="Nome" options={statuses} />
         )}
-        {table.getColumn("priority") && (
-          <DataTableFacetedFilter column={table.getColumn("priority")} title="Priority" options={priorities} />
+        {table.getColumn("active") && (
+          <DataTableFacetedFilter column={table.getColumn("active")} title="Situação" options={priorities} />
         )}
         {isFiltered && (
           <Button variant="ghost" onClick={() => table.resetColumnFilters()} className="h-8 px-2 lg:px-3">

@@ -2,8 +2,9 @@
 
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
 import { Table } from "@tanstack/react-table"
-import { Settings2 } from "lucide-react"
+import { DownloadIcon, Settings2 } from "lucide-react"
 
+import { exportTableToCSV } from "@/lib/export-table-csv"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -19,31 +20,45 @@ interface DataTableViewOptionsProps<TData> {
 
 export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="ml-auto hidden h-8 lg:flex">
-          <Settings2 />
-          Visualizar
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[150px]">
-        <DropdownMenuLabel>Alternar colunas</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        {table
-          .getAllColumns()
-          .filter(column => typeof column.accessorFn !== "undefined" && column.getCanHide())
-          .map(column => {
-            return (
-              <DropdownMenuCheckboxItem
-                key={column.id}
-                className="capitalize"
-                checked={column.getIsVisible()}
-                onCheckedChange={value => column.toggleVisibility(!!value)}>
-                {column.columnDef.header}
-              </DropdownMenuCheckboxItem>
-            )
-          })}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className="flex space-x-2">
+      <Button
+        className="rounded-sm"
+        variant="outline"
+        onClick={() =>
+          exportTableToCSV<TData>(table, {
+            filename: "modules",
+            excludeColumns: ["actions"],
+          })
+        }>
+        <DownloadIcon className="mr-2 size-4" aria-hidden="true" />
+        Exportar CSV
+      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" className="hidden rounded-sm lg:flex">
+            <Settings2 />
+            Visualizar
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-[150px]">
+          <DropdownMenuLabel>Alternar colunas</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {table
+            .getAllColumns()
+            .filter(column => typeof column.accessorFn !== "undefined" && column.getCanHide())
+            .map(column => {
+              return (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={value => column.toggleVisibility(value)}>
+                  {column.columnDef.header?.toString()}
+                </DropdownMenuCheckboxItem>
+              )
+            })}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   )
 }

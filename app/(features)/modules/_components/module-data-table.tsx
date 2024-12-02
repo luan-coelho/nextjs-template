@@ -43,10 +43,12 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
     {
       accessorKey: "name",
       header: "Nome",
+      size: 6,
     },
     {
       accessorKey: "active",
       header: "Situação",
+      size: 4,
       cell: ({ getValue }) => (
         <>
           {getValue.name ? (
@@ -60,6 +62,7 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
     {
       id: "actions", // Use um ID para colunas sem dados específicos
       header: "Ações",
+      size: 2,
       cell: ({ row }) => {
         const modulez = row.original // Dados da linha
         return (
@@ -159,28 +162,5 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
     },
   })
 
-  return (
-    <>
-      {!isLoading && data && (
-        <>
-          <DataTable columns={columns} data={data} />
-          {pagination && pagination.totalPages > 1 && (
-            <TableFooter>
-              <TableRow>
-                <TableCell colSpan={12}>
-                  <Paginator
-                    className="my-1"
-                    currentPage={pagination.currentPage}
-                    totalPages={pagination.totalPages}
-                    onPageChange={page => handlePageChange(page)}
-                    showPreviousNext
-                  />
-                </TableCell>
-              </TableRow>
-            </TableFooter>
-          )}
-        </>
-      )}
-    </>
-  )
+  return <>{!isLoading && data && <DataTable columns={columns} data={data} />}</>
 }
