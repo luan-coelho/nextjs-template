@@ -4,6 +4,7 @@ import "@/styles/globals.css"
 
 import { ReactNode } from "react"
 import { Public_Sans as FontSans } from "next/font/google"
+import { QueryClientProvider, useQueryClient } from "@tanstack/react-query"
 import NextTopLoader from "nextjs-toploader"
 
 import { cn } from "@/lib/utils"
@@ -14,7 +15,10 @@ const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
 })
+
 export default function RootLayout({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient()
+
   return (
     <html lang="pt-br" suppressHydrationWarning>
       <body className={cn("flex min-h-screen bg-white font-sans antialiased", fontSans.variable)}>
@@ -30,7 +34,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               easing="ease"
               speed={200}
             />
-            {children}
+            <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
           </div>
         </ThemeProvider>
       </body>

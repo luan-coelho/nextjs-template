@@ -1,3 +1,4 @@
+import { UseMutationResult } from "@tanstack/react-query"
 import { KeyedMutator } from "swr"
 
 export interface BreadcrumbContentItem {
@@ -34,9 +35,9 @@ export interface ApiError {
 }
 
 export type SWRDataPaginationResponse<T> = {
-  data: Module[] | undefined
+  data: T[] | undefined
   error: any
   isLoading: boolean
   pagination: Pagination | undefined
-  mutate: KeyedMutator<T>
+  mutate: UseMutationResult<T, Error, void, unknown>
 }

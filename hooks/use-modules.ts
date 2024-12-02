@@ -1,4 +1,6 @@
+import moduleService from "@/services/module-service"
 import { DataPagination, Pageable, SWRDataPaginationResponse } from "@/types"
+import { useQuery } from "@tanstack/react-query"
 import useSWR from "swr"
 
 import { fetcher } from "@/lib/api-client"
@@ -9,10 +11,10 @@ export function useModules(pageable?: Pageable): SWRDataPaginationResponse<DataP
     pageable = { page: 0, size: 25 }
   }
   const queryParams = buildQueryParams(pageable)
-  const { data, error, isLoading, mutate } = useSWR<DataPagination<Module>>(`/module?${queryParams}`, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["modules", queryParams],
+    queryFn: () => moduleService.fetchModules(pageable.page, pageable.size),
   })
 
   if (error) {
@@ -24,7 +26,6 @@ export function useModules(pageable?: Pageable): SWRDataPaginationResponse<DataP
     error,
     isLoading,
     pagination: data?.pagination,
-    mutate,
   } as SWRDataPaginationResponse<DataPagination<Module>>
 }
 
