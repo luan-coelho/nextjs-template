@@ -3,13 +3,14 @@
 import React, { useCallback } from "react"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { ApiError, DataPagination, Pagination, SWRDataPaginationResponse } from "@/types"
+import { ApiError, DataPagination, PAGEABLE, Pagination, SWRDataPaginationResponse } from "@/types"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { ColumnDef } from "@tanstack/react-table"
 import { Eye, Pencil, Trash } from "lucide-react"
 import { toast } from "sonner"
 
 import apiClient from "@/lib/api-client"
-import { cn } from "@/lib/utils"
+import { buildQueryParams, cn } from "@/lib/utils"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,19 +24,20 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
-import { DataTable } from "@/components/ui/data-table"
+import { DataTable } from "@/components/ui/data-table/data-table"
 import { TableCell, TableFooter, TableRow } from "@/components/ui/table"
 import Paginator from "@/components/layout/pagination"
 
 type ModuleDataTableProps = {
-  swrResponse: SWRDataPaginationResponse<DataPagination<Module>>
+  swrResponse: SWRDataPaginationResponse<Module>
 }
 
 export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
+  const queryClient = useQueryClient()
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const { data, isLoading, pagination, mutate } = swrResponse
+  const { data, isLoading, pagination } = swrResponse
 
   const columns: ColumnDef<Module>[] = [
     {
@@ -94,25 +96,25 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
                   <AlertDialogTitle>Você tem certeza absoluta?</AlertDialogTitle>
                   <AlertDialogDescription>
                     <span>Você pode desativar ou deletar este registro.</span>
-                    <p className="mt-2">
+                    <span className="mt-2">
                       <strong>
                         Caso deseje deletar, esta ação não poderá ser desfeita. Isso excluirá permanentemente este
                         registro.
                       </strong>
-                    </p>
+                    </span>
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancelar</AlertDialogCancel>
                   <AlertDialogAction
-                    onClick={() => handleDelete(module.id)}
+                    onClick={() => handleDelete(modulez.id)}
                     className={cn(
                       buttonVariants({ variant: "outline" }),
                       "border-red-500 text-red-500 hover:bg-red-500 hover:text-white",
                     )}>
                     Deletar
                   </AlertDialogAction>
-                  <AlertDialogAction onClick={() => handleDelete(module.id)} className="bg-red-500 hover:bg-red-600">
+                  <AlertDialogAction onClick={() => handleDelete(modulez.id)} className="bg-red-500 hover:bg-red-600">
                     Desativar
                   </AlertDialogAction>
                 </AlertDialogFooter>
@@ -138,41 +140,46 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
     [searchParams],
   )
 
-  async function handleDelete(id: string) {
-    try {
-      await apiClient.delete(`/module/${id}`)
+  const { mutateAsync: handleDelete } = useMutation({
+    mutationFn: (id: string) => apiClient.delete(`/module/${id}`),
+    onSuccess(_, id) {
       toast.success("Módulo deletado com sucesso.")
-      await mutate(function (dataPagination): DataPagination<Module> {
+      const queryParams = buildQueryParams(PAGEABLE)
+      queryClient.setQueryData(["modules", queryParams], (data: DataPagination<Module> | undefined) => {
         return {
-          content: (dataPagination?.content || []).filter(
-            item => item.id !== id, // Remove o módulo com o ID correspondente
-          ),
-          pagination: dataPagination?.pagination || ({} as Pagination),
+          content: [...(data?.content || []).filter(item => item.id !== id)],
+          pagination: data?.pagination || ({} as Pagination),
         }
-      }, false)
-    } catch (error) {
+      })
+      router.push("/modules")
+    },
+    onError(error: any) {
       const apiError = error as ApiError
       toast.error(`Erro ao deletar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
-    }
-  }
+    },
+  })
 
   return (
     <>
-      {!isLoading && data && <DataTable columns={columns} data={data} />}
-      {!isLoading && pagination && pagination.totalPages > 1 && (
-        <TableFooter>
-          <TableRow>
-            <TableCell className="mt-10" colSpan={12}>
-              <Paginator
-                className="my-1"
-                currentPage={pagination.currentPage}
-                totalPages={pagination.totalPages}
-                onPageChange={page => handlePageChange(page)}
-                showPreviousNext
-              />
-            </TableCell>
-          </TableRow>
-        </TableFooter>
+      {!isLoading && data && (
+        <>
+          <DataTable columns={columns} data={data} />
+          {pagination && pagination.totalPages > 1 && (
+            <TableFooter>
+              <TableRow>
+                <TableCell colSpan={12}>
+                  <Paginator
+                    className="my-1"
+                    currentPage={pagination.currentPage}
+                    totalPages={pagination.totalPages}
+                    onPageChange={page => handlePageChange(page)}
+                    showPreviousNext
+                  />
+                </TableCell>
+              </TableRow>
+            </TableFooter>
+          )}
+        </>
       )}
     </>
   )

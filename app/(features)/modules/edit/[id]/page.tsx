@@ -3,14 +3,16 @@
 import { useEffect } from "react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
-import { ApiError, DataPagination, Pagination } from "@/types"
+import { ApiError, PAGEABLE } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useQueryClient } from "@tanstack/react-query"
 import { FormProvider, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 
 import apiClient from "@/lib/api-client"
-import { useModule, useModules } from "@/hooks/use-modules"
+import { buildQueryParams } from "@/lib/utils"
+import { useModule } from "@/hooks/use-modules"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form } from "@/components/ui/form"
@@ -21,42 +23,34 @@ const schema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
 })
 
-type FormData = z.infer<typeof schema>
+type UpdateModule = z.infer<typeof schema>
 
 export default function EditModulePage() {
+  const queryClient = useQueryClient()
   const params = useParams<{ id: string }>()
+  const { data: module, isLoading } = useModule(params.id)
 
-  const { module, isLoading } = useModule(params.id)
-  const { mutate } = useModules()
-
-  const form = useForm<FormData>({
+  const form = useForm<UpdateModule>({
     resolver: zodResolver(schema),
     defaultValues: module,
   })
 
   const { setValue } = form
 
-  // Atualiza os valores do formulário quando os dados forem carregados
   useEffect(() => {
     if (module) {
       Object.keys(module).forEach(key => {
-        setValue(key as keyof FormData, module[key as keyof FormData])
+        setValue(key as keyof UpdateModule, module[key as keyof UpdateModule])
       })
     }
   }, [module, setValue])
 
-  async function onSubmit(data: FormData) {
+  async function onUpdate(data: UpdateModule) {
     try {
-      const modulez = await apiClient.put<Module>(`/module/${params.id}`, data)
+      await apiClient.put<Module>(`/module/${params.id}`, data)
+      const queryParams = buildQueryParams(PAGEABLE)
+      await queryClient.invalidateQueries({ queryKey: ["modules", queryParams] })
       toast.success("Módulo atualizado com sucesso.")
-      await mutate(function (dataPagination): DataPagination<Module> {
-        return {
-          content: (dataPagination?.content || []).map(
-            item => (item.id === modulez!.id ? modulez! : item), // Substitui o módulo correspondente
-          ),
-          pagination: dataPagination?.pagination || ({} as Pagination),
-        }
-      }, false)
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao atualizar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -78,7 +72,7 @@ export default function EditModulePage() {
         </CardHeader>
         <CardContent>
           <FormProvider {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-12 gap-4">
+            <form onSubmit={form.handleSubmit(onUpdate)} className="grid grid-cols-12 gap-4">
               <div className="col-span-12">
                 <Form.Field>
                   <Form.Label htmlFor="name">Nome</Form.Label>

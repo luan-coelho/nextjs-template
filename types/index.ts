@@ -1,5 +1,4 @@
 import { UseMutationResult } from "@tanstack/react-query"
-import { KeyedMutator } from "swr"
 
 export interface BreadcrumbContentItem {
   label: string
@@ -12,8 +11,6 @@ export interface Pagination {
   totalPages: number
   totalItems: number
 }
-
-export const STANDARD_PAGE_SIZE = 25
 
 export interface DataPagination<T> {
   content: T[]
@@ -41,3 +38,7 @@ export type SWRDataPaginationResponse<T> = {
   pagination: Pagination | undefined
   mutate: UseMutationResult<T, Error, void, unknown>
 }
+
+export const STANDARD_PAGE_SIZE = 25
+
+export const PAGEABLE = { page: 1, size: STANDARD_PAGE_SIZE, sort: "id,desc" } as Pageable

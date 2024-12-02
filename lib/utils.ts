@@ -1,4 +1,4 @@
-import { Pageable } from "@/types"
+import { PAGEABLE, Pageable } from "@/types"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -6,11 +6,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function buildQueryParams(pageable: Pageable): string {
-  const page = pageable?.page || 0
-  const size = pageable?.size || 25
-  const sort = pageable?.sort || "id,desc"
-
+export function buildQueryParams({ page, size, sort }: Pageable): string {
   const params = new URLSearchParams()
   if (page) {
     params.append("page", page.toString())
@@ -22,4 +18,11 @@ export function buildQueryParams(pageable: Pageable): string {
     params.append("sort", sort)
   }
   return params.toString()
+}
+
+export function extractPaginationQueryParams(searchParams: URLSearchParams): Pageable {
+  const page = Number(searchParams.get("page")) || PAGEABLE.page
+  const size = Number(searchParams.get("size")) || PAGEABLE.size
+  const sort = searchParams.get("sort") || PAGEABLE.sort
+  return { page, size, sort } as Pageable
 }

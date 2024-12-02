@@ -26,7 +26,7 @@ export default function Paginator({
 }: PaginatorProps) {
   return (
     <Pagination className={cn(className)}>
-      <PaginationContent>
+      <PaginationContent className="flex justify-end justify-items-end">
         {showPreviousNext && totalPages ? (
           <PaginationItem>
             <PaginationPrevious onClick={() => onPageChange(currentPage - 1)} disabled={currentPage - 1 < 1} />

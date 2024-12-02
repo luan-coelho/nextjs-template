@@ -2,14 +2,15 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ApiError, DataPagination, Pagination } from "@/types"
+import { ApiError, PAGEABLE } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useQueryClient } from "@tanstack/react-query"
 import { FormProvider, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 
 import apiClient from "@/lib/api-client"
-import { useModules } from "@/hooks/use-modules"
+import { buildQueryParams } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form } from "@/components/ui/form"
@@ -20,26 +21,22 @@ const schema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
 })
 
-type FormData = z.infer<typeof schema>
+type CreateModuleSchema = z.infer<typeof schema>
 
 export default function CreateModulePage() {
-  const { mutate } = useModules()
+  const queryClient = useQueryClient()
   const router = useRouter()
 
-  const form = useForm<FormData>({
+  const form = useForm<CreateModuleSchema>({
     resolver: zodResolver(schema),
   })
 
-  async function onSubmit(data: FormData) {
+  async function createModule(data: CreateModuleSchema) {
     try {
-      const modulez = await apiClient.post<Module>("/module", data)
+      await apiClient.post<Module>("/module", data)
       toast.success("Módulo cadastrado com sucesso.")
-      await mutate(function (dataPagination): DataPagination<Module> {
-        return {
-          content: [...(dataPagination?.content || []), modulez!],
-          pagination: dataPagination?.pagination || ({} as Pagination),
-        }
-      }, false)
+      const queryParams = buildQueryParams(PAGEABLE)
+      await queryClient.invalidateQueries({ queryKey: ["modules", queryParams] })
       router.push("/modules")
     } catch (error) {
       const apiError = error as ApiError
@@ -58,7 +55,7 @@ export default function CreateModulePage() {
         </CardHeader>
         <CardContent>
           <FormProvider {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-12 gap-4">
+            <form onSubmit={form.handleSubmit(createModule)} className="grid grid-cols-12 gap-4">
               <div className="col-span-12">
                 <Form.Field>
                   <Form.Label htmlFor="name">Nome</Form.Label>

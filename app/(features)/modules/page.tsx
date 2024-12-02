@@ -3,10 +3,10 @@
 import React from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import moduleService from "@/services/module-service"
-import { DataPagination, STANDARD_PAGE_SIZE } from "@/types"
-import { useQuery } from "@tanstack/react-query"
+import { Pageable } from "@/types"
 
+import { extractPaginationQueryParams } from "@/lib/utils"
+import { useModules } from "@/hooks/use-modules"
 import { buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import PageTitle from "@/components/layout/page-title"
@@ -14,12 +14,8 @@ import ModuleDataTable from "@/app/(features)/modules/_components/module-data-ta
 
 export default function ModulesPage() {
   const searchParams = useSearchParams()
-  const page = Number(searchParams.get("page")) || 0
-  const size = Number(searchParams.get("size")) || STANDARD_PAGE_SIZE
-  const swrResponse = useQuery<DataPagination<Module>>({
-    queryKey: ["modules"],
-    queryFn: () => moduleService.fetchModules(page, size),
-  })
+  const pageable: Pageable = extractPaginationQueryParams(searchParams)
+  const swrResponse = useModules(pageable)
 
   return (
     <>

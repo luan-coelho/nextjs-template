@@ -5,14 +5,14 @@ import { useParams } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 
 import { useModule } from "@/hooks/use-modules"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import BreadcrumbContent from "@/components/layout/content-breadcrumb"
 import PageTitle from "@/components/layout/page-title"
 
 export default function ShowModulePage() {
   const params = useParams<{ id: string }>()
-  const { module, isLoading } = useModule(params.id)
+  const { data: module, isLoading } = useModule(params.id)
 
   if (isLoading) {
     return <span>Carregando...</span>

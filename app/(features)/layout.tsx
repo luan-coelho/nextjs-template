@@ -4,7 +4,6 @@ import "@/styles/globals.css"
 
 import React, { ReactNode } from "react"
 import { Public_Sans as FontSans } from "next/font/google"
-import { SidebarProvider } from "@/contexts/sidebar-context"
 import { Ban, CircleCheckBig, CircleEllipsis, Info, TriangleAlert } from "lucide-react"
 import NextTopLoader from "nextjs-toploader"
 
@@ -14,6 +13,7 @@ import Content from "@/components/layout/content"
 import Footer from "@/components/layout/footer"
 import Header from "@/components/layout/header"
 import Sidebar from "@/components/layout/sidebar"
+import Providers from "@/app/providers"
 
 const fontSans = FontSans({
   weight: "400",
@@ -25,7 +25,7 @@ export default function DashBoardLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-br" suppressHydrationWarning>
       <body className={cn("flex min-h-screen bg-gray-100 font-sans antialiased", fontSans.variable)}>
-        <SidebarProvider>
+        <Providers>
           <Sidebar />
 
           <div className="flex w-full flex-col">
@@ -63,7 +63,7 @@ export default function DashBoardLayout({ children }: { children: ReactNode }) {
             />
             <Footer />
           </div>
-        </SidebarProvider>
+        </Providers>
       </body>
     </html>
   )
