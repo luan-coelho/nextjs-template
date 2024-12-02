@@ -20,7 +20,7 @@ export default function Header() {
       <div onClick={toggleSidebar} className="cursor-pointer rounded p-2 hover:bg-[#f5f5f5]">
         <Menu size={18} />
       </div>
-      <Select value={currentModule.id} onValueChange={value => handleModuleChange(value)}>
+      <Select value={currentModule?.id || ""} onValueChange={value => handleModuleChange(value)}>
         <SelectTrigger className="w-auto" disabled={!modules || modules.length == 0}>
           <SelectValue placeholder={modules && modules.length > 0 ? "Módulo" : "Nenhum módulo vinculado"} />
         </SelectTrigger>

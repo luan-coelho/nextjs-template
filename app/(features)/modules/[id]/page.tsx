@@ -1,8 +1,11 @@
 "use client"
 
+import Link from "next/link"
 import { useParams } from "next/navigation"
+import { ArrowLeft } from "lucide-react"
 
 import { useModule } from "@/hooks/use-modules"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import BreadcrumbContent from "@/components/layout/content-breadcrumb"
 import PageTitle from "@/components/layout/page-title"
@@ -20,7 +23,14 @@ export default function ShowModulePage() {
       <BreadcrumbContent items={[{ label: "Módulos", href: "/modules" }, { label: "Visualizar" }]} />
       <PageTitle>Visualizar Módulo</PageTitle>
 
-      <Card className="mt-4">
+      <div className="flex items-center justify-end">
+        <Link href="/modules/" className={buttonVariants()}>
+          <ArrowLeft />
+          Voltar
+        </Link>
+      </div>
+
+      <Card className="mt-2">
         <CardHeader>
           <CardTitle>Módulo</CardTitle>
         </CardHeader>

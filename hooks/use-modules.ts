@@ -1,10 +1,10 @@
-import { DataPagination, Pageable } from "@/types"
+import { DataPagination, Pageable, SWRDataPaginationResponse } from "@/types"
 import useSWR from "swr"
 
 import { fetcher } from "@/lib/api-client"
 import { buildQueryParams } from "@/lib/utils"
 
-export function useModules(pageable?: Pageable) {
+export function useModules(pageable?: Pageable): SWRDataPaginationResponse<DataPagination<Module>> {
   if (!pageable) {
     pageable = { page: 0, size: 25 }
   }
@@ -20,12 +20,12 @@ export function useModules(pageable?: Pageable) {
   }
 
   return {
-    modules: data?.content,
+    data: data?.content,
     error,
     isLoading,
     pagination: data?.pagination,
     mutate,
-  }
+  } as SWRDataPaginationResponse<DataPagination<Module>>
 }
 
 export function useModule(id: string) {

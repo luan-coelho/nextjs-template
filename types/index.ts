@@ -1,3 +1,5 @@
+import { KeyedMutator } from "swr"
+
 export interface BreadcrumbContentItem {
   label: string
   href?: string
@@ -29,4 +31,12 @@ export interface ApiError {
   status: number
   detail: string
   instance?: string
+}
+
+export type SWRDataPaginationResponse<T> = {
+  data: Module[] | undefined
+  error: any
+  isLoading: boolean
+  pagination: Pagination | undefined
+  mutate: KeyedMutator<T>
 }

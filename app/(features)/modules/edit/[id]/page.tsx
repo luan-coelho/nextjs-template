@@ -74,7 +74,7 @@ export default function EditModulePage() {
 
       <Card className="mt-4">
         <CardHeader>
-          <CardTitle>Módulo</CardTitle>
+          <CardTitle>Formulário</CardTitle>
         </CardHeader>
         <CardContent>
           <FormProvider {...form}>

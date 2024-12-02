@@ -17,7 +17,7 @@ export const SidebarProvider = ({ children }: { children: ReactNode }) => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true)
   const [currentModule, setCurrentModule] = useState<Module>({} as Module)
   const [modules, setModules] = useState<Module[]>([])
-  const { modules: modulesApi, isLoading } = useModules()
+  const { data: modulesApi, isLoading } = useModules()
 
   function toggleSidebar() {
     setIsSidebarExpanded(prev => !prev)
