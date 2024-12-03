@@ -1,31 +1,21 @@
 "use client"
 
-import React, { useCallback } from "react"
+import React, { useCallback, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import moduleService from "@/services/module-service"
 import { ApiError, PAGEABLE, SWRDataPaginationResponse } from "@/types"
 import { useQueryClient } from "@tanstack/react-query"
-import { Eye, Pencil, Trash } from "lucide-react"
+import { Eye, Pencil } from "lucide-react"
 import { toast } from "sonner"
 
 import { ExtendedColumnDef } from "@/types/types"
 import { buildQueryParams, cn } from "@/lib/utils"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
-import { buttonVariants } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { DataTable } from "@/components/ui/data-table/data-table"
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-column-header"
+import DeleteEntityDialog from "@/components/ui/delete-entity-dialog"
 
 type ModuleDataTableProps = {
   swrResponse: SWRDataPaginationResponse<Module>
@@ -37,6 +27,7 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const { data, isLoading } = swrResponse
+  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false)
 
   const columns: ExtendedColumnDef<Module>[] = [
     {
@@ -52,9 +43,9 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
       header: ({ column }) => <DataTableColumnHeader column={column} title="Situação" />,
       headerLabel: "Situação",
       size: 4,
-      cell: ({ getValue }) => (
+      cell: ({ row }) => (
         <>
-          {getValue.name ? (
+          {row.original.active ? (
             <Badge className="rounded-sm bg-green-500 hover:bg-green-500">Ativado</Badge>
           ) : (
             <Badge className="rounded-sm bg-red-500 hover:bg-red-500">Desativado</Badge>
@@ -86,46 +77,11 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
               href={`/modules/edit/${modulez.id}`}>
               <Pencil className="w-5" />
             </Link>
-            <AlertDialog>
-              <AlertDialogTrigger
-                className={cn(
-                  buttonVariants({
-                    variant: "default",
-                    size: "icon",
-                  }),
-                  "rounded-full bg-red-500 hover:bg-red-600",
-                )}>
-                <Trash className="w-5" />
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Você tem certeza absoluta?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    <span>Você pode desativar ou deletar este registro.</span>
-                    <span className="mt-2">
-                      <strong>
-                        Caso deseje deletar, esta ação não poderá ser desfeita. Isso excluirá permanentemente este
-                        registro.
-                      </strong>
-                    </span>
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={() => handleDelete(modulez.id)}
-                    className={cn(
-                      buttonVariants({ variant: "outline" }),
-                      "border-red-500 text-red-500 hover:bg-red-500 hover:text-white",
-                    )}>
-                    Deletar
-                  </AlertDialogAction>
-                  <AlertDialogAction onClick={() => handleDisable(modulez.id)} className="bg-red-500 hover:bg-red-600">
-                    Desativar
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <DeleteEntityDialog
+              open={openDeleteDialog}
+              onOpenChange={setOpenDeleteDialog}
+              confirmAction={() => handleDelete(modulez.id)}
+            />
           </div>
         )
       },
