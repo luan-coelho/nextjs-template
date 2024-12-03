@@ -35,6 +35,14 @@ export class ModuleService {
   async deleteModule(id: string): Promise<void> {
     return apiClient.delete(`/module/${id}`)
   }
+
+  async activeModule(id: string): Promise<void> {
+    return apiClient.patch(`/module/${id}/active`)
+  }
+
+  async disableModule(id: string): Promise<void> {
+    return apiClient.patch(`/module/${id}/disable`)
+  }
 }
 
 const moduleService = new ModuleService()

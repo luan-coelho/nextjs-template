@@ -91,7 +91,7 @@ class ApiClient {
   private async requestWithBody<T>(
     method: RequestMethod,
     endpoint: string,
-    body: unknown,
+    body: any,
     headers?: HeadersInit,
   ): Promise<T> {
     return fetcher<T>(endpoint, {
@@ -110,15 +110,21 @@ class ApiClient {
     await this.requestWithoutResponse(RequestMethod.DELETE, endpoint, headers)
   }
 
-  post<T>(endpoint: string, body: unknown, headers?: HeadersInit): Promise<T> {
+  post<T>(endpoint: string, body: any, headers?: HeadersInit): Promise<T> {
     return this.requestWithBody<T>(RequestMethod.POST, endpoint, body, headers)
   }
 
-  put<T>(endpoint: string, body: unknown, headers?: HeadersInit): Promise<T> {
+  put<T>(endpoint: string, body?: any, headers?: HeadersInit): Promise<T> {
+    if (typeof body === "undefined") {
+      throw this.requestWithoutBody(RequestMethod.PUT, endpoint, headers)
+    }
     return this.requestWithBody<T>(RequestMethod.PUT, endpoint, body, headers)
   }
 
-  patch<T>(endpoint: string, body: unknown, headers?: HeadersInit): Promise<T> {
+  patch<T>(endpoint: string, body?: any, headers?: HeadersInit): Promise<T> {
+    if (typeof body === "undefined") {
+      throw this.requestWithoutBody(RequestMethod.PATCH, endpoint, headers)
+    }
     return this.requestWithBody<T>(RequestMethod.PATCH, endpoint, body, headers)
   }
 }

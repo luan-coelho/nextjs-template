@@ -3,13 +3,13 @@
 import React, { useCallback } from "react"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import moduleService from "@/services/module-service"
 import { ApiError, PAGEABLE, SWRDataPaginationResponse } from "@/types"
 import { useQueryClient } from "@tanstack/react-query"
-import { ColumnDef } from "@tanstack/react-table"
 import { Eye, Pencil, Trash } from "lucide-react"
 import { toast } from "sonner"
 
-import apiClient from "@/lib/api-client"
+import { ExtendedColumnDef } from "@/types/types"
 import { buildQueryParams, cn } from "@/lib/utils"
 import {
   AlertDialog,
@@ -26,7 +26,6 @@ import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
 import { DataTable } from "@/components/ui/data-table/data-table"
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-column-header"
-import { ExtendedColumnDef } from "@/types/types";
 
 type ModuleDataTableProps = {
   swrResponse: SWRDataPaginationResponse<Module>
@@ -56,9 +55,9 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
       cell: ({ getValue }) => (
         <>
           {getValue.name ? (
-            <Badge className="rounded bg-green-600 hover:bg-green-600">Ativado</Badge>
+            <Badge className="rounded-sm bg-green-500 hover:bg-green-500">Ativado</Badge>
           ) : (
-            <Badge className="bg-red-600 hover:bg-red-600">Desativado</Badge>
+            <Badge className="rounded-sm bg-red-500 hover:bg-red-500">Desativado</Badge>
           )}
         </>
       ),
@@ -121,7 +120,7 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
                     )}>
                     Deletar
                   </AlertDialogAction>
-                  <AlertDialogAction onClick={() => handleDelete(modulez.id)} className="bg-red-500 hover:bg-red-600">
+                  <AlertDialogAction onClick={() => handleDisable(modulez.id)} className="bg-red-500 hover:bg-red-600">
                     Desativar
                   </AlertDialogAction>
                 </AlertDialogFooter>
@@ -149,13 +148,37 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
 
   async function handleDelete(id: string) {
     try {
-      await apiClient.delete(`/module/${id}`)
+      await moduleService.deleteModule(id)
       toast.success("Módulo deletado com sucesso.")
       const queryParams = buildQueryParams(PAGEABLE)
       await queryClient.invalidateQueries({ queryKey: ["modules", queryParams] })
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao deletar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
+    }
+  }
+
+  async function handleDisable(id: string) {
+    try {
+      await moduleService.disableModule(id)
+      toast.success("Módulo desativado com sucesso.")
+      const queryParams = buildQueryParams(PAGEABLE)
+      await queryClient.invalidateQueries({ queryKey: ["modules", queryParams] })
+    } catch (error) {
+      const apiError = error as ApiError
+      toast.error(`Erro ao desativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
+    }
+  }
+
+  async function handleActive(id: string) {
+    try {
+      await moduleService.activeModule(id)
+      toast.success("Módulo ativado com sucesso.")
+      const queryParams = buildQueryParams(PAGEABLE)
+      await queryClient.invalidateQueries({ queryKey: ["modules", queryParams] })
+    } catch (error) {
+      const apiError = error as ApiError
+      toast.error(`Erro ao ativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
     }
   }
 
