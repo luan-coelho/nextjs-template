@@ -39,12 +39,12 @@ export const statuses = [
 export const priorities = [
   {
     label: "Ativado",
-    value: "low",
+    value: "true",
     icon: Activity,
   },
   {
     label: "Desativado",
-    value: "high",
+    value: "false",
     icon: CircleSlash2,
   },
 ]
@@ -57,7 +57,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
   const isFiltered = table.getState().columnFilters.length > 0
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex flex-col-reverse items-center justify-between gap-3 md:flex-row md:gap-0">
       <div className="flex flex-1 items-center space-x-2">
         {table.getColumn("name") && (
           <DataTableFacetedFilter column={table.getColumn("name")} title="Nome" options={statuses} />

@@ -3,8 +3,8 @@
 import React, { useCallback } from "react"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { ApiError, DataPagination, PAGEABLE, Pagination, SWRDataPaginationResponse } from "@/types"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { ApiError, PAGEABLE, SWRDataPaginationResponse } from "@/types"
+import { useQueryClient } from "@tanstack/react-query"
 import { ColumnDef } from "@tanstack/react-table"
 import { Eye, Pencil, Trash } from "lucide-react"
 import { toast } from "sonner"
@@ -25,8 +25,8 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
 import { DataTable } from "@/components/ui/data-table/data-table"
-import { TableCell, TableFooter, TableRow } from "@/components/ui/table"
-import Paginator from "@/components/layout/pagination"
+import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-column-header"
+import { ExtendedColumnDef } from "@/types/types";
 
 type ModuleDataTableProps = {
   swrResponse: SWRDataPaginationResponse<Module>
@@ -37,17 +37,21 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const { data, isLoading, pagination } = swrResponse
+  const { data, isLoading } = swrResponse
 
-  const columns: ColumnDef<Module>[] = [
+  const columns: ExtendedColumnDef<Module>[] = [
     {
       accessorKey: "name",
-      header: "Nome",
+      backendAccessorKey: "name",
+      headerLabel: "Nome",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Nome" />,
       size: 6,
     },
     {
       accessorKey: "active",
-      header: "Situação",
+      backendAccessorKey: "active",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Situação" />,
+      headerLabel: "Situação",
       size: 4,
       cell: ({ getValue }) => (
         <>
@@ -143,24 +147,17 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
     [searchParams],
   )
 
-  const { mutateAsync: handleDelete } = useMutation({
-    mutationFn: (id: string) => apiClient.delete(`/module/${id}`),
-    onSuccess(_, id) {
+  async function handleDelete(id: string) {
+    try {
+      await apiClient.delete(`/module/${id}`)
       toast.success("Módulo deletado com sucesso.")
       const queryParams = buildQueryParams(PAGEABLE)
-      queryClient.setQueryData(["modules", queryParams], (data: DataPagination<Module> | undefined) => {
-        return {
-          content: [...(data?.content || []).filter(item => item.id !== id)],
-          pagination: data?.pagination || ({} as Pagination),
-        }
-      })
-      router.push("/modules")
-    },
-    onError(error: any) {
+      await queryClient.invalidateQueries({ queryKey: ["modules", queryParams] })
+    } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao deletar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
-    },
-  })
+    }
+  }
 
   return <>{!isLoading && data && <DataTable columns={columns} data={data} />}</>
 }

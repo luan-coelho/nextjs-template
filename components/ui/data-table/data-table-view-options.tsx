@@ -4,6 +4,7 @@ import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
 import { Table } from "@tanstack/react-table"
 import { DownloadIcon, Settings2 } from "lucide-react"
 
+import { ExtendedColumnDef } from "@/types/types"
 import { exportTableToCSV } from "@/lib/export-table-csv"
 import { Button } from "@/components/ui/button"
 import {
@@ -22,20 +23,24 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
   return (
     <div className="flex space-x-2">
       <Button
-        className="rounded-sm"
+        className="min-w-[130px] rounded-sm border-primary text-primary hover:bg-primary/90 hover:text-primary-foreground"
         variant="outline"
+        size="sm"
         onClick={() =>
           exportTableToCSV<TData>(table, {
             filename: "modules",
             excludeColumns: ["actions"],
           })
         }>
-        <DownloadIcon className="mr-2 size-4" aria-hidden="true" />
+        <DownloadIcon className="size-4" aria-hidden="true" />
         Exportar CSV
       </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="hidden rounded-sm lg:flex">
+          <Button
+            className="hidden w-[130px] rounded-sm border-primary text-primary hover:bg-primary/90 hover:text-primary-foreground lg:flex"
+            variant="outline"
+            size="sm">
             <Settings2 />
             Visualizar
           </Button>
@@ -53,7 +58,7 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
                   className="capitalize"
                   checked={column.getIsVisible()}
                   onCheckedChange={value => column.toggleVisibility(value)}>
-                  {column.columnDef.header?.toString()}
+                  {(column.columnDef as ExtendedColumnDef<TData>).headerLabel}
                 </DropdownMenuCheckboxItem>
               )
             })}
