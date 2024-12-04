@@ -2,17 +2,14 @@ import moduleService from "@/services/module-service"
 import { PAGEABLE, Pageable, SWRDataPaginationResponse } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 
-import { buildQueryParams } from "@/lib/utils"
-
 export function useModules(pageable: Pageable): SWRDataPaginationResponse<Module> {
   if (!pageable) {
     pageable = PAGEABLE
   }
 
-  const queryParams = buildQueryParams(pageable)
   const { data, isLoading, error } = useQuery({
-    queryKey: ["modules", queryParams],
-    queryFn: () => moduleService.fetchModules(pageable.page, pageable.size),
+    queryKey: ["modules"],
+    queryFn: () => moduleService.fetchModules(pageable),
     staleTime: 1000 * 60 * 5, // 5 minutes
   })
 

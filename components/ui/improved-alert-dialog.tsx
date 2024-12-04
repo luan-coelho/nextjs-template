@@ -13,9 +13,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { buttonVariants } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-type DeleteEntityDialogProps = {
+type ImprovedAlertDialogProps = {
   title?: string
   open: boolean
   onOpenChange(open: boolean): void
@@ -24,9 +25,10 @@ type DeleteEntityDialogProps = {
   cancelAction?(): void
   cancelActionLabel?: string
   children?: React.ReactNode
+  icon?: React.ReactNode
 }
 
-export default function DeleteEntityDialog({
+export default function ImprovedAlertDialog({
   title,
   open,
   onOpenChange,
@@ -35,22 +37,35 @@ export default function DeleteEntityDialog({
   cancelAction,
   cancelActionLabel,
   children,
-}: DeleteEntityDialogProps) {
+  icon,
+}: ImprovedAlertDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogTrigger
-        className={cn(
-          buttonVariants({
-            variant: "default",
-            size: "icon",
-          }),
-          "rounded-full bg-red-500 hover:bg-red-600",
-        )}>
-        <Trash className="w-5" />
+      <AlertDialogTrigger>
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                className={cn(
+                  buttonVariants({
+                    variant: "default",
+                    size: "icon",
+                  }),
+                  "rounded-full bg-red-500 hover:bg-red-600",
+                )}
+                variant="outline">
+                {icon || <Trash />}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="bg-zinc-700">
+              <p>{confirmActionLabel}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{title || "Você tem certeza absoluta?"}</AlertDialogTitle>
+          <AlertDialogTitle>{title || "Você tem certeza?"}</AlertDialogTitle>
           <AlertDialogDescription>
             {children || <span>Esta ação não poderá ser desfeita. Isso excluirá permanentemente este registro.</span>}
           </AlertDialogDescription>

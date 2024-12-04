@@ -1,4 +1,4 @@
-import { DataPagination, STANDARD_PAGE_SIZE } from "@/types"
+import { DataPagination, Pageable, STANDARD_PAGE_SIZE } from "@/types"
 
 import apiClient from "@/lib/api-client"
 
@@ -12,8 +12,8 @@ export interface Module {
 // Serviço específico para Module
 export class ModuleService {
   // Busca módulos com paginação
-  async fetchModules(page = 1, size = STANDARD_PAGE_SIZE): Promise<DataPagination<Module>> {
-    return apiClient.get<DataPagination<Module>>(`/module?page=${page}&size=${size}`)
+  async fetchModules({ page, size, sort, filters }: Pageable): Promise<DataPagination<Module>> {
+    return apiClient.get<DataPagination<Module>>(`/module?page=${page}&size=${size}&sort=${sort}&filters=${filters}`)
   }
 
   // Busca módulo por ID
@@ -36,8 +36,8 @@ export class ModuleService {
     return apiClient.delete(`/module/${id}`)
   }
 
-  async activeModule(id: string): Promise<void> {
-    return apiClient.patch(`/module/${id}/active`)
+  async activateModule(id: string): Promise<void> {
+    return apiClient.patch(`/module/${id}/activate`)
   }
 
   async disableModule(id: string): Promise<void> {

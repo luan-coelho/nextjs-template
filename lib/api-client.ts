@@ -116,14 +116,14 @@ class ApiClient {
 
   put<T>(endpoint: string, body?: any, headers?: HeadersInit): Promise<T> {
     if (typeof body === "undefined") {
-      throw this.requestWithoutBody(RequestMethod.PUT, endpoint, headers)
+      return this.requestWithoutBody(RequestMethod.PUT, endpoint, headers)
     }
     return this.requestWithBody<T>(RequestMethod.PUT, endpoint, body, headers)
   }
 
   patch<T>(endpoint: string, body?: any, headers?: HeadersInit): Promise<T> {
     if (typeof body === "undefined") {
-      throw this.requestWithoutBody(RequestMethod.PATCH, endpoint, headers)
+      return this.requestWithoutBody(RequestMethod.PATCH, endpoint, headers)
     }
     return this.requestWithBody<T>(RequestMethod.PATCH, endpoint, body, headers)
   }

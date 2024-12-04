@@ -21,6 +21,7 @@ export interface Pageable {
   page?: number
   size?: number
   sort?: string
+  filters?: string
 }
 
 export interface ApiError {
@@ -41,4 +42,4 @@ export type SWRDataPaginationResponse<T> = {
 
 export const STANDARD_PAGE_SIZE = 25
 
-export const PAGEABLE = { page: 1, size: STANDARD_PAGE_SIZE, sort: "id,desc" } as Pageable
+export const PAGEABLE = { page: 1, size: STANDARD_PAGE_SIZE, sort: "id:desc", filters: "" } as Pageable

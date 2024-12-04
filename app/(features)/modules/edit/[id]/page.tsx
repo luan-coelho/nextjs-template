@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
-import { ApiError, PAGEABLE } from "@/types"
+import { ApiError } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useQueryClient } from "@tanstack/react-query"
 import { FormProvider, useForm } from "react-hook-form"
@@ -11,7 +11,6 @@ import { toast } from "sonner"
 import { z } from "zod"
 
 import apiClient from "@/lib/api-client"
-import { buildQueryParams } from "@/lib/utils"
 import { useModule } from "@/hooks/use-modules"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -48,8 +47,7 @@ export default function EditModulePage() {
   async function onUpdate(data: UpdateModule) {
     try {
       await apiClient.put<Module>(`/module/${params.id}`, data)
-      const queryParams = buildQueryParams(PAGEABLE)
-      await queryClient.invalidateQueries({ queryKey: ["modules", queryParams] })
+      await queryClient.invalidateQueries({ queryKey: ["modules"] })
       toast.success("Módulo atualizado com sucesso.")
     } catch (error) {
       const apiError = error as ApiError

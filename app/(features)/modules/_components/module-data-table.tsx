@@ -4,18 +4,18 @@ import React, { useCallback, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import moduleService from "@/services/module-service"
-import { ApiError, PAGEABLE, SWRDataPaginationResponse } from "@/types"
+import { ApiError, SWRDataPaginationResponse } from "@/types"
 import { useQueryClient } from "@tanstack/react-query"
-import { Eye, Pencil } from "lucide-react"
+import { Activity, CirclePower, Eye, Pencil } from "lucide-react"
 import { toast } from "sonner"
 
 import { ExtendedColumnDef } from "@/types/types"
-import { buildQueryParams, cn } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { DataTable } from "@/components/ui/data-table/data-table"
 import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-column-header"
-import DeleteEntityDialog from "@/components/ui/delete-entity-dialog"
+import ImprovedAlertDialog from "@/components/ui/improved-alert-dialog"
 
 type ModuleDataTableProps = {
   swrResponse: SWRDataPaginationResponse<Module>
@@ -28,6 +28,7 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
   const searchParams = useSearchParams()
   const { data, isLoading } = swrResponse
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false)
+  const [openDisableDialog, setOpenDisableDialog] = useState<boolean>(false)
 
   const columns: ExtendedColumnDef<Module>[] = [
     {
@@ -77,11 +78,35 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
               href={`/modules/edit/${modulez.id}`}>
               <Pencil className="w-5" />
             </Link>
-            <DeleteEntityDialog
+            <ImprovedAlertDialog
               open={openDeleteDialog}
               onOpenChange={setOpenDeleteDialog}
               confirmAction={() => handleDelete(modulez.id)}
             />
+            {modulez.active ? (
+              <ImprovedAlertDialog
+                open={openDisableDialog}
+                onOpenChange={setOpenDisableDialog}
+                confirmAction={() => handleDisable(modulez.id)}
+                confirmActionLabel="Desativar"
+                icon={<CirclePower color="white" />}>
+                <span>O módulo será desativado e deixará de ser exibido em outras partes do sistema.</span>
+              </ImprovedAlertDialog>
+            ) : (
+              <Button
+                variant="default"
+                size="icon"
+                className={cn(
+                  buttonVariants({
+                    variant: "default",
+                    size: "icon",
+                  }),
+                  "rounded-full bg-green-500 hover:bg-green-600",
+                )}
+                onClick={() => handleActivate(modulez.id)}>
+                <Activity className="w-5" />
+              </Button>
+            )}
           </div>
         )
       },
@@ -106,8 +131,7 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
     try {
       await moduleService.deleteModule(id)
       toast.success("Módulo deletado com sucesso.")
-      const queryParams = buildQueryParams(PAGEABLE)
-      await queryClient.invalidateQueries({ queryKey: ["modules", queryParams] })
+      await queryClient.invalidateQueries({ queryKey: ["modules"] })
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao deletar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -118,20 +142,18 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
     try {
       await moduleService.disableModule(id)
       toast.success("Módulo desativado com sucesso.")
-      const queryParams = buildQueryParams(PAGEABLE)
-      await queryClient.invalidateQueries({ queryKey: ["modules", queryParams] })
+      await queryClient.invalidateQueries({ queryKey: ["modules"] })
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao desativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
     }
   }
 
-  async function handleActive(id: string) {
+  async function handleActivate(id: string) {
     try {
-      await moduleService.activeModule(id)
+      await moduleService.activateModule(id)
       toast.success("Módulo ativado com sucesso.")
-      const queryParams = buildQueryParams(PAGEABLE)
-      await queryClient.invalidateQueries({ queryKey: ["modules", queryParams] })
+      await queryClient.invalidateQueries({ queryKey: ["modules"] })
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao ativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)

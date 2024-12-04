@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ApiError, PAGEABLE } from "@/types"
+import { ApiError } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useQueryClient } from "@tanstack/react-query"
 import { FormProvider, useForm } from "react-hook-form"
@@ -10,7 +10,6 @@ import { toast } from "sonner"
 import { z } from "zod"
 
 import apiClient from "@/lib/api-client"
-import { buildQueryParams } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form } from "@/components/ui/form"
@@ -35,8 +34,7 @@ export default function CreateModulePage() {
     try {
       await apiClient.post<Module>("/module", data)
       toast.success("Módulo cadastrado com sucesso.")
-      const queryParams = buildQueryParams(PAGEABLE)
-      await queryClient.invalidateQueries({ queryKey: ["modules", queryParams] })
+      await queryClient.invalidateQueries({ queryKey: ["modules"] })
       router.push("/modules")
     } catch (error) {
       const apiError = error as ApiError
