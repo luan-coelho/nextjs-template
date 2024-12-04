@@ -8,6 +8,7 @@ export interface BreadcrumbContentItem {
 export interface Pagination {
   currentPage: number
   itemsPerPage: number
+  itemsOnPage: number
   totalPages: number
   totalItems: number
 }
@@ -33,13 +34,12 @@ export interface ApiError {
 }
 
 export type SWRDataPaginationResponse<T> = {
-  data: T[] | undefined
+  data: T[]
   error: any
   isLoading: boolean
-  pagination: Pagination | undefined
-  mutate: UseMutationResult<T, Error, void, unknown>
+  pagination: Pagination
 }
 
 export const STANDARD_PAGE_SIZE = 25
 
-export const PAGEABLE = { page: 1, size: STANDARD_PAGE_SIZE, sort: "id:desc", filters: "" } as Pageable
+export const PAGEABLE = { page: 1, size: STANDARD_PAGE_SIZE, sort: "id:desc", filters: " " } as Pageable

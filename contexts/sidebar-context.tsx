@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react"
+import useSWR from "swr"
 
-import { useModules } from "@/hooks/use-modules"
+import { fetcher } from "@/lib/api-client"
 import { changeCurrentModuleCookie, getCurrentModuleCookieId } from "@/components/layout/_sidebar/actions"
 
 type SidebarContextType = {
@@ -17,7 +18,8 @@ export const SidebarProvider = ({ children }: { children: ReactNode }) => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true)
   const [currentModule, setCurrentModule] = useState<Module>({} as Module)
   const [modules, setModules] = useState<Module[]>([])
-  const { data: modulesApi, isLoading } = useModules()
+  const id = "123e4567-e89b-12d3-a456-426614174001"
+  const { data: modulesApi, isLoading } = useSWR<Module[]>(`/users/${id}/modules`, fetcher)
 
   function toggleSidebar() {
     setIsSidebarExpanded(prev => !prev)

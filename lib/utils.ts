@@ -24,5 +24,9 @@ export function extractPaginationQueryParams(searchParams: URLSearchParams): Pag
   const page = Number(searchParams.get("page")) || PAGEABLE.page
   const size = Number(searchParams.get("size")) || PAGEABLE.size
   const sort = searchParams.get("sort") || PAGEABLE.sort
-  return { page, size, sort } as Pageable
+  let filters = searchParams.get("filters") || PAGEABLE.filters
+  if (filters?.trim()) {
+    filters = encodeURIComponent(filters)
+  }
+  return { page, size, sort, filters } as Pageable
 }

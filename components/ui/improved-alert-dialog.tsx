@@ -24,6 +24,8 @@ type ImprovedAlertDialogProps = {
   confirmActionLabel?: string
   cancelAction?(): void
   cancelActionLabel?: string
+  tooltip?: string
+  type?: "delete" | "disable"
   children?: React.ReactNode
   icon?: React.ReactNode
 }
@@ -36,6 +38,8 @@ export default function ImprovedAlertDialog({
   confirmActionLabel,
   cancelAction,
   cancelActionLabel,
+  tooltip = "Deletar",
+  type = "delete",
   children,
   icon,
 }: ImprovedAlertDialogProps) {
@@ -51,14 +55,16 @@ export default function ImprovedAlertDialog({
                     variant: "default",
                     size: "icon",
                   }),
-                  "rounded-full bg-red-500 hover:bg-red-600",
+                  type === "delete"
+                    ? "rounded-full bg-red-500 hover:bg-red-600"
+                    : "rounded-full bg-zinc-500 hover:bg-zinc-600",
                 )}
                 variant="outline">
-                {icon || <Trash />}
+                {icon || <Trash color="white" />}
               </Button>
             </TooltipTrigger>
             <TooltipContent className="bg-zinc-700">
-              <p>{confirmActionLabel}</p>
+              <p>{tooltip}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

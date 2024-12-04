@@ -17,6 +17,8 @@ export default function ModulesPage() {
   const pageable: Pageable = extractPaginationQueryParams(searchParams)
   const swrResponse = useModules(pageable)
 
+  const { error } = swrResponse
+
   return (
     <>
       <PageTitle>Módulos</PageTitle>
@@ -31,6 +33,7 @@ export default function ModulesPage() {
           </div>
         </CardHeader>
         <CardContent>
+          {error && <span className="mt-1 text-start text-sm text-red-500">{error.message}</span>}
           <ModuleDataTable swrResponse={swrResponse} />
         </CardContent>
       </Card>
