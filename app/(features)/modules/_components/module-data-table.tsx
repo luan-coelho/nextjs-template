@@ -126,7 +126,7 @@ export default function ModuleDataTable({
                           variant: "default",
                           size: "icon",
                         }),
-                        "rounded-full bg-purple-500 hover:bg-purple-600",
+                        "rounded-full border border-purple-500 bg-purple-100 text-purple-500 hover:border-purple-500 hover:bg-purple-100 hover:text-purple-500",
                       )}
                       href={`/modules/edit/${module.id}`}>
                       <Pencil className="w-5" />

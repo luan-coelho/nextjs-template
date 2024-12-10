@@ -1,3 +1,4 @@
+import moduleService from "@/services/module-service"
 import { DataPagination, PAGEABLE, Pageable, SWRDataPaginationResponse } from "@/types"
 import useSWR from "swr"
 
@@ -8,7 +9,8 @@ export function useModules(pageable: Pageable): SWRDataPaginationResponse<Module
     pageable = PAGEABLE
   }
   const { page, size, sort, filters } = pageable
-  const urlKey = `/modules?page=${page}&size=${size}&sort=${sort}&filters=${filters}`
+  const url = moduleService.getUrl()
+  const urlKey = `${url}?page=${page}&size=${size}&sort=${sort}&filters=${filters}`
   const { data, isLoading, error } = useSWR<DataPagination<Module>>(urlKey, fetcher)
 
   if (error) {
@@ -25,7 +27,8 @@ export function useModules(pageable: Pageable): SWRDataPaginationResponse<Module
 }
 
 export function useModule(id: string) {
-  const urlKey = `/modules/${id}`
+  const url = moduleService.getUrl()
+  const urlKey = `${url}/${id}`
   const { data, isLoading, error } = useSWR<Module>(urlKey, fetcher)
 
   if (error) {

@@ -1,1 +1,3 @@
-export class Service {}
+export abstract class Service {
+  abstract getUrl(): string
+}
