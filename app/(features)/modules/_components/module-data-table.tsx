@@ -5,11 +5,12 @@ import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import moduleService from "@/services/module-service"
 import { ApiError, SWRDataPaginationResponse } from "@/types"
-import { useQueryClient } from "@tanstack/react-query"
-import { Activity, CirclePower, Eye, Pencil } from "lucide-react"
+import { Activity, AlertCircle, CirclePower, Eye, Pencil } from "lucide-react"
 import { toast } from "sonner"
+import { mutate } from "swr"
 
 import { cn } from "@/lib/utils"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import ImprovedAlertDialog from "@/components/ui/improved-alert-dialog"
@@ -20,8 +21,9 @@ type ModuleDataTableProps = {
   swrResponse: SWRDataPaginationResponse<Module>
 }
 
-export default function ModuleDataTable({ swrResponse: { data, isLoading, pagination } }: ModuleDataTableProps) {
-  const queryClient = useQueryClient()
+export default function ModuleDataTable({
+  swrResponse: { data, isLoading, pagination, error, key },
+}: ModuleDataTableProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -50,7 +52,7 @@ export default function ModuleDataTable({ swrResponse: { data, isLoading, pagina
     try {
       await moduleService.deleteModule(id)
       toast.success("Módulo deletado com sucesso.")
-      await queryClient.invalidateQueries({ queryKey: ["modules"] })
+      await mutate(key)
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao deletar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -61,7 +63,7 @@ export default function ModuleDataTable({ swrResponse: { data, isLoading, pagina
     try {
       await moduleService.disableModule(id)
       toast.success("Módulo desativado com sucesso.")
-      await queryClient.invalidateQueries({ queryKey: ["modules"] })
+      await mutate(key)
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao desativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -72,11 +74,21 @@ export default function ModuleDataTable({ swrResponse: { data, isLoading, pagina
     try {
       await moduleService.activateModule(id)
       toast.success("Módulo ativado com sucesso.")
-      await queryClient.invalidateQueries({ queryKey: ["modules"] })
+      await mutate(key)
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao ativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
     }
+  }
+
+  if (error) {
+    return (
+      <Alert variant="destructive">
+        <AlertCircle className="size-4" />
+        <AlertTitle>Erro</AlertTitle>
+        <AlertDescription>{error?.message}</AlertDescription>
+      </Alert>
+    )
   }
 
   return (

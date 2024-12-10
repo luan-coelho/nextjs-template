@@ -2,14 +2,13 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import moduleService from "@/services/module-service"
 import { ApiError } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useQueryClient } from "@tanstack/react-query"
 import { FormProvider, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 
-import apiClient from "@/lib/api-client"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form } from "@/components/ui/form"
@@ -23,7 +22,6 @@ const schema = z.object({
 type CreateModuleSchema = z.infer<typeof schema>
 
 export default function CreateModulePage() {
-  const queryClient = useQueryClient()
   const router = useRouter()
 
   const form = useForm<CreateModuleSchema>({
@@ -32,9 +30,8 @@ export default function CreateModulePage() {
 
   async function createModule(data: CreateModuleSchema) {
     try {
-      await apiClient.post<Module>("/module", data)
+      await moduleService.createModule(data)
       toast.success("Módulo cadastrado com sucesso.")
-      await queryClient.invalidateQueries({ queryKey: ["modules"] })
       router.push("/modules")
     } catch (error) {
       const apiError = error as ApiError

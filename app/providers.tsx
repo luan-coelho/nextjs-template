@@ -2,36 +2,18 @@
 
 import React from "react"
 import { SidebarProvider } from "@/contexts/sidebar-context"
-import { isServer, QueryClient, QueryClientProvider } from "@tanstack/react-query"
-
-function makeQueryClient() {
-  return new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 60 * 1000, // 1 minute
-        retry: false,
-      },
-    },
-  })
-}
-
-let browserQueryClient: QueryClient | undefined = undefined
-
-function getQueryClient() {
-  if (isServer) {
-    return makeQueryClient()
-  } else {
-    if (!browserQueryClient) browserQueryClient = makeQueryClient()
-    return browserQueryClient
-  }
-}
+import { SWRConfig } from "swr"
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  const queryClient = getQueryClient()
-
   return (
-    <QueryClientProvider client={queryClient}>
+    <SWRConfig
+      value={{
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        revalidateIfStale: false,
+        revalidateOnMount: true,
+      }}>
       <SidebarProvider>{children}</SidebarProvider>
-    </QueryClientProvider>
+    </SWRConfig>
   )
 }

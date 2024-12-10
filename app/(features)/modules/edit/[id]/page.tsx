@@ -1,16 +1,15 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
+import moduleService from "@/services/module-service"
 import { ApiError } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useQueryClient } from "@tanstack/react-query"
 import { FormProvider, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 
-import apiClient from "@/lib/api-client"
 import { useModule } from "@/hooks/use-modules"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -25,29 +24,22 @@ const schema = z.object({
 type UpdateModule = z.infer<typeof schema>
 
 export default function EditModulePage() {
-  const queryClient = useQueryClient()
   const params = useParams<{ id: string }>()
   const { data: module, isLoading } = useModule(params.id)
 
   const form = useForm<UpdateModule>({
     resolver: zodResolver(schema),
-    defaultValues: module,
   })
 
-  const { setValue } = form
+  const { reset } = form
 
   useEffect(() => {
-    if (module) {
-      Object.keys(module).forEach(key => {
-        setValue(key as keyof UpdateModule, module[key as keyof UpdateModule])
-      })
-    }
-  }, [module, setValue])
+    reset(module)
+  }, [module, reset])
 
   async function onUpdate(data: UpdateModule) {
     try {
-      await apiClient.put<Module>(`/module/${params.id}`, data)
-      await queryClient.invalidateQueries({ queryKey: ["modules"] })
+      await moduleService.updateModule(params.id, data)
       toast.success("Módulo atualizado com sucesso.")
     } catch (error) {
       const apiError = error as ApiError

@@ -1,6 +1,4 @@
-import moduleService from "@/services/module-service"
 import { DataPagination, PAGEABLE, Pageable, SWRDataPaginationResponse } from "@/types"
-import { useQuery } from "@tanstack/react-query"
 import useSWR from "swr"
 
 import { fetcher } from "@/lib/api-client"
@@ -10,10 +8,8 @@ export function useModules(pageable: Pageable): SWRDataPaginationResponse<Module
     pageable = PAGEABLE
   }
   const { page, size, sort, filters } = pageable
-  const { data, isLoading, error } = useSWR<DataPagination<Module>>(
-    `/module?page=${page}&size=${size}&sort=${sort}&filters=${filters}`,
-    fetcher,
-  )
+  const urlKey = `/modules?page=${page}&size=${size}&sort=${sort}&filters=${filters}`
+  const { data, isLoading, error } = useSWR<DataPagination<Module>>(urlKey, fetcher)
 
   if (error) {
     error.message = "Falha ao buscar módulos"
@@ -24,14 +20,13 @@ export function useModules(pageable: Pageable): SWRDataPaginationResponse<Module
     error,
     isLoading,
     pagination: data?.pagination || PAGEABLE,
+    key: urlKey,
   } as SWRDataPaginationResponse<Module>
 }
 
 export function useModule(id: string) {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["module", id],
-    queryFn: () => moduleService.fetchModuleById(id),
-  })
+  const urlKey = `/modules/${id}`
+  const { data, isLoading, error } = useSWR<Module>(urlKey, fetcher)
 
   if (error) {
     error.message = "Falha ao buscar módulo"
@@ -41,5 +36,6 @@ export function useModule(id: string) {
     data,
     error,
     isLoading,
+    key: urlKey,
   }
 }
