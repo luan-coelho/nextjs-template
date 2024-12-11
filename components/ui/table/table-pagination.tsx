@@ -40,11 +40,10 @@ export function TablePagination({
               <SelectValue placeholder={`${itemsPerPage}`} />
             </SelectTrigger>
             <SelectContent side="top">
-              {[10, 20, 30, 40, 50].map(pageSize => (
-                <SelectItem key={pageSize} value={`${pageSize}`}>
-                  {pageSize}
-                </SelectItem>
-              ))}
+              <SelectItem value={"10"}>10</SelectItem>
+              <SelectItem value={"25"}>25</SelectItem>
+              <SelectItem value={"50"}>50</SelectItem>
+              <SelectItem value={"100"}>100</SelectItem>
             </SelectContent>
           </Select>
         </div>

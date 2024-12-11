@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useCallback, useState } from "react"
-import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import moduleService from "@/services/module-service"
 import { ApiError, SWRDataPaginationResponse } from "@/types"
@@ -9,10 +8,10 @@ import { Activity, AlertCircle, CirclePower, Eye, Pencil } from "lucide-react"
 import { toast } from "sonner"
 import { mutate } from "swr"
 
-import { cn } from "@/lib/utils"
+import { ActionButton, actionButtoncolorClasses } from "@/components/ui/action-button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import ImprovedAlertDialog from "@/components/ui/improved-alert-dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { TablePagination } from "@/components/ui/table/table-pagination"
@@ -115,22 +114,12 @@ export default function ModuleDataTable({
                     )}
                   </TableCell>
                   <TableCell className="flex justify-center gap-2">
-                    <Link
-                      className={cn(buttonVariants({ variant: "default", size: "icon" }), "rounded-full")}
-                      href={`/modules/${module.id}`}>
+                    <ActionButton link={`/modules/${module.id}`} color="blue" tooltip="Visualizar">
                       <Eye className="w-5" />
-                    </Link>
-                    <Link
-                      className={cn(
-                        buttonVariants({
-                          variant: "default",
-                          size: "icon",
-                        }),
-                        "rounded-full border border-purple-500 bg-purple-100 text-purple-500 hover:border-purple-500 hover:bg-purple-100 hover:text-purple-500",
-                      )}
-                      href={`/modules/edit/${module.id}`}>
+                    </ActionButton>
+                    <ActionButton link={`/modules/${module.id}/edit`} color="purple" tooltip="Editar">
                       <Pencil className="w-5" />
-                    </Link>
+                    </ActionButton>
                     <ImprovedAlertDialog
                       open={openDeleteDialog}
                       onOpenChange={setOpenDeleteDialog}
@@ -142,7 +131,7 @@ export default function ModuleDataTable({
                         onOpenChange={setOpenDisableDialog}
                         confirmAction={() => handleDisable(module.id)}
                         confirmActionLabel="Desativar"
-                        icon={<CirclePower color="white" />}
+                        icon={<CirclePower />}
                         tooltip="Desativar"
                         type="disable">
                         <span>O módulo será desativado e deixará de ser exibido em outras partes do sistema.</span>
@@ -151,13 +140,7 @@ export default function ModuleDataTable({
                       <Button
                         variant="default"
                         size="icon"
-                        className={cn(
-                          buttonVariants({
-                            variant: "default",
-                            size: "icon",
-                          }),
-                          "rounded-full bg-green-500 hover:bg-green-600",
-                        )}
+                        className={actionButtoncolorClasses.green}
                         onClick={() => handleActivate(module.id)}>
                         <Activity className="w-5" />
                       </Button>

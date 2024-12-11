@@ -2,6 +2,7 @@ import React from "react"
 import { Trash } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { actionButtoncolorClasses } from "@/components/ui/action-button"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -49,18 +50,8 @@ export default function ImprovedAlertDialog({
         <TooltipProvider delayDuration={200}>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                className={cn(
-                  buttonVariants({
-                    variant: "default",
-                    size: "icon",
-                  }),
-                  type === "delete"
-                    ? "rounded-full bg-red-500 hover:bg-red-600"
-                    : "rounded-full bg-zinc-500 hover:bg-zinc-600",
-                )}
-                variant="outline">
-                {icon || <Trash color="white" />}
+              <Button className={cn(type === "delete" ? actionButtoncolorClasses.red : actionButtoncolorClasses.gray)}>
+                {icon || <Trash />}
               </Button>
             </TooltipTrigger>
             <TooltipContent className="bg-zinc-700">
