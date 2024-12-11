@@ -40,7 +40,7 @@ export default function CreateModulePage() {
   }
 
   return (
-    <div>
+    <>
       <BreadcrumbContent items={[{ label: "Módulos", href: "/modules" }, { label: "Cadastrar" }]} />
       <PageTitle>Cadastrar módulo</PageTitle>
 
@@ -70,6 +70,6 @@ export default function CreateModulePage() {
           </FormProvider>
         </CardContent>
       </Card>
-    </div>
+    </>
   )
 }

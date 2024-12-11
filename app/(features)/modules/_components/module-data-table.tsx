@@ -98,7 +98,7 @@ export default function ModuleDataTable({
             <TableHeader>
               <TableRow>
                 <TableHead className="w-4/6">Nome</TableHead>
-                <TableHead className="w-1/6">Situação</TableHead>
+                <TableHead className="w-1/6 text-center">Situação</TableHead>
                 <TableHead className="w-1/6 text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
@@ -107,13 +107,15 @@ export default function ModuleDataTable({
                 <TableRow key={module.id}>
                   <TableCell>{module.name}</TableCell>
                   <TableCell>
-                    {module.active ? (
-                      <Badge className="rounded-sm bg-green-500 hover:bg-green-500">Ativado</Badge>
-                    ) : (
-                      <Badge className="rounded-sm bg-red-500 hover:bg-red-500">Desativado</Badge>
-                    )}
+                    <div className="flex items-center justify-center gap-2">
+                      {module.active ? (
+                        <Badge className="rounded-sm bg-green-500 hover:bg-green-500">Ativado</Badge>
+                      ) : (
+                        <Badge className="rounded-sm bg-red-500 hover:bg-red-500">Desativado</Badge>
+                      )}
+                    </div>
                   </TableCell>
-                  <TableCell className="flex justify-center gap-2">
+                  <TableCell className="flex flex-row justify-center gap-2">
                     <ActionButton link={`/modules/${module.id}`} color="blue" tooltip="Visualizar">
                       <Eye className="w-5" />
                     </ActionButton>
