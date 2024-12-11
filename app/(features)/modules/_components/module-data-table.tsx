@@ -11,6 +11,7 @@ import { ActionButton, actionButtoncolorClasses } from "@/components/ui/action-b
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import DataTable from "@/components/ui/data-table/data-table"
+import DataTableHeader from "@/components/ui/data-table/data-table-header"
 import ImprovedAlertDialog from "@/components/ui/improved-alert-dialog"
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import StatusBadge from "@/components/layout/status-badge"
@@ -60,7 +61,7 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
     <DataTable swrResponse={swrResponse}>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-4/6">Nome</TableHead>
+          <DataTableHeader className="w-4/6" title="Nome" ordinatable />
           <TableHead className="w-1/6 text-center">Situação</TableHead>
           <TableHead className="w-1/6 text-center">Ações</TableHead>
         </TableRow>

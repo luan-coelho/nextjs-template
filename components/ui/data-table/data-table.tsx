@@ -58,7 +58,7 @@ export default function DataTable<T>({
     <React.Fragment>
       {data && (
         <React.Fragment>
-          <Table>{children}</Table>
+          <Table className="border border-gray-200">{children}</Table>
           {!isLoading && pagination.itemsOnPage === 0 && (
             <div className="mt-5 flex flex-col items-center justify-end px-2 md:flex-row">
               <div className="flex-1 text-sm text-muted-foreground">Nenhum registro encontrado</div>
