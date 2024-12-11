@@ -30,11 +30,11 @@ export default function ModuleDataTable({
   const [openDisableDialog, setOpenDisableDialog] = useState<boolean>(false)
 
   function handlePageChange(page: number) {
-    router.push(pathname + "?" + createQueryString("page", page.toString()))
+    router.replace(pathname + "?" + createQueryString("page", page.toString()))
   }
 
   function handleItemsPerPageChange(itemsPerPage: number) {
-    router.push(pathname + "?" + createQueryString("size", itemsPerPage.toString()))
+    router.replace(pathname + "?" + createQueryString("size", itemsPerPage.toString()))
   }
 
   const createQueryString = useCallback(
@@ -152,6 +152,11 @@ export default function ModuleDataTable({
               ))}
             </TableBody>
           </Table>
+          {!isLoading && pagination.itemsOnPage === 0 && (
+            <div className="mt-5 flex flex-col items-center justify-end px-2 md:flex-row">
+              <div className="flex-1 text-sm text-muted-foreground">Nenhum registro encontrado</div>
+            </div>
+          )}
           <TablePagination
             currentPage={pagination.currentPage}
             itemsPerPage={pagination.itemsPerPage}
