@@ -56,7 +56,7 @@ export default function TableSortHeader({ title, field, className, position = "l
 
   return (
     <TableHead className={cn("cursor-pointer", className)}>
-      <div className={cn("flex items-center gap-1 px-3 py-2", positionClass[position])} onClick={handleChangeSort}>
+      <div className={cn("flex items-center gap-1 px-3 py-3", positionClass[position])} onClick={handleChangeSort}>
         <span>{title}</span>
         <div className="text-xs">{getSortIcon()}</div>
       </div>
