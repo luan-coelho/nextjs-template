@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import routes from "@/routes"
 import moduleService from "@/services/module-service"
 import { ApiError } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -32,7 +33,7 @@ export default function CreateModulePage() {
     try {
       await moduleService.createModule(data)
       toast.success("Módulo cadastrado com sucesso.")
-      router.push("/modules")
+      router.push(routes.modules.index)
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao cadastrar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -41,7 +42,7 @@ export default function CreateModulePage() {
 
   return (
     <>
-      <BreadcrumbContent items={[{ label: "Módulos", href: "/modules" }, { label: "Cadastrar" }]} />
+      <BreadcrumbContent items={[{ label: "Módulos", href: routes.modules.index }, { label: "Cadastrar" }]} />
       <PageTitle>Cadastrar módulo</PageTitle>
 
       <Card className="mt-10">
@@ -59,7 +60,7 @@ export default function CreateModulePage() {
                 </Form.Field>
               </div>
               <div className="col-span-12 flex items-center justify-end gap-2">
-                <Link className={buttonVariants({ variant: "secondary" })} href="/modules">
+                <Link className={buttonVariants({ variant: "secondary" })} href={routes.modules.index}>
                   Cancelar
                 </Link>
                 <Button className="w-full md:w-auto" type="submit">

@@ -3,6 +3,7 @@
 import { useEffect } from "react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
+import routes from "@/routes"
 import moduleService from "@/services/module-service"
 import { ApiError } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -53,7 +54,7 @@ export default function EditModulePage() {
 
   return (
     <div>
-      <BreadcrumbContent items={[{ label: "Módulos", href: "/modules" }, { label: "Editar" }]} />
+      <BreadcrumbContent items={[{ label: "Módulos", href: routes.modules.index }, { label: "Editar" }]} />
       <PageTitle>Editar módulo</PageTitle>
 
       <Card className="mt-10">
@@ -71,7 +72,7 @@ export default function EditModulePage() {
                 </Form.Field>
               </div>
               <div className="col-span-12 flex items-center justify-end gap-2">
-                <Link className={buttonVariants({ variant: "secondary" })} href="/modules">
+                <Link className={buttonVariants({ variant: "secondary" })} href={routes.modules.index}>
                   Cancelar
                 </Link>
                 <Button className="w-full md:w-auto" type="submit">

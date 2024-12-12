@@ -7,7 +7,7 @@ import { ArrowDown, ArrowUp, ChevronsUpDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { TableHead } from "@/components/ui/table"
 
-interface TableSortHeaderProps {
+export interface TableSortHeaderProps {
   title: string
   field?: string
   className?: string

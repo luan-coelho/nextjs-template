@@ -2,6 +2,7 @@
 
 import React from "react"
 import { useParams } from "next/navigation"
+import routes from "@/routes"
 
 import { useModule } from "@/hooks/use-modules"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,9 +17,9 @@ export default function ShowModulePage() {
 
   return (
     <div>
-      <BreadcrumbContent items={[{ label: "Módulos", href: "/modules" }, { label: "Visualizar" }]} />
+      <BreadcrumbContent items={[{ label: "Módulos", href: routes.modules.index }, { label: "Visualizar" }]} />
       <PageTitle>Visualizar Módulo</PageTitle>
-      <ButtonBack href={"/modules"} />
+      <ButtonBack href={routes.modules.index} />
 
       <Card className="mt-2">
         <CardHeader>

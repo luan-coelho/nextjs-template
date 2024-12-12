@@ -1,10 +1,11 @@
 const routes = {
   home: "/",
-  module: "/module",
-  /*  blog: {
-      index: "/blog",
-      post: (slug: string) => `/blog/${slug}`,
-    }*/
+  modules: {
+    index: "/modules",
+    create: "/modules/create",
+    edit: (id: string) => `/modules/${id}/edit`,
+    show: (id: string) => `/modules/${id}`,
+  },
 } as const
 
 export default routes

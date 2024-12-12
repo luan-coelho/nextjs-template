@@ -6,16 +6,29 @@ import { SWRDataPaginationResponse } from "@/types"
 import { AlertCircle } from "lucide-react"
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
+import DataTableHeader from "@/components/ui/data-table/data-table-header"
+import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table"
 import { TablePagination } from "@/components/ui/table/table-pagination"
 import SpinnerLoading from "@/components/layout/spinner-loading"
 
 type DataTableProps<T> = {
   swrResponse: SWRDataPaginationResponse<T>
+  columns?: DataTableColumn[]
   children?: React.ReactNode
 }
 
-function DataTableWithProvider<T>({ children, swrResponse: { isLoading, error, pagination } }: DataTableProps<T>) {
+export type DataTableColumn = {
+  title: string
+  field?: string
+  className?: string
+  position?: "left" | "center" | "right"
+}
+
+function DataTableWithProvider<T>({
+  swrResponse: { isLoading, error, pagination },
+  children,
+  columns,
+}: DataTableProps<T>) {
   const { handlePageChange, handleItemsPerPageChange } = useDataTableContext<T>()
 
   if (error) {
@@ -31,15 +44,28 @@ function DataTableWithProvider<T>({ children, swrResponse: { isLoading, error, p
   return (
     <React.Fragment>
       <Table className="border-gray-200">
-        {isLoading && (
-          <TableBody>
+        <TableHeader>
+          <TableRow>
+            {columns?.map((column, index) => (
+              <DataTableHeader
+                key={index}
+                className={column.className}
+                title={column.title}
+                field={column.field}
+                position={column.position}
+              />
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {isLoading && (
             <TableRow key={module.id}>
               <TableCell>
                 <SpinnerLoading />
               </TableCell>
             </TableRow>
-          </TableBody>
-        )}
+          )}
+        </TableBody>
         {!isLoading && children}
       </Table>
       {!isLoading && pagination.itemsOnPage === 0 && (
@@ -60,11 +86,13 @@ function DataTableWithProvider<T>({ children, swrResponse: { isLoading, error, p
   )
 }
 
-export default function DataTable<T>({ swrResponse, children }: DataTableProps<T>) {
+export default function DataTable<T>({ swrResponse, columns, children }: DataTableProps<T>) {
   const { data, pagination } = swrResponse
   return (
     <DataTableProvider<T> initialData={data} pagination={pagination}>
-      <DataTableWithProvider<T> swrResponse={swrResponse}>{children}</DataTableWithProvider>
+      <DataTableWithProvider<T> swrResponse={swrResponse} columns={columns}>
+        {children}
+      </DataTableWithProvider>
     </DataTableProvider>
   )
 }

@@ -3,6 +3,7 @@
 import React from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
+import routes from "@/routes"
 import { Pageable } from "@/types"
 
 import { extractPaginationQueryParams } from "@/lib/utils"
@@ -21,7 +22,7 @@ export default function ModulesPage() {
     <React.Fragment>
       <PageTitle>Módulos</PageTitle>
       <div className="flex items-center justify-end">
-        <Link className={buttonVariants({ variant: "default" })} href="/modules/create">
+        <Link className={buttonVariants({ variant: "default" })} href={routes.modules.create}>
           Novo módulo
         </Link>
       </div>
