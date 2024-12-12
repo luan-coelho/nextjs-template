@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useSidebar } from "@/contexts/sidebar-context"
+import { useSidebarContext } from "@/contexts/sidebar-context"
 import { Rocket } from "lucide-react"
 
 import { LucideIcon } from "@/components/ui/lucide-icon"
@@ -9,7 +9,7 @@ import { Drawer } from "@/components/layout/drawer"
 import { Menu } from "@/components/layout/menu"
 
 export default function Sidebar() {
-  const { isSidebarExpanded, currentModule: module } = useSidebar()
+  const { isSidebarExpanded, currentModule: module } = useSidebarContext()
 
   const size = isSidebarExpanded ? 18 : 20
 

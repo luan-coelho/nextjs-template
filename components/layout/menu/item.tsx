@@ -3,7 +3,7 @@
 import { ReactNode, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useSidebar } from "@/contexts/sidebar-context"
+import { useSidebarContext } from "@/contexts/sidebar-context"
 import { ChevronDown } from "lucide-react"
 
 import { LucideIcon } from "@/components/ui/lucide-icon"
@@ -16,7 +16,7 @@ interface ItemProps {
 }
 
 export function Item({ icon, children, href, items }: ItemProps) {
-  const { isSidebarExpanded } = useSidebar()
+  const { isSidebarExpanded } = useSidebarContext()
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState<boolean>(false)
 

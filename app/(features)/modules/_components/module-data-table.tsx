@@ -8,7 +8,6 @@ import { toast } from "sonner"
 import { mutate } from "swr"
 
 import { ActionButton, actionButtoncolorClasses } from "@/components/ui/action-button"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import DataTable from "@/components/ui/data-table/data-table"
 import DataTableHeader from "@/components/ui/data-table/data-table-header"
@@ -61,8 +60,8 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
     <DataTable swrResponse={swrResponse}>
       <TableHeader>
         <TableRow>
-          <DataTableHeader className="w-4/6" title="Nome" ordinatable />
-          <TableHead className="w-1/6 text-center">Situação</TableHead>
+          <DataTableHeader className="w-4/6" title="Nome" field="name" />
+          <DataTableHeader className="w-1/6" title="Situação" field="active" position="center" />
           <TableHead className="w-1/6 text-center">Ações</TableHead>
         </TableRow>
       </TableHeader>

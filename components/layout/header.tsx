@@ -1,13 +1,13 @@
 "use client"
 
 import React from "react"
-import { useSidebar } from "@/contexts/sidebar-context"
+import { useSidebarContext } from "@/contexts/sidebar-context"
 import { Menu } from "lucide-react"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function Header() {
-  const { toggleSidebar, changeCurrentModule, modules, currentModule } = useSidebar()
+  const { toggleSidebar, changeCurrentModule, modules, currentModule } = useSidebarContext()
 
   function handleModuleChange(value: string) {
     const modulez: Module = modules!.find(module => module.id == value)!

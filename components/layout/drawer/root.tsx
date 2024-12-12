@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect } from "react"
-import { useSidebar } from "@/contexts/sidebar-context"
+import { useSidebarContext } from "@/contexts/sidebar-context"
 
 import { cn } from "@/lib/utils"
 
@@ -8,7 +8,7 @@ interface RootProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function Root({ children, className }: RootProps) {
-  const { isSidebarExpanded, toggleSidebar } = useSidebar()
+  const { isSidebarExpanded, toggleSidebar } = useSidebarContext()
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {

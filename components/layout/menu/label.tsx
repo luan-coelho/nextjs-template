@@ -2,14 +2,14 @@
 
 import { ReactNode } from "react"
 import * as React from "react"
-import { useSidebar } from "@/contexts/sidebar-context"
+import { useSidebarContext } from "@/contexts/sidebar-context"
 
 interface LabelProps {
   children: ReactNode
 }
 
 export function Label({ children }: LabelProps) {
-  const { isSidebarExpanded } = useSidebar()
+  const { isSidebarExpanded } = useSidebarContext()
 
   return (
     <>

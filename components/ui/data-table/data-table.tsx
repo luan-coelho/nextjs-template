@@ -1,12 +1,13 @@
 "use client"
 
-import React, { useCallback } from "react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import React from "react"
+import { DataTableProvider, useDataTableContext } from "@/contexts/data-table-context"
 import { SWRDataPaginationResponse } from "@/types"
 import { AlertCircle } from "lucide-react"
+import { PulseLoader } from "react-spinners"
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Table } from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
 import { TablePagination } from "@/components/ui/table/table-pagination"
 
 type DataTableProps<T> = {
@@ -14,35 +15,8 @@ type DataTableProps<T> = {
   children?: React.ReactNode
 }
 
-export default function DataTable<T>({
-  children,
-  swrResponse: { data, isLoading, error, pagination },
-}: DataTableProps<T>) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-
-  function handlePageChange(page: number) {
-    router.replace(pathname + "?" + createQueryString("page", page.toString()))
-  }
-
-  function handleItemsPerPageChange(itemsPerPage: number) {
-    router.replace(pathname + "?" + createQueryString("size", itemsPerPage.toString()))
-  }
-
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString())
-      params.set(name, value)
-
-      return params.toString()
-    },
-    [searchParams],
-  )
-
-  if (isLoading) {
-    return <span>Carregando...</span>
-  }
+function DataTableWithProvider<T>({ children, swrResponse: { isLoading, error, pagination } }: DataTableProps<T>) {
+  const { handlePageChange, handleItemsPerPageChange } = useDataTableContext<T>()
 
   if (error) {
     return (
@@ -56,25 +30,43 @@ export default function DataTable<T>({
 
   return (
     <React.Fragment>
-      {data && (
-        <React.Fragment>
-          <Table className="border border-gray-200">{children}</Table>
-          {!isLoading && pagination.itemsOnPage === 0 && (
-            <div className="mt-5 flex flex-col items-center justify-end px-2 md:flex-row">
-              <div className="flex-1 text-sm text-muted-foreground">Nenhum registro encontrado</div>
-            </div>
-          )}
-          <TablePagination
-            currentPage={pagination.currentPage}
-            itemsPerPage={pagination.itemsPerPage}
-            itemsOnPage={pagination.itemsOnPage}
-            totalPages={pagination.totalPages}
-            totalItems={pagination.totalItems}
-            onPageChange={page => handlePageChange(page)}
-            onItemsPerPageChange={itemsPerPage => handleItemsPerPageChange(itemsPerPage)}
-          />
-        </React.Fragment>
+      <Table className="border border-gray-200">
+        {isLoading && (
+          <TableBody>
+            <TableRow key={module.id}>
+              <TableCell>
+                <div className="flex items-center justify-center p-4">
+                  <PulseLoader color="#3A72EC" className="text-primary" />
+                </div>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        )}
+        {!isLoading && children}
+      </Table>
+      {!isLoading && pagination.itemsOnPage === 0 && (
+        <div className="mt-5 flex flex-col items-center justify-end px-2 md:flex-row">
+          <div className="flex-1 text-sm text-muted-foreground">Nenhum registro encontrado</div>
+        </div>
       )}
+      <TablePagination
+        currentPage={pagination.currentPage}
+        itemsPerPage={pagination.itemsPerPage}
+        itemsOnPage={pagination.itemsOnPage}
+        totalPages={pagination.totalPages}
+        totalItems={pagination.totalItems}
+        onPageChange={page => handlePageChange(page)}
+        onItemsPerPageChange={itemsPerPage => handleItemsPerPageChange(itemsPerPage)}
+      />
     </React.Fragment>
+  )
+}
+
+export default function DataTable<T>({ swrResponse, children }: DataTableProps<T>) {
+  const { data, pagination } = swrResponse
+  return (
+    <DataTableProvider<T> initialData={data} pagination={pagination}>
+      <DataTableWithProvider<T> swrResponse={swrResponse}>{children}</DataTableWithProvider>
+    </DataTableProvider>
   )
 }

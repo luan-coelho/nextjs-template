@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { ReactNode } from "react"
-import { useSidebar } from "@/contexts/sidebar-context"
+import { useSidebarContext } from "@/contexts/sidebar-context"
 
 import { cn } from "@/lib/utils"
 
@@ -11,7 +11,7 @@ interface LogoProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function Logo({ children, className }: LogoProps) {
-  const { isSidebarExpanded } = useSidebar()
+  const { isSidebarExpanded } = useSidebarContext()
 
   return (
     <div

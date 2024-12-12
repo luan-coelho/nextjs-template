@@ -1,45 +1,65 @@
 "use client"
 
-import React, { HtmlHTMLAttributes, useState } from "react"
+import React, { useState } from "react"
+import { useDataTableContext } from "@/contexts/data-table-context"
 import { ArrowDown, ArrowUp, ChevronsUpDown } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import { TableHead } from "@/components/ui/table"
 
-type DataTableHeaderProps = HtmlHTMLAttributes<"div"> & {
+interface TableSortHeaderProps {
   title: string
-  ordinatable?: boolean
-  backendField?: string
+  field?: string
+  className?: string
+  position?: "left" | "center" | "right"
 }
 
-export default function DataTableHeader({ title, ordinatable = false, className }: DataTableHeaderProps) {
-  const [sort, setSort] = useState<string>("")
+export default function TableSortHeader({ title, field, className, position = "left" }: TableSortHeaderProps) {
+  const { handleSortChange } = useDataTableContext()
+  const [sort, setSort] = useState<"asc" | "desc" | null>(null)
 
-  function onChageSort() {
-    if (sort === "desc") {
-      setSort("asc")
-    } else if (sort === "asc") {
-      setSort("")
-    } else {
-      setSort("desc")
-    }
+  const positionClass = {
+    left: "justify-start",
+    center: "justify-center",
+    right: "justify-end",
   }
 
-  if (!ordinatable) {
+  function handleChangeSort() {
+    let newSort: "asc" | "desc" | null
+
+    if (sort === null) {
+      newSort = "asc"
+    } else if (sort === "asc") {
+      newSort = "desc"
+    } else {
+      newSort = null
+    }
+
+    handleSortChange(newSort ? `${field}:${newSort}` : null)
+    setSort(newSort)
+  }
+
+  if (!field) {
     return <TableHead className={className}>{title}</TableHead>
   }
 
+  const getSortIcon = () => {
+    switch (sort) {
+      case "desc":
+        return <ArrowDown size={16} />
+      case "asc":
+        return <ArrowUp size={16} />
+      default:
+        return <ChevronsUpDown size={16} />
+    }
+  }
+
   return (
-    <TableHead className={cn("flex items-center px-5", className)}>
-      <Button
-        onClick={onChageSort}
-        variant="ghost"
-        size="sm"
-        className="-ml-3 flex h-8 items-center justify-center data-[state=open]:bg-accent">
-        <span className="text-xs font-bold uppercase">{title}</span>
-        {sort === "desc" ? <ArrowDown /> : sort === "asc" ? <ArrowUp /> : <ChevronsUpDown />}
-      </Button>
+    <TableHead className={cn("cursor-pointer", className)}>
+      <div className={cn("flex items-center gap-1 px-2", positionClass[position])} onClick={handleChangeSort}>
+        <span>{title}</span>
+        <div className="text-xs">{getSortIcon()}</div>
+      </div>
     </TableHead>
   )
 }
