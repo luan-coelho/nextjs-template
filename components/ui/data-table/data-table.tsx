@@ -9,6 +9,7 @@ import { PulseLoader } from "react-spinners"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
 import { TablePagination } from "@/components/ui/table/table-pagination"
+import SpinnerLoading from "@/components/layout/spinner-loading"
 
 type DataTableProps<T> = {
   swrResponse: SWRDataPaginationResponse<T>
@@ -35,9 +36,7 @@ function DataTableWithProvider<T>({ children, swrResponse: { isLoading, error, p
           <TableBody>
             <TableRow key={module.id}>
               <TableCell>
-                <div className="flex items-center justify-center p-4">
-                  <PulseLoader color="#3A72EC" className="text-primary" />
-                </div>
+                <SpinnerLoading />
               </TableCell>
             </TableRow>
           </TableBody>

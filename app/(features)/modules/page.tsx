@@ -18,22 +18,22 @@ export default function ModulesPage() {
   const swrResponse = useModules(pageable)
 
   return (
-    <>
+    <React.Fragment>
       <PageTitle>Módulos</PageTitle>
+      <div className="flex items-center justify-end">
+        <Link className={buttonVariants({ variant: "default" })} href="/modules/create">
+          Novo módulo
+        </Link>
+      </div>
 
-      <Card className="mt-4">
+      <Card className="mt-2">
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Listagem</CardTitle>
-            <Link className={buttonVariants({ variant: "default" })} href="/modules/create">
-              Novo módulo
-            </Link>
-          </div>
+          <CardTitle>Listagem</CardTitle>
         </CardHeader>
         <CardContent>
           <ModuleDataTable swrResponse={swrResponse} />
         </CardContent>
       </Card>
-    </>
+    </React.Fragment>
   )
 }

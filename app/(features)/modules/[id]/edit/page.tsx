@@ -56,7 +56,7 @@ export default function EditModulePage() {
       <BreadcrumbContent items={[{ label: "Módulos", href: "/modules" }, { label: "Editar" }]} />
       <PageTitle>Editar módulo</PageTitle>
 
-      <Card className="mt-4">
+      <Card className="mt-10">
         <CardHeader>
           <CardTitle>Formulário</CardTitle>
         </CardHeader>

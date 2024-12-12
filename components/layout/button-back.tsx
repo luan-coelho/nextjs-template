@@ -16,7 +16,9 @@ export default function ButtonBack({ href, children }: ButtonBackProps) {
       <Link
         href={href}
         className={cn(
-          buttonVariants(),
+          buttonVariants({
+            size: "sm",
+          }),
           "border border-blue-500 bg-blue-100 text-blue-500 hover:border-blue-500 hover:bg-blue-100 hover:text-blue-500",
         )}>
         <ArrowLeft />

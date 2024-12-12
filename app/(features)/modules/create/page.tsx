@@ -44,7 +44,7 @@ export default function CreateModulePage() {
       <BreadcrumbContent items={[{ label: "Módulos", href: "/modules" }, { label: "Cadastrar" }]} />
       <PageTitle>Cadastrar módulo</PageTitle>
 
-      <Card className="mt-4">
+      <Card className="mt-10">
         <CardHeader>
           <CardTitle>Formulário</CardTitle>
         </CardHeader>
