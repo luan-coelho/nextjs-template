@@ -30,7 +30,7 @@ export default function ModulesPage() {
         <CardHeader>
           <CardTitle>Listagem</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           <ModuleDataTable swrResponse={swrResponse} />
         </CardContent>
       </Card>

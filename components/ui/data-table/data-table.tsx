@@ -4,7 +4,6 @@ import React from "react"
 import { DataTableProvider, useDataTableContext } from "@/contexts/data-table-context"
 import { SWRDataPaginationResponse } from "@/types"
 import { AlertCircle } from "lucide-react"
-import { PulseLoader } from "react-spinners"
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
@@ -31,7 +30,7 @@ function DataTableWithProvider<T>({ children, swrResponse: { isLoading, error, p
 
   return (
     <React.Fragment>
-      <Table className="border border-gray-200">
+      <Table className="border-gray-200">
         {isLoading && (
           <TableBody>
             <TableRow key={module.id}>
