@@ -6,6 +6,7 @@ import routes from "@/routes"
 
 import { useModule } from "@/hooks/use-modules"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
 import ButtonBack from "@/components/layout/button-back"
 import BreadcrumbContent from "@/components/layout/content-breadcrumb"
 import PageTitle from "@/components/layout/page-title"
@@ -28,8 +29,8 @@ export default function ShowModulePage() {
         <CardContent>
           {isLoading && <SpinnerLoading />}
           {!isLoading && (
-            <div>
-              <span>Nome: </span>
+            <div className="form-group">
+              <Label>Nome</Label>
               <span>{module?.name}</span>
             </div>
           )}
