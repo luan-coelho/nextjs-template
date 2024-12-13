@@ -1,3 +1,4 @@
+import apiRoutes from "@/api-routes"
 import { Service } from "@/services/service"
 import { DataPagination, Pageable } from "@/types"
 
@@ -41,7 +42,7 @@ export class ModuleService extends Service {
   }
 
   getUrl(): string {
-    return "/modules"
+    return apiRoutes.modules.index
   }
 }
 

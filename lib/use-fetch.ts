@@ -1,51 +1,50 @@
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
-type FetcherFunction<T> = (...args: any[]) => Promise<T>
+import { fetcher } from "@/lib/api-client"
 
-type UseFetchOptions = {
-  onSuccess?: (data: any) => void
-  onError?: (error: any) => void
+interface UseNoCacheQueryOptions {
+  headers?: Record<string, string>
 }
 
-type UseFetchResult<T, Args extends any[]> = {
+interface UseNoCacheQueryResult<T> {
+  data: T
+  error: Error | null
   isLoading: boolean
-  error: any | null
-  data: T | null
-  mutate: (...args: Args) => Promise<void>
+  mutate: () => void
 }
 
-export function useFetch<T = any, Args extends any[] = any[]>(
-  key: string,
-  fetcher: FetcherFunction<T>,
-  options?: UseFetchOptions,
-): UseFetchResult<T, Args> {
+function useNoCacheQuery<T>(url: string, options: UseNoCacheQueryOptions = {}): UseNoCacheQueryResult<T> {
+  const [data, setData] = useState<T>({} as T)
+  const [error, setError] = useState<Error | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [error, setError] = useState<any | null>(null)
-  const [data, setData] = useState<T | null>(null)
+  const hasFetched = useRef(false)
 
-  const mutate = useCallback(
-    async (...args: Args) => {
-      setIsLoading(true)
-      setError(null)
+  const fetchData = useCallback(async () => {
+    setIsLoading(true)
+    setError(null)
 
-      try {
-        const result = await fetcher(...args)
-        setData(result)
+    try {
+      const result = await fetcher<T>(url, options)
+      setData(result)
+    } catch (err) {
+      setError(err as Error)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [url, options.headers])
 
-        if (options?.onSuccess) {
-          options.onSuccess(result)
-        }
-      } catch (err) {
-        setError(err)
-        if (options?.onError) {
-          options.onError(err)
-        }
-      } finally {
-        setIsLoading(false)
-      }
-    },
-    [fetcher, options],
-  )
+  useEffect(() => {
+    if (!hasFetched.current) {
+      hasFetched.current = true
+      fetchData()
+    }
+  }, [fetchData])
 
-  return { isLoading, error, data, mutate }
+  const mutate = useCallback(() => {
+    fetchData()
+  }, [fetchData])
+
+  return { data, error, isLoading, mutate }
 }
+
+export default useNoCacheQuery

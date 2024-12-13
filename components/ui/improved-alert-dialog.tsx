@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { Trash } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -14,13 +14,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 type ImprovedAlertDialogProps = {
   title?: string
-  open: boolean
-  onOpenChange(open: boolean): void
   confirmAction(): void
   confirmActionLabel?: string
   cancelAction?(): void
@@ -33,8 +31,6 @@ type ImprovedAlertDialogProps = {
 
 export default function ImprovedAlertDialog({
   title,
-  open,
-  onOpenChange,
   confirmAction,
   confirmActionLabel,
   cancelAction,
@@ -44,15 +40,21 @@ export default function ImprovedAlertDialog({
   children,
   icon,
 }: ImprovedAlertDialogProps) {
+  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false)
+
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
+    <AlertDialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
       <AlertDialogTrigger>
         <TooltipProvider delayDuration={200}>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button className={cn(type === "delete" ? actionButtoncolorClasses.red : actionButtoncolorClasses.gray)}>
+              <div
+                className={cn(
+                  buttonVariants(),
+                  type === "delete" ? actionButtoncolorClasses.red : actionButtoncolorClasses.gray,
+                )}>
                 {icon || <Trash />}
-              </Button>
+              </div>
             </TooltipTrigger>
             <TooltipContent className="bg-zinc-700">
               <p>{tooltip}</p>

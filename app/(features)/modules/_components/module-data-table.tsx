@@ -6,7 +6,6 @@ import moduleService from "@/services/module-service"
 import { ApiError, SWRDataPaginationResponse } from "@/types"
 import { Activity, CirclePower, Eye, Pencil } from "lucide-react"
 import { toast } from "sonner"
-import { mutate } from "swr"
 
 import { ActionButton, actionButtoncolorClasses } from "@/components/ui/action-button"
 import { Button } from "@/components/ui/button"
@@ -26,14 +25,11 @@ const columns: DataTableColumn[] = [
 ]
 
 export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
-  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false)
-  const [openDisableDialog, setOpenDisableDialog] = useState<boolean>(false)
-
   async function handleDelete(id: string) {
     try {
       await moduleService.deleteModule(id)
       toast.success("Módulo deletado com sucesso.")
-      await mutate(swrResponse.key)
+      swrResponse.mutate()
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao deletar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -44,7 +40,7 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
     try {
       await moduleService.disableModule(id)
       toast.success("Módulo desativado com sucesso.")
-      await mutate(swrResponse.key)
+      swrResponse.mutate()
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao desativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -55,7 +51,7 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
     try {
       await moduleService.activateModule(id)
       toast.success("Módulo ativado com sucesso.")
-      await mutate(swrResponse.key)
+      swrResponse.mutate()
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao ativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -79,15 +75,9 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
             <ActionButton link={routes.modules.edit(module.id)} color="purple" tooltip="Editar">
               <Pencil className="w-5" />
             </ActionButton>
-            <ImprovedAlertDialog
-              open={openDeleteDialog}
-              onOpenChange={setOpenDeleteDialog}
-              confirmAction={() => handleDelete(module.id)}
-            />
+            <ImprovedAlertDialog confirmAction={() => handleDelete(module.id)} />
             {module.active ? (
               <ImprovedAlertDialog
-                open={openDisableDialog}
-                onOpenChange={setOpenDisableDialog}
                 confirmAction={() => handleDisable(module.id)}
                 confirmActionLabel="Desativar"
                 icon={<CirclePower />}

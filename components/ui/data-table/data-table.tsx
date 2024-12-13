@@ -7,8 +7,8 @@ import { AlertCircle } from "lucide-react"
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import DataTableHeader from "@/components/ui/data-table/data-table-header"
+import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination"
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table"
-import { TablePagination } from "@/components/ui/table/table-pagination"
 import SpinnerLoading from "@/components/layout/spinner-loading"
 
 type DataTableProps<T> = {
@@ -43,7 +43,7 @@ function DataTableWithProvider<T>({
 
   return (
     <React.Fragment>
-      <Table className="border-gray-200">
+      <Table className="border-b border-gray-200">
         <TableHeader>
           <TableRow>
             {columns?.map((column, index) => (
@@ -58,22 +58,23 @@ function DataTableWithProvider<T>({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {isLoading && (
-            <TableRow key={module.id}>
+          {isLoading ? (
+            <TableRow>
               <TableCell>
                 <SpinnerLoading />
               </TableCell>
             </TableRow>
+          ) : (
+            children
           )}
         </TableBody>
-        {!isLoading && children}
       </Table>
       {!isLoading && pagination.itemsOnPage === 0 && (
         <div className="mt-5 flex flex-col items-center justify-end px-2 md:flex-row">
           <div className="flex-1 text-sm text-muted-foreground">Nenhum registro encontrado</div>
         </div>
       )}
-      <TablePagination
+      <DataTablePagination
         currentPage={pagination.currentPage}
         itemsPerPage={pagination.itemsPerPage}
         itemsOnPage={pagination.itemsOnPage}

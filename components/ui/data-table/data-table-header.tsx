@@ -35,7 +35,9 @@ export default function TableSortHeader({ title, field, className, position = "l
       newSort = null
     }
 
-    handleSortChange(newSort ? `${field}:${newSort}` : null)
+    const sortQueryParam = `${field}:${newSort}`
+    console.log(sortQueryParam);
+    handleSortChange(newSort ? sortQueryParam : null)
     setSort(newSort)
   }
 
