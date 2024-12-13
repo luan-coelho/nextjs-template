@@ -14,10 +14,8 @@ export const fetcher = async <T>(endpoint: string, options?: RequestInit): Promi
 
   if (!res.ok) {
     try {
-      // Tenta parsear o corpo do erro
       errorBody = await res.json()
     } catch {
-      // Fallback para um erro genérico caso o parse falhe
       errorBody = {
         title: "Erro desconhecido",
         detail: res.statusText,
@@ -25,7 +23,6 @@ export const fetcher = async <T>(endpoint: string, options?: RequestInit): Promi
       }
     }
 
-    // Lança o erro com a tipagem ApiError
     throw errorBody
   }
 

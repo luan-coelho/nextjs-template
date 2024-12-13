@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React from "react"
 import routes from "@/routes"
 import moduleService from "@/services/module-service"
 import { ApiError, SWRDataPaginationResponse } from "@/types"
