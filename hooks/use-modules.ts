@@ -1,15 +1,18 @@
+import { useEffect } from "react"
 import apiRoutes from "@/api-routes"
 import { DataPagination, PAGEABLE, Pageable, SWRDataPaginationResponse } from "@/types"
 
 import useNoCacheQuery from "@/lib/use-fetch"
 
 export function useModules(pageable: Pageable): SWRDataPaginationResponse<Module> {
-  if (!pageable) {
-    pageable = PAGEABLE
-  }
-  const { page, size, sort, filters } = pageable
+  const { page, size, sort, filters } = pageable || PAGEABLE
   const url = `${apiRoutes.modules.index}?page=${page}&size=${size}&sort=${sort}&filters=${filters}`
+
   const { data, isLoading, error, mutate } = useNoCacheQuery<DataPagination<Module>>(url)
+
+  useEffect(() => {
+    mutate()
+  }, [page, size, sort, filters, mutate])
 
   if (error) {
     error.message = "Falha ao buscar módulos"

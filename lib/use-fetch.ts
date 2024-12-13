@@ -1,3 +1,5 @@
+// noinspection JSIgnoredPromiseFromCall
+
 import { useCallback, useEffect, useRef, useState } from "react"
 
 import { fetcher } from "@/lib/api-client"

@@ -1,11 +1,11 @@
 import React, { createContext, ReactNode, useCallback, useContext, useState } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { Pagination } from "@/types"
+import { SWRDataPaginationResponse } from "@/types"
 
 interface DataTableContextType<T> {
   data: T[]
   setData: React.Dispatch<React.SetStateAction<T[]>>
-  pagination?: Pagination
+  swrResponse: SWRDataPaginationResponse<T>
   handlePageChange: (page: number) => void
   handleItemsPerPageChange: (itemsPerPage: number) => void
   handleFilterChange: (filter: string) => void
@@ -15,10 +15,10 @@ interface DataTableContextType<T> {
 interface DataTableProviderProps<T> {
   children: ReactNode
   initialData?: T[]
-  pagination?: Pagination
+  swrResponse: SWRDataPaginationResponse<T>
 }
 
-export const DataTableProvider = <T,>({ children, initialData = [], pagination }: DataTableProviderProps<T>) => {
+export const DataTableProvider = <T,>({ children, initialData = [], swrResponse }: DataTableProviderProps<T>) => {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -37,11 +37,11 @@ export const DataTableProvider = <T,>({ children, initialData = [], pagination }
   }
 
   function handleSortChange(sort: string | null) {
-    if (!sort) {
+    if (sort) {
+      router.replace(pathname + "?" + createQueryString("sort", sort))
+    } else {
       router.replace(pathname)
-      return
     }
-    router.replace(pathname + "?" + createQueryString("sort", sort))
   }
 
   const createQueryString = useCallback(
@@ -59,7 +59,7 @@ export const DataTableProvider = <T,>({ children, initialData = [], pagination }
       value={{
         data,
         setData,
-        pagination,
+        swrResponse,
         handlePageChange,
         handleItemsPerPageChange,
         handleFilterChange,

@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react"
+import Image from "next/image"
 import { DataTableProvider, useDataTableContext } from "@/contexts/data-table-context"
 import { SWRDataPaginationResponse } from "@/types"
 import { AlertCircle } from "lucide-react"
@@ -70,8 +71,9 @@ function DataTableWithProvider<T>({
         </TableBody>
       </Table>
       {!isLoading && pagination.itemsOnPage === 0 && (
-        <div className="mt-5 flex flex-col items-center justify-end px-2 md:flex-row">
-          <div className="flex-1 text-sm text-muted-foreground">Nenhum registro encontrado</div>
+        <div className="flex flex-col items-center justify-end gap-5 p-5 px-2">
+          <Image src="images/no-data.svg" alt="Nenhum registro encontrado" width={100} height={100} />
+          <div className="flex-1 text-center text-sm text-muted-foreground"> Nenhum registro encontrado</div>
         </div>
       )}
       <DataTablePagination
@@ -88,9 +90,9 @@ function DataTableWithProvider<T>({
 }
 
 export default function DataTable<T>({ swrResponse, columns, children }: DataTableProps<T>) {
-  const { data, pagination } = swrResponse
+  const { data } = swrResponse
   return (
-    <DataTableProvider<T> initialData={data} pagination={pagination}>
+    <DataTableProvider<T> initialData={data} swrResponse={swrResponse}>
       <DataTableWithProvider<T> swrResponse={swrResponse} columns={columns}>
         {children}
       </DataTableWithProvider>
