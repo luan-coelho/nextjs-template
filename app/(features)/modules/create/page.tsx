@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import routes from "@/routes"
+import { routes } from "@/routes"
 import moduleService from "@/services/module-service"
 import { ApiError } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"

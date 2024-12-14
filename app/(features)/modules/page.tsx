@@ -1,12 +1,11 @@
 "use client"
 
-import React from "react"
+import React, { Fragment } from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import routes from "@/routes"
-import { Pageable } from "@/types"
+import { routes } from "@/routes"
+import { PAGEABLE } from "@/types"
 
-import { extractPaginationQueryParams } from "@/lib/utils"
 import { useModules } from "@/hooks/use-modules"
 import { buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -15,11 +14,17 @@ import ModuleDataTable from "@/app/(features)/modules/_components/module-data-ta
 
 export default function ModulesPage() {
   const searchParams = useSearchParams()
-  const pageable: Pageable = extractPaginationQueryParams(searchParams)
-  const swrResponse = useModules(pageable)
+  const page = Number(searchParams.get("page")) || PAGEABLE.page
+  const size = Number(searchParams.get("size")) || PAGEABLE.size
+  const sort = searchParams.get("sort") || PAGEABLE.sort
+  let filters = searchParams.get("filters") || PAGEABLE.filters
+  if (filters?.trim()) {
+    filters = encodeURIComponent(filters)
+  }
+  const swrResponse = useModules({ page, size, sort, filters })
 
   return (
-    <React.Fragment>
+    <Fragment>
       <PageTitle>Módulos</PageTitle>
       <div className="flex items-center justify-end">
         <Link className={buttonVariants({ variant: "default" })} href={routes.modules.create}>
@@ -35,6 +40,6 @@ export default function ModulesPage() {
           <ModuleDataTable swrResponse={swrResponse} />
         </CardContent>
       </Card>
-    </React.Fragment>
+    </Fragment>
   )
 }

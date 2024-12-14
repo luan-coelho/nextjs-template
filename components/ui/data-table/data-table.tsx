@@ -37,7 +37,7 @@ function DataTableWithProvider<T>({
 
   if (error) {
     return (
-      <Alert variant="destructive">
+      <Alert variant="destructive" className="m-5 w-auto">
         <AlertCircle className="size-4" />
         <AlertTitle>Erro</AlertTitle>
         <AlertDescription>{error?.message}</AlertDescription>

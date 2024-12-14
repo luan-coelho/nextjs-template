@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { login } from "@/app/auth/actions"
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -27,7 +26,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         </div>
         <Button>Cadastrar</Button>
       </div>
-      <form action={login}>
+      <form>
         <button type="submit">Signin with Google</button>
       </form>
     </div>

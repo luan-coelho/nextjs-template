@@ -2,7 +2,7 @@
 
 import React from "react"
 import { useParams } from "next/navigation"
-import routes from "@/routes"
+import { routes } from "@/routes"
 
 import { useModule } from "@/hooks/use-modules"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"

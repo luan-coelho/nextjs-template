@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import routes from "@/routes"
+import { routes } from "@/routes"
 import moduleService from "@/services/module-service"
 import { ApiError, SWRDataPaginationResponse } from "@/types"
 import { Activity, CirclePower, Eye, Pencil } from "lucide-react"
@@ -21,7 +21,7 @@ type ModuleDataTableProps = {
 
 const columns: DataTableColumn[] = [
   { title: "Nome", field: "name", position: "left", className: "w-4/6" },
-  { title: "Status", field: "active", position: "center", className: "w-1/6" },
+  { title: "Situação", field: "active", position: "center", className: "w-1/6" },
   { title: "Ações", position: "center", className: "w-1/6 text-center" },
 ]
 
@@ -56,8 +56,8 @@ const filterConfig: FilterConfig = {
       ],
     },
     {
-      field: "date_of_birth",
-      label: "Data de Nascimento",
+      field: "createdAt",
+      label: "Data de criação",
       type: "date",
       operations: [
         { value: "gt", label: FilterOperationLabel.GREATER_THAN },

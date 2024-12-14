@@ -68,7 +68,7 @@ export default function FilterComponent({ config, onApplyFilters }: FilterCompon
             type={fieldConfig.type === "number" ? "number" : "text"}
             value={filter.value}
             onChange={e => updateFilter(index, "value", e.target.value)}
-            placeholder="Enter value"
+            placeholder="Informar valor"
             disabled={!filter.field || !filter.operation}
           />
         )
@@ -84,7 +84,6 @@ export default function FilterComponent({ config, onApplyFilters }: FilterCompon
             <SelectContent>
               {fieldConfig.options?.map(option => (
                 <SelectItem key={option.value} value={option.value}>
-                  {" "}
                   {option.label}
                 </SelectItem>
               ))}
@@ -148,9 +147,13 @@ export default function FilterComponent({ config, onApplyFilters }: FilterCompon
         </div>
       ))}
 
-      <div className="flex space-x-4">
-        <Button onClick={addFilter}>Adicionar Filtro</Button>
-        <Button onClick={applyFilters}>Aplicar Filtros</Button>
+      <div className="flex items-center justify-end gap-2">
+        <Button size="sm" onClick={addFilter} color="green">
+          Adicionar Filtro
+        </Button>
+        <Button size="sm" onClick={applyFilters}>
+          Aplicar Filtros
+        </Button>
       </div>
     </div>
   )

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // noinspection JSIgnoredPromiseFromCall
 
 import { useCallback, useEffect, useRef, useState } from "react"

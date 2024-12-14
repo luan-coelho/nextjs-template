@@ -31,16 +31,35 @@ const buttonVariants = cva(
   },
 )
 
+const buttonColorClasses = {
+  green: "bg-green-500 text-white hover:bg-green-600",
+  red: "bg-red-500 text-white hover:bg-red-600",
+  blue: "bg-blue-500 text-white hover:bg-blue-600",
+  purple: "bg-purple-500 text-white hover:bg-purple-600",
+  yellow: "bg-yellow-500 text-black hover:bg-yellow-600",
+  gray: "bg-gray-500 text-black hover:bg-gray-600",
+  white: "bg-white text-black hover:bg-gray-200",
+  black: "bg-black text-white hover:bg-gray-800",
+  transparent: "bg-transparent text-black hover:bg-gray-200",
+}
+
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  color?: keyof typeof buttonColorClasses
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, color, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
-    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }), color ? buttonColorClasses[color] : "", className)}
+        ref={ref}
+        {...props}
+      />
+    )
   },
 )
 Button.displayName = "Button"

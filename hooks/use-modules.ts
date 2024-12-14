@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import apiRoutes from "@/api-routes"
+import { apiRoutes } from "@/routes"
 import { DataPagination, PAGEABLE, Pageable, SWRDataPaginationResponse } from "@/types"
 
 import useNoCacheQuery from "@/lib/use-fetch"

@@ -1,4 +1,4 @@
-import apiRoutes from "@/api-routes"
+import { apiRoutes } from "@/routes"
 import { Service } from "@/services/service"
 import { DataPagination, Pageable } from "@/types"
 

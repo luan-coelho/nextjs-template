@@ -1,8 +1,8 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react"
+import { changeCurrentModuleCookie, getCurrentModuleCookieId } from "@/actions/actions"
 import useSWR from "swr"
 
 import { fetcher } from "@/lib/api-client"
-import { changeCurrentModuleCookie, getCurrentModuleCookieId } from "@/components/layout/_sidebar/actions"
 
 type SidebarContextType = {
   isSidebarExpanded: boolean
@@ -46,6 +46,7 @@ export const SidebarProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [isLoading, modulesApi])
 
+  // noinspection JSUnusedGlobalSymbols
   return (
     <SidebarContext.Provider value={{ isSidebarExpanded, toggleSidebar, currentModule, changeCurrentModule, modules }}>
       {children}

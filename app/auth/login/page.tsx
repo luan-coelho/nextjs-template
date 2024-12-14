@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { routes } from "@/routes"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Rocket } from "lucide-react"
 import { FormProvider, useForm } from "react-hook-form"
@@ -56,10 +57,10 @@ export default function LoginPage() {
                   </Button>
                 </form>
               </FormProvider>
-              <Link href="/auth/register" className={cn(buttonVariants({ variant: "ghost" }), "border-zinc-900")}>
+              <Link href={routes.auth.register} className={cn(buttonVariants({ variant: "ghost" }), "border-zinc-900")}>
                 Criar Conta
               </Link>
-              <Link href="/dashboard" className={cn(buttonVariants({ variant: "ghost" }))}>
+              <Link href={routes.dashboard} className={cn(buttonVariants({ variant: "ghost" }))}>
                 Dashboard
               </Link>
             </div>
