@@ -10,6 +10,7 @@ import { toast } from "sonner"
 import { ActionButton, actionButtoncolorClasses } from "@/components/ui/action-button"
 import { Button } from "@/components/ui/button"
 import DataTable, { DataTableColumn } from "@/components/ui/data-table/data-table"
+import { FilterConfig, FilterOperationLabel } from "@/components/ui/data-table/data-table-filters"
 import ImprovedAlertDialog from "@/components/ui/improved-alert-dialog"
 import { TableCell, TableRow } from "@/components/ui/table"
 import StatusBadge from "@/components/layout/status-badge"
@@ -23,6 +24,48 @@ const columns: DataTableColumn[] = [
   { title: "Status", field: "active", position: "center", className: "w-1/6" },
   { title: "Ações", position: "center", className: "w-1/6 text-center" },
 ]
+
+const filterConfig: FilterConfig = {
+  options: [
+    {
+      field: "name",
+      label: "Nome",
+      type: "string",
+      operations: [
+        { value: "eq", label: FilterOperationLabel.EQUALS },
+        { value: "like", label: FilterOperationLabel.LIKE },
+      ],
+    },
+    {
+      field: "age",
+      label: "Idade",
+      type: "number",
+      operations: [
+        { value: "gt", label: FilterOperationLabel.GREATER_THAN },
+        { value: "lt", label: FilterOperationLabel.LESS_THAN },
+      ],
+    },
+    {
+      field: "status",
+      label: "Situação",
+      type: "select",
+      operations: [{ value: "eq", label: FilterOperationLabel.EQUALS }],
+      options: [
+        { value: "active", label: "Ativo" },
+        { value: "inactive", label: "Desativado" },
+      ],
+    },
+    {
+      field: "date_of_birth",
+      label: "Data de Nascimento",
+      type: "date",
+      operations: [
+        { value: "gt", label: FilterOperationLabel.GREATER_THAN },
+        { value: "lt", label: FilterOperationLabel.LESS_THAN },
+      ],
+    },
+  ],
+}
 
 export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
   async function handleDelete(id: string) {
@@ -59,7 +102,7 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
   }
 
   return (
-    <DataTable swrResponse={swrResponse} columns={columns}>
+    <DataTable swrResponse={swrResponse} columns={columns} filterConfig={filterConfig}>
       {swrResponse.data.map(module => (
         <TableRow key={module.id}>
           <TableCell>{module.name}</TableCell>

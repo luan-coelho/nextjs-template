@@ -7,6 +7,7 @@ import { SWRDataPaginationResponse } from "@/types"
 import { AlertCircle } from "lucide-react"
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import FilterComponent, { FilterConfig } from "@/components/ui/data-table/data-table-filters"
 import DataTableHeader from "@/components/ui/data-table/data-table-header"
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination"
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table"
@@ -15,6 +16,7 @@ import SpinnerLoading from "@/components/layout/spinner-loading"
 type DataTableProps<T> = {
   swrResponse: SWRDataPaginationResponse<T>
   columns?: DataTableColumn[]
+  filterConfig: FilterConfig
   children?: React.ReactNode
 }
 
@@ -27,10 +29,11 @@ export type DataTableColumn = {
 
 function DataTableWithProvider<T>({
   swrResponse: { isLoading, error, pagination },
-  children,
   columns,
+  filterConfig,
+  children,
 }: DataTableProps<T>) {
-  const { handlePageChange, handleItemsPerPageChange } = useDataTableContext<T>()
+  const { handlePageChange, handleItemsPerPageChange, handleFilterChange } = useDataTableContext<T>()
 
   if (error) {
     return (
@@ -42,8 +45,14 @@ function DataTableWithProvider<T>({
     )
   }
 
+  const handleApplyFilters = (filters: { field: string; operation: string; value: string }[]) => {
+    const queryParam = filters.map(filter => `${filter.field};${filter.operation};${filter.value}`).join(",")
+    handleFilterChange(queryParam)
+  }
+
   return (
     <React.Fragment>
+      <FilterComponent config={filterConfig} onApplyFilters={handleApplyFilters} />
       <Table className="border-b border-gray-200">
         <TableHeader>
           <TableRow>
@@ -89,11 +98,11 @@ function DataTableWithProvider<T>({
   )
 }
 
-export default function DataTable<T>({ swrResponse, columns, children }: DataTableProps<T>) {
+export default function DataTable<T>({ swrResponse, columns, filterConfig, children }: DataTableProps<T>) {
   const { data } = swrResponse
   return (
     <DataTableProvider<T> initialData={data} swrResponse={swrResponse}>
-      <DataTableWithProvider<T> swrResponse={swrResponse} columns={columns}>
+      <DataTableWithProvider<T> swrResponse={swrResponse} columns={columns} filterConfig={filterConfig}>
         {children}
       </DataTableWithProvider>
     </DataTableProvider>
