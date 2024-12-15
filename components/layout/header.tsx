@@ -10,7 +10,7 @@ export default function Header() {
   const { toggleSidebar, changeCurrentModule, modules, currentModule } = useSidebarContext()
 
   function handleModuleChange(value: string) {
-    const modulez: Module = modules!.find(module => module.id == value)!
+    const modulez = modules!.find(module => module.id == value)!
     changeCurrentModule(modulez)
   }
 

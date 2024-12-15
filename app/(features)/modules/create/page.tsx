@@ -31,7 +31,7 @@ export default function CreateModulePage() {
 
   async function createModule(data: CreateModuleSchema) {
     try {
-      await moduleService.createModule(data)
+      await moduleService.create(data)
       toast.success("Módulo cadastrado com sucesso.")
       router.push(routes.modules.index)
     } catch (error) {

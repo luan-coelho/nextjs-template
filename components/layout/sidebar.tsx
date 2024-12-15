@@ -4,6 +4,7 @@ import * as React from "react"
 import { useSidebarContext } from "@/contexts/sidebar-context"
 import { Rocket } from "lucide-react"
 
+import { MenuItem } from "@/types/backend-model"
 import { LucideIcon } from "@/components/ui/lucide-icon"
 import { Drawer } from "@/components/layout/drawer"
 import { Menu } from "@/components/layout/menu"
@@ -23,7 +24,7 @@ export default function Sidebar() {
         <Menu.List>
           {module != undefined &&
             module.menuItems != undefined &&
-            module.menuItems.map((item, index) => (
+            module.menuItems.map((item: MenuItem, index: number) => (
               <Menu.Item key={index} href={item.route} icon={<LucideIcon name={item.icon} size={size} />}>
                 {item.label}
               </Menu.Item>

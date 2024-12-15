@@ -16,7 +16,7 @@ import SpinnerLoading from "@/components/layout/spinner-loading"
 type DataTableProps<T> = {
   swrResponse: SWRDataPaginationResponse<T>
   columns?: DataTableColumn[]
-  filterConfig: FilterConfig
+  filterConfig?: FilterConfig
   children?: React.ReactNode
 }
 
@@ -52,7 +52,7 @@ function DataTableWithProvider<T>({
 
   return (
     <React.Fragment>
-      <FilterComponent config={filterConfig} onApplyFilters={handleApplyFilters} />
+      {filterConfig && <FilterComponent config={filterConfig} onApplyFilters={handleApplyFilters} />}
       <Table className="border-b border-gray-200">
         <TableHeader>
           <TableRow>

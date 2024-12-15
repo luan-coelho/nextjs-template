@@ -40,7 +40,7 @@ export default function EditModulePage() {
 
   async function onUpdate(data: UpdateModule) {
     try {
-      await moduleService.updateModule(params.id, data)
+      await moduleService.updateById(params.id, data)
       toast.success("Módulo atualizado com sucesso.")
     } catch (error) {
       const apiError = error as ApiError

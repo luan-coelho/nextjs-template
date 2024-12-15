@@ -71,7 +71,7 @@ const filterConfig: FilterConfig = {
 export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
   async function handleDelete(id: string) {
     try {
-      await moduleService.deleteModule(id)
+      await moduleService.deleteById(id)
       toast.success("Módulo deletado com sucesso.")
       swrResponse.mutate()
     } catch (error) {
@@ -82,7 +82,7 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
 
   async function handleDisable(id: string) {
     try {
-      await moduleService.disableModule(id)
+      await moduleService.disableById(id)
       toast.success("Módulo desativado com sucesso.")
       swrResponse.mutate()
     } catch (error) {
@@ -93,7 +93,7 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
 
   async function handleActivate(id: string) {
     try {
-      await moduleService.activateModule(id)
+      await moduleService.activateById(id)
       toast.success("Módulo ativado com sucesso.")
       swrResponse.mutate()
     } catch (error) {

@@ -1,16 +1,20 @@
-export interface MenuItem {
+export interface BaseEntity {
   id: string
-  label: string
-  route: string
-  icon: string
-  position: number
-  parent?: MenuItem
+  createdAt: Date
+  updatedAt: Date
   active: boolean
 }
 
-export interface Module {
-  id: string
+export interface Module extends BaseEntity {
   name: string
   menuItems: MenuItem[]
-  active: boolean
+}
+
+export interface MenuItem extends BaseEntity {
+  label: string
+  description: string
+  route: string
+  icon: string
+  // position: number
+  subItems: MenuItem[]
 }

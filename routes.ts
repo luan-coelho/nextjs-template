@@ -11,6 +11,12 @@ const routes = {
     edit: (id: string) => `/modules/${id}/edit`,
     show: (id: string) => `/modules/${id}`,
   },
+  menuItems: {
+    index: "/menu-items",
+    create: "/menu-items/create",
+    edit: (id: string) => `/menu-items/${id}/edit`,
+    show: (id: string) => `/menu-items/${id}`,
+  },
 }
 
 const apiRoutes = {
@@ -20,6 +26,12 @@ const apiRoutes = {
     create: "/modules/create",
     edit: (id: string) => `/modules/${id}/edit`,
     show: (id: string) => `/modules/${id}`,
+  },
+  menuItems: {
+    index: "/menu-items",
+    create: "/menu-items/create",
+    edit: (id: string) => `/menu-items/${id}/edit`,
+    show: (id: string) => `/menu-items/${id}`,
   },
 }
 
