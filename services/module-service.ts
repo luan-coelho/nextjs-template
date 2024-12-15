@@ -2,13 +2,8 @@ import { apiRoutes } from "@/routes"
 import { Service } from "@/services/service"
 import { DataPagination, Pageable } from "@/types"
 
+import { Module } from "@/types/backend-model"
 import apiClient from "@/lib/api-client"
-
-export interface Module {
-  id: string
-  name: string
-  description: string
-}
 
 export class ModuleService extends Service {
   async fetchModules({ page, size, sort, filters }: Pageable): Promise<DataPagination<Module>> {

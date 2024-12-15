@@ -10,7 +10,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import FilterComponent, { FilterConfig } from "@/components/ui/data-table/data-table-filters"
 import DataTableHeader from "@/components/ui/data-table/data-table-header"
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination"
-import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table"
+import { Table, TableBody, TableHeader, TableRow } from "@/components/ui/table"
 import SpinnerLoading from "@/components/layout/spinner-loading"
 
 type DataTableProps<T> = {
@@ -67,18 +67,13 @@ function DataTableWithProvider<T>({
             ))}
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {isLoading ? (
-            <TableRow>
-              <TableCell>
-                <SpinnerLoading />
-              </TableCell>
-            </TableRow>
-          ) : (
-            children
-          )}
-        </TableBody>
+        <TableBody>{!isLoading && children}</TableBody>
       </Table>
+      {isLoading && (
+        <div className="flex items-center justify-center p-5">
+          <SpinnerLoading />
+        </div>
+      )}
       {!isLoading && pagination.itemsOnPage === 0 && (
         <div className="flex flex-col items-center justify-end gap-5 p-5 px-2">
           <Image src="images/no-data.svg" alt="Nenhum registro encontrado" width={100} height={100} />

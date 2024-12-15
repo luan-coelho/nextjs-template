@@ -7,6 +7,7 @@ import { ApiError, SWRDataPaginationResponse } from "@/types"
 import { Activity, CirclePower, Eye, Pencil } from "lucide-react"
 import { toast } from "sonner"
 
+import { Module } from "@/types/backend-model"
 import { ActionButton, actionButtoncolorClasses } from "@/components/ui/action-button"
 import { Button } from "@/components/ui/button"
 import DataTable, { DataTableColumn } from "@/components/ui/data-table/data-table"
@@ -46,13 +47,13 @@ const filterConfig: FilterConfig = {
       ],
     },
     {
-      field: "status",
+      field: "active",
       label: "Situação",
       type: "select",
       operations: [{ value: "eq", label: FilterOperationLabel.EQUALS }],
       options: [
-        { value: "active", label: "Ativo" },
-        { value: "inactive", label: "Desativado" },
+        { value: "true", label: "Ativo" },
+        { value: "false", label: "Desativado" },
       ],
     },
     {
@@ -103,7 +104,7 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
 
   return (
     <DataTable swrResponse={swrResponse} columns={columns} filterConfig={filterConfig}>
-      {swrResponse.data.map(module => (
+      {swrResponse.data?.map(module => (
         <TableRow key={module.id}>
           <TableCell>{module.name}</TableCell>
           <TableCell>

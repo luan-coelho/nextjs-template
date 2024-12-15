@@ -1,5 +1,3 @@
-import { UseMutationResult } from "@tanstack/react-query"
-
 export interface BreadcrumbContentItem {
   label: string
   href?: string

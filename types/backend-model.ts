@@ -1,4 +1,4 @@
-interface MenuItem {
+export interface MenuItem {
   id: string
   label: string
   route: string
@@ -8,7 +8,7 @@ interface MenuItem {
   active: boolean
 }
 
-interface Module {
+export interface Module {
   id: string
   name: string
   menuItems: MenuItem[]

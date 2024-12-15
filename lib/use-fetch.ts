@@ -1,6 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-// noinspection JSIgnoredPromiseFromCall
-
 import { useCallback, useEffect, useRef, useState } from "react"
 
 import { fetcher } from "@/lib/api-client"
@@ -21,6 +18,7 @@ function useNoCacheQuery<T>(url: string, options: UseNoCacheQueryOptions = {}): 
   const [error, setError] = useState<Error | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const hasFetched = useRef(false)
+  const previousUrl = useRef<string>(url)
 
   const fetchData = useCallback(async () => {
     setIsLoading(true)
@@ -34,14 +32,16 @@ function useNoCacheQuery<T>(url: string, options: UseNoCacheQueryOptions = {}): 
     } finally {
       setIsLoading(false)
     }
+    // eslint-disable-next-line
   }, [url, options.headers])
 
   useEffect(() => {
-    if (!hasFetched.current) {
+    if (previousUrl.current !== url || !hasFetched.current) {
+      previousUrl.current = url
       hasFetched.current = true
       fetchData()
     }
-  }, [fetchData])
+  }, [url, fetchData])
 
   const mutate = useCallback(() => {
     fetchData()

@@ -2,10 +2,9 @@
 
 import "@/styles/globals.css"
 
-import React, { ReactNode } from "react"
+import React, { ReactNode, Suspense } from "react"
 import { Public_Sans as FontSans } from "next/font/google"
 import { Ban, CircleCheckBig, CircleEllipsis, Info, TriangleAlert } from "lucide-react"
-import NextTopLoader from "nextjs-toploader"
 
 import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/sonner"
@@ -29,18 +28,10 @@ export default function DashBoardLayout({ children }: { children: ReactNode }) {
           <Sidebar />
 
           <div className="flex w-full flex-col">
-            <NextTopLoader
-              color="#1677FF"
-              initialPosition={0.08}
-              crawlSpeed={200}
-              height={4}
-              crawl={true}
-              showSpinner={false}
-              easing="ease"
-              speed={200}
-            />
             <Header />
-            <Content>{children}</Content>
+            <Suspense>
+              <Content>{children}</Content>
+            </Suspense>
             <Toaster
               toastOptions={{
                 duration: 5000,
