@@ -2,6 +2,7 @@ import { createContext, ReactNode, useContext, useEffect, useState } from "react
 import { changeCurrentModuleCookie, getCurrentModuleCookieId } from "@/actions/actions"
 import useSWR from "swr"
 
+import { Module } from "@/types/backend-model"
 import { fetcher } from "@/lib/api-client"
 
 type SidebarContextType = {

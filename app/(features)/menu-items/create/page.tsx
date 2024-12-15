@@ -85,10 +85,10 @@ export default function CreateMenuItemPage() {
                 control={control}
                 name="icon"
                 render={({ field: { onChange } }) => (
-                  <div className="col-span-12">
-                    <Form.Label htmlFor="icon">Ícone</Form.Label>
-                    <IconSelector onSelect={icon => onChange(icon)} />
+                  <div className="col-span-12 space-y-1">
                     <Form.Field>
+                      <Form.Label htmlFor="icon">Ícone</Form.Label>
+                      <IconSelector name="icon" onSelect={icon => onChange(icon)} />
                       <Form.ErrorMessage field="icon" />
                     </Form.Field>
                   </div>

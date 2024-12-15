@@ -1,9 +1,14 @@
 import { ApiError } from "@/types"
 
-export const fetcher = async <T>(endpoint: string, options?: RequestInit): Promise<T> => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
+export const fetcherWithCache = async <T>(endpoint: string, options?: RequestInit): Promise<T> => {
+  return fetcher(endpoint, { cache: "force-cache", ...options }, false)
+}
+
+export const fetcher = async <T>(endpoint: string, options?: RequestInit, useApiUrl: boolean = true): Promise<T> => {
+  const url: string = useApiUrl ? `${process.env.NEXT_PUBLIC_API_URL}${endpoint}` : endpoint
+
+  const res = await fetch(url, {
     ...options,
-    cache: "no-cache",
     headers: {
       "Content-Type": "application/json",
       ...(options?.headers || {}),

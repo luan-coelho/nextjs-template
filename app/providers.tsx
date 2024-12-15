@@ -12,6 +12,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         revalidateOnReconnect: false,
         revalidateIfStale: false,
         revalidateOnMount: true,
+        errorRetryCount: 0,
       }}>
       <SidebarProvider>{children}</SidebarProvider>
     </SWRConfig>
