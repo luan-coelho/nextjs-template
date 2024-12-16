@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect } from "react"
+import { DataPagination } from "@/types"
 import { Check, ChevronsUpDown } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -24,7 +25,7 @@ const languages = [
 interface SelectAutocompleteProps<T> extends React.HTMLAttributes<HTMLDivElement> {
   value: string
   placeholder?: string
-  fn?: (value: string) => T[]
+  fn?: (value: string) => T[] | DataPagination<T>
 }
 
 export default function SelectAutocomplete<T>({ value, onChange, placeholder, className }: SelectAutocompleteProps<T>) {
@@ -43,7 +44,7 @@ export default function SelectAutocomplete<T>({ value, onChange, placeholder, cl
       <PopoverTrigger asChild>
         <FormControl>
           <Button
-            variant="outline"
+            variant="dropdown"
             role="combobox"
             className={cn("flex justify-between gap-2", !value && "text-muted-foreground", className)}>
             {value ? languages.find(language => language.value === value)?.label : placeholder || "Selecione"}
