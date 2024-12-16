@@ -12,9 +12,16 @@ export interface TableSortHeaderProps {
   field?: string
   className?: string
   position?: "left" | "center" | "right"
+  showSort?: boolean
 }
 
-export default function TableSortHeader({ title, field, className, position = "left" }: TableSortHeaderProps) {
+export default function TableSortHeader({
+  title,
+  field,
+  className,
+  position = "left",
+  showSort = true,
+}: TableSortHeaderProps) {
   const { handleSortChange } = useDataTableContext()
   const [sort, setSort] = useState<"asc" | "desc" | null>(null)
 
@@ -56,10 +63,12 @@ export default function TableSortHeader({ title, field, className, position = "l
   }
 
   return (
-    <TableHead className={cn("cursor-pointer", className)}>
-      <div className={cn("flex items-center gap-1 px-3 py-3", positionClass[position])} onClick={handleChangeSort}>
+    <TableHead className={cn(showSort ? "cursor-pointer" : "cursor-auto", className)}>
+      <div
+        className={cn("flex items-center gap-1 px-3 py-3", positionClass[position])}
+        onClick={showSort ? handleChangeSort : undefined}>
         <span>{title}</span>
-        <div className="text-xs">{getSortIcon()}</div>
+        {showSort && <div className="text-xs">{getSortIcon()}</div>}
       </div>
     </TableHead>
   )

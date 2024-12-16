@@ -5,7 +5,7 @@ import { Module } from "@/types/backend-model"
 
 export class ModuleService extends Service<Module> {
   getUrl(): string {
-    return apiRoutes.modules.index
+    return apiRoutes.modules.allWithPagination
   }
 }
 

@@ -12,7 +12,7 @@ export default function StatusBadge({ status }: { status: boolean }) {
   }
 
   return (
-    <span className={`rounded-sm px-2 py-1 text-xs font-semibold ${statusClasses[statusBadgeType]}`}>
+    <span className={`w-auto rounded-sm px-2 py-1 text-xs font-semibold ${statusClasses[statusBadgeType]}`}>
       {statusBadgeType}
     </span>
   )

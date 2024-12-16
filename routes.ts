@@ -22,13 +22,15 @@ const routes = {
 const apiRoutes = {
   home: "/",
   modules: {
-    index: "/modules",
+    allWithPagination: "/modules",
+    all: "/modules/all",
     create: "/modules/create",
     edit: (id: string) => `/modules/${id}/edit`,
     show: (id: string) => `/modules/${id}`,
   },
   menuItems: {
-    index: "/menu-items",
+    allWithPagination: "/menu-items",
+    all: "/menu-items/all",
     create: "/menu-items/create",
     edit: (id: string) => `/menu-items/${id}/edit`,
     show: (id: string) => `/menu-items/${id}`,

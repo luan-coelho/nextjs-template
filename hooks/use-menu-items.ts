@@ -6,7 +6,7 @@ import useNoCacheQuery from "@/lib/use-fetch"
 
 export function useMenuItems(pageable: Pageable): SWRDataPaginationResponse<MenuItem> {
   const { page, size, sort, filters } = pageable || PAGEABLE
-  const url = `${apiRoutes.menuItems.index}?page=${page}&size=${size}&sort=${sort}&filters=${filters}`
+  const url = `${apiRoutes.menuItems.allWithPagination}?page=${page}&size=${size}&sort=${sort}&filters=${filters}`
 
   const { data, isLoading, error, mutate } = useNoCacheQuery<DataPagination<MenuItem>>(url)
 

@@ -6,7 +6,7 @@ import useNoCacheQuery from "@/lib/use-fetch"
 
 export function useModules(pageable: Pageable): SWRDataPaginationResponse<Module> {
   const { page, size, sort, filters } = pageable || PAGEABLE
-  const url = `${apiRoutes.modules.index}?page=${page}&size=${size}&sort=${sort}&filters=${filters}`
+  const url = `${apiRoutes.modules.allWithPagination}?page=${page}&size=${size}&sort=${sort}&filters=${filters}`
 
   const { data, isLoading, error, mutate } = useNoCacheQuery<DataPagination<Module>>(url)
 

@@ -12,6 +12,7 @@ import { ActionButton, actionButtoncolorClasses } from "@/components/ui/action-b
 import { Button } from "@/components/ui/button"
 import DataTable, { DataTableColumn } from "@/components/ui/data-table/data-table"
 import ImprovedAlertDialog from "@/components/ui/improved-alert-dialog"
+import { LucideIcon } from "@/components/ui/lucide-icon"
 import { TableCell, TableRow } from "@/components/ui/table"
 import StatusBadge from "@/components/layout/status-badge"
 
@@ -21,8 +22,9 @@ type MenuItemDataTableProps = {
 
 const columns: DataTableColumn[] = [
   { title: "Label", field: "label", position: "left", className: "w-2/12" },
-  { title: "Descrição", field: "description", position: "left", className: "w-4/12" },
+  { title: "Descrição", field: "description", position: "left", className: "w-3/12" },
   { title: "Rota", field: "route", position: "center", className: "w-2/12" },
+  { title: "Ícone", field: "icon", position: "center", className: "w-1/12", showSort: false },
   { title: "Situação", field: "active", position: "center", className: "w-2/12 text-center" },
   { title: "Ações", position: "center", className: "w-2/12 text-center" },
 ]
@@ -68,6 +70,11 @@ export default function MenuItemDataTable({ swrResponse }: MenuItemDataTableProp
           <TableCell>{menuItem.label}</TableCell>
           <TableCell>{menuItem.description}</TableCell>
           <TableCell className="text-center">{menuItem.route}</TableCell>
+          <TableCell className="text-center">
+            <div className="flex items-center justify-center gap-2">
+              <LucideIcon name={menuItem.icon} />
+            </div>
+          </TableCell>
           <TableCell>
             <div className="flex items-center justify-center gap-2">
               <StatusBadge status={menuItem.active} />

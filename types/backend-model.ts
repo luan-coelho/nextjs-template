@@ -15,6 +15,5 @@ export interface MenuItem extends BaseEntity {
   description: string
   route: string
   icon: string
-  // position: number
   subItems: MenuItem[]
 }

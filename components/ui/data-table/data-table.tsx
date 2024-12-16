@@ -25,6 +25,7 @@ export type DataTableColumn = {
   field?: string
   className?: string
   position?: "left" | "center" | "right"
+  showSort?: boolean
 }
 
 function DataTableWithProvider<T>({
@@ -63,6 +64,7 @@ function DataTableWithProvider<T>({
                 title={column.title}
                 field={column.field}
                 position={column.position}
+                showSort={column.showSort}
               />
             ))}
           </TableRow>

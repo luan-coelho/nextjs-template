@@ -42,7 +42,7 @@ export default function IconSelector({ name, value, onSelect }: IconSelectorProp
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
-        <ScrollArea className="grid h-[300px] gap-4">
+        <ScrollArea className="grid max-h-[300px] gap-4">
           <div className="grid max-h-96 grid-cols-1 gap-4 p-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
             {filteredIcons.map(name => (
               <button
