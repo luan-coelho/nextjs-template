@@ -6,7 +6,6 @@ import { Check, ChevronsUpDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { FormControl } from "@/components/ui/form"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 export type ComboboxItem = {
@@ -15,42 +14,52 @@ export type ComboboxItem = {
 }
 
 interface ComboboxProps extends React.HTMLAttributes<HTMLDivElement> {
-  defaultItem: string
+  defaultItem?: string
   items: ComboboxItem[]
   placeholder?: string
+  emptyMessage?: string
+  onSelectItem: (value: string) => void
 }
 
-export default function Combobox({ defaultItem, items, placeholder, onChange, className }: ComboboxProps) {
+export default function Combobox({
+  defaultItem,
+  items,
+  placeholder,
+  emptyMessage,
+  onSelectItem,
+  className,
+}: ComboboxProps) {
+  const [open, setOpen] = React.useState<boolean>(false)
+  const [value, setValue] = React.useState<string>(defaultItem || "")
+
+  function handleSelect(currentValue: string) {
+    setValue(currentValue === value ? "" : currentValue)
+    setOpen(false)
+    onSelectItem(currentValue)
+  }
+
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <FormControl>
-          <Button
-            variant="dropdown"
-            role="combobox"
-            className={cn("flex justify-between gap-2", !defaultItem && "text-muted-foreground", className)}>
-            {defaultItem ? items.find(item => item.value === defaultItem)?.label : placeholder || "Selecione"}
-            <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
-          </Button>
-        </FormControl>
+        <Button
+          variant="dropdown"
+          role="combobox"
+          aria-expanded={open}
+          className={cn("flex justify-between gap-2", !defaultItem && "text-muted-foreground", className)}>
+          {defaultItem ? items.find(item => item.value === defaultItem)?.label : placeholder || "Selecione"}
+          <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+        </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0">
         <Command>
           <CommandInput placeholder={placeholder || "Selecione"} />
           <CommandList>
-            <CommandEmpty>No language found.</CommandEmpty>
+            <CommandEmpty>{emptyMessage}</CommandEmpty>
             <CommandGroup>
               {items.map(item => (
-                <CommandItem
-                  value={item.label}
-                  key={item.value}
-                  onSelect={() => {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-expect-error
-                    onChange ? onChange(item.value) : undefined
-                  }}>
+                <CommandItem value={item.label} key={item.value} onSelect={handleSelect}>
                   {item.label}
-                  <Check className={cn("ml-auto", item.value === defaultItem ? "opacity-100" : "opacity-0")} />
+                  <Check className={cn("ml-auto", item.value === value ? "opacity-100" : "opacity-0")} />
                 </CommandItem>
               ))}
             </CommandGroup>

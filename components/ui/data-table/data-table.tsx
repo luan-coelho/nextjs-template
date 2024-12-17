@@ -1,7 +1,6 @@
 "use client"
 
 import React from "react"
-import Image from "next/image"
 import { DataTableProvider, useDataTableContext } from "@/contexts/data-table-context"
 import { SWRDataPaginationResponse } from "@/types"
 import { AlertCircle } from "lucide-react"
