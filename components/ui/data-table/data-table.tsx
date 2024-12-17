@@ -11,6 +11,7 @@ import FilterComponent, { FilterConfig } from "@/components/ui/data-table/data-t
 import DataTableHeader from "@/components/ui/data-table/data-table-header"
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination"
 import { Table, TableBody, TableHeader, TableRow } from "@/components/ui/table"
+import EmptyData from "@/components/empty-data"
 import SpinnerLoading from "@/components/layout/spinner-loading"
 
 type DataTableProps<T> = {
@@ -76,12 +77,7 @@ function DataTableWithProvider<T>({
           <SpinnerLoading />
         </div>
       )}
-      {!isLoading && pagination.itemsOnPage === 0 && (
-        <div className="flex flex-col items-center justify-end gap-5 p-5 px-2">
-          <Image src="images/no-data.svg" alt="Nenhum registro encontrado" width={100} height={100} />
-          <div className="flex-1 text-center text-sm text-muted-foreground"> Nenhum registro encontrado</div>
-        </div>
-      )}
+      {!isLoading && pagination.itemsOnPage === 0 && <EmptyData />}
       <DataTablePagination
         currentPage={pagination.currentPage}
         itemsPerPage={pagination.itemsPerPage}

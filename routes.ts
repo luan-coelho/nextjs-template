@@ -27,6 +27,7 @@ const apiRoutes = {
     create: "/modules/create",
     edit: (id: string) => `/modules/${id}/edit`,
     show: (id: string) => `/modules/${id}`,
+    updateMenuItems: (id: string) => `/modules/${id}/update-menu-items-order`,
   },
   menuItems: {
     allWithPagination: "/menu-items",

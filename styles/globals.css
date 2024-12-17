@@ -66,7 +66,7 @@
 }
 
 .form-group {
-  @apply flex flex-col gap-2 col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-3;
+  @apply col-span-6 flex flex-col gap-2 sm:col-span-6 md:col-span-4 lg:col-span-3;
 }
 
 .form-group span {

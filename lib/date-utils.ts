@@ -1,7 +1,7 @@
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 
-function defaultFormatDate(date: Date, formatString: string, locale = ptBR): string {
+function defaultFormatDate(date?: Date, formatString: string = "dd/MM/yyyy", locale = ptBR): string {
   if (!date) {
     return ""
   }
@@ -16,7 +16,7 @@ function formatDate(date: Date): string {
   return defaultFormatDate(date, "dd/MM/yyyy")
 }
 
-function formatDateTime(date: Date): string {
+function formatDateTime(date?: Date): string {
   return defaultFormatDate(date, "dd/MM/yyyy HH:mm")
 }
 

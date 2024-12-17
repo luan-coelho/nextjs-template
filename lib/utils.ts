@@ -2,6 +2,9 @@ import { PAGEABLE, Pageable } from "@/types"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
+import { MenuItem } from "@/types/backend-model"
+import { MenuItemsOrder } from "@/components/menu-item-draggable-list"
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -29,4 +32,18 @@ export function extractPaginationQueryParams(searchParams: URLSearchParams): Pag
     filters = encodeURIComponent(filters)
   }
   return { page, size, sort, filters } as Pageable
+}
+
+/**
+ * Ordena os itens de menu de acordo com a ordem definida na configuração do módulo
+ * @param menuItems
+ * @param menuItemsOrder
+ */
+export function orderMenuItems(menuItems: MenuItem[], menuItemsOrder: MenuItemsOrder[]): MenuItem[] {
+  const orderMap = new Map(menuItemsOrder.map(item => [item.menuItemId, item.order]))
+  return [...menuItems].sort((a, b) => {
+    const orderA = orderMap.get(a.id) ?? Number.MAX_SAFE_INTEGER
+    const orderB = orderMap.get(b.id) ?? Number.MAX_SAFE_INTEGER
+    return orderA - orderB
+  })
 }

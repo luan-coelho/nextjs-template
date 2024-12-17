@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { redirect, useParams, useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { routes } from "@/routes"
 import menuItemService from "@/services/menu-item-service"
 import { ApiError } from "@/types"

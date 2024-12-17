@@ -12,7 +12,7 @@ type ButtonBackProps = {
 
 export default function ButtonBack({ href, children }: ButtonBackProps) {
   return (
-    <div className="flex items-center justify-end">
+    <div className="mt-5 flex items-center justify-end sm:mt-0">
       <Link
         href={href}
         className={cn(
