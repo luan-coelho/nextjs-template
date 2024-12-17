@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { useParams } from "next/navigation"
+import { redirect, useParams, useRouter } from "next/navigation"
 import { routes } from "@/routes"
 import menuItemService from "@/services/menu-item-service"
 import { ApiError } from "@/types"
@@ -14,12 +14,14 @@ import BreadcrumbContent from "@/components/layout/content-breadcrumb"
 import PageTitle from "@/components/layout/page-title"
 
 export default function EditMenuItemPage() {
+  const router = useRouter()
   const params = useParams<{ id: string }>()
   const { data: menuItem, isLoading } = useMenuItem(params.id)
 
   async function onUpdate(data: MenuItemSchema) {
     try {
-      await menuItemService.updateById(params.id, data)
+      const menuItem = await menuItemService.updateById(params.id, data)
+      router.replace(routes.menuItems.show(menuItem.id))
       toast.success("Item de menu atualizado com sucesso.")
     } catch (error) {
       const apiError = error as ApiError

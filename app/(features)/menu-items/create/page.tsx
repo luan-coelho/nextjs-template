@@ -17,9 +17,9 @@ export default function CreateMenuItemPage() {
 
   async function createMenuItem(data: MenuItemSchema) {
     try {
-      await menuItemService.create(data)
+      const menuItem = await menuItemService.create(data)
       toast.success("Item de menu cadastrado com sucesso.")
-      router.push(routes.menuItems.index)
+      router.replace(routes.menuItems.show(menuItem.id))
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao cadastrar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)

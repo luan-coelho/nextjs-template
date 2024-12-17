@@ -13,9 +13,9 @@ function isValidIconComponent(componentName: string): componentName is IconCompo
 export function LucideIcon({ name, ...props }: IconProps) {
   const kebabToPascal = (str: string) =>
     str
-      .split("-")
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join("")
+      ?.split("-")
+      ?.map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      ?.join("")
 
   const componentName = kebabToPascal(name)
 

@@ -1,9 +1,11 @@
 "use client"
 
 import React from "react"
+import Link from "next/link"
 import { useParams } from "next/navigation"
 import { routes } from "@/routes"
 
+import { dateUtils } from "@/lib/date-utils"
 import { useMenuItem } from "@/hooks/use-menu-items"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
@@ -24,30 +26,46 @@ export default function ShowMenuItemPage() {
     }
     return (
       <div className="grid grid-cols-12 gap-4">
-        <div className="form-group col-span-12 md:col-span-6">
+        <div className="form-group">
           <Label>Label</Label>
           <span>{menuItem.label}</span>
         </div>
 
-        <div className="form-group col-span-12 md:col-span-6">
+        <div className="form-group">
           <Label>Rota</Label>
-          <span>{menuItem.route}</span>
+          <Link
+            className="flex size-fit items-center justify-center gap-2 rounded-sm border border-primary bg-primary/5 px-2 py-1 text-xs font-semibold text-primary"
+            href={menuItem?.route || "#"}>
+            <LucideIcon name="link" size={16} /> {menuItem?.route}
+          </Link>
         </div>
 
-        <div className="form-group col-span-12">
+        <div className="form-group">
           <Label>Descrição</Label>
           <span>{menuItem.description}</span>
         </div>
 
-        <div className="form-group col-span-6">
+        <div className="form-group col-span-12 md:col-span-4 lg:col-span-3">
           <Label>Ícone</Label>
-          <span>{menuItem.icon}</span>
-          {/*<LucideIcon name={menuItem.icon} />*/}
+          <div className="flex items-center gap-2">
+            <LucideIcon name={menuItem.icon} />
+            <span>{menuItem.icon}</span>
+          </div>
         </div>
 
-        <div className="form-group col-span-6">
+        <div className="col-span-6 flex size-fit flex-col gap-2 md:col-span-4 lg:col-span-3">
           <Label>Situação</Label>
           <StatusBadge status={menuItem.active} />
+        </div>
+
+        <div className="form-group">
+          <Label>Data de cadastro</Label>
+          <span>{dateUtils.formatDateTime(menuItem?.createdAt)}</span>
+        </div>
+
+        <div className="form-group">
+          <Label>Data da última modificação</Label>
+          <span>{dateUtils.formatDateTime(menuItem?.updatedAt) || "-"}</span>
         </div>
       </div>
     )
