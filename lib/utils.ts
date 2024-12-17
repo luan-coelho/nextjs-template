@@ -35,11 +35,19 @@ export function extractPaginationQueryParams(searchParams: URLSearchParams): Pag
 }
 
 /**
- * Ordena os itens de menu de acordo com a ordem definida na configuração do módulo
+ * Ordena os itens de menu conforme a ordem definida na configuração do módulo
  * @param menuItems
  * @param menuItemsOrder
  */
 export function orderMenuItems(menuItems: MenuItem[], menuItemsOrder: MenuItemsOrder[]): MenuItem[] {
+  if (!menuItems || !menuItemsOrder) {
+    return []
+  }
+
+  if (!menuItemsOrder.length) {
+    return menuItems
+  }
+
   const orderMap = new Map(menuItemsOrder.map(item => [item.menuItemId, item.order]))
   return [...menuItems].sort((a, b) => {
     const orderA = orderMap.get(a.id) ?? Number.MAX_SAFE_INTEGER

@@ -2,6 +2,8 @@
 
 import { cookies } from "next/headers"
 
+import { Module } from "@/types/backend-model"
+
 export async function changeCurrentModuleCookie(module: Module) {
   const cookieStore = await cookies()
   cookieStore.set("CURRENT_MODULE", module.id)

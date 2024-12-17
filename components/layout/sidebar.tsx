@@ -7,31 +7,42 @@ import { Rocket } from "lucide-react"
 import { MenuItem } from "@/types/backend-model"
 import { orderMenuItems } from "@/lib/utils"
 import { LucideIcon } from "@/components/ui/lucide-icon"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Drawer } from "@/components/layout/drawer"
 import { Menu } from "@/components/layout/menu"
 import { MenuItemsOrder } from "@/components/menu-item-draggable-list"
 
 export default function Sidebar() {
-  const { isSidebarExpanded, currentModule: module } = useSidebarContext()
+  const { isSidebarExpanded, currentModule: module, isLoading } = useSidebarContext()
 
   const size = isSidebarExpanded ? 18 : 20
 
   function getMenuItemsList() {
-    if (!module || !module.menuItems) {
-      return null
+    if (module.menuItemsOrder) {
+      const menuItemsOrder: MenuItemsOrder[] = JSON.parse(module.menuItemsOrder)
+      module.menuItems = orderMenuItems(module.menuItems, menuItemsOrder)
     }
 
-    const menuItemsOrder: MenuItemsOrder[] = JSON.parse(module.menuItemsOrder)
-    const orderedMenuItems = orderMenuItems(module.menuItems, menuItemsOrder)
-
     return (
-      <>
-        {orderedMenuItems.map((item: MenuItem, index: number) => (
+      <React.Fragment>
+        {module.menuItems?.map((item: MenuItem, index: number) => (
           <Menu.Item key={index} href={item.route} icon={<LucideIcon name={item.icon} size={size} />}>
             {item.label}
           </Menu.Item>
         ))}
-      </>
+      </React.Fragment>
+    )
+  }
+
+  function getSidebarMenu() {
+    if (isLoading) {
+      return <Skeleton className="h-11 w-full" />
+    }
+    return (
+      <Drawer.Menu.Root>
+        <Menu.Label>Menu</Menu.Label>
+        <Menu.List>{getMenuItemsList()}</Menu.List>
+      </Drawer.Menu.Root>
     )
   }
 
@@ -40,10 +51,7 @@ export default function Sidebar() {
       <Drawer.Logo className="sticky top-0">
         <Rocket className="text-primary" /> {isSidebarExpanded && <h1>Logo</h1>}
       </Drawer.Logo>
-      <Drawer.Menu.Root>
-        <Menu.Label>Menu</Menu.Label>
-        <Menu.List>{getMenuItemsList()}</Menu.List>
-      </Drawer.Menu.Root>
+      {getSidebarMenu()}
       {/*<Drawer.AuthenticatedUser />*/}
     </Drawer.Root>
   )

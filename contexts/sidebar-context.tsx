@@ -6,6 +6,7 @@ import { Module } from "@/types/backend-model"
 import { fetcher } from "@/lib/api-client"
 
 type SidebarContextType = {
+  isLoading: boolean
   isSidebarExpanded: boolean
   toggleSidebar: () => void
   changeCurrentModule: (module: Module) => void
@@ -49,7 +50,8 @@ export const SidebarProvider = ({ children }: { children: ReactNode }) => {
 
   // noinspection JSUnusedGlobalSymbols
   return (
-    <SidebarContext.Provider value={{ isSidebarExpanded, toggleSidebar, currentModule, changeCurrentModule, modules }}>
+    <SidebarContext.Provider
+      value={{ isSidebarExpanded, toggleSidebar, currentModule, changeCurrentModule, modules, isLoading }}>
       {children}
     </SidebarContext.Provider>
   )

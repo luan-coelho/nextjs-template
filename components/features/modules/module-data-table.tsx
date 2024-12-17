@@ -103,7 +103,7 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
   }
 
   return (
-    <DataTable swrResponse={swrResponse} columns={columns} filterConfig={filterConfig}>
+    <DataTable swrResponse={swrResponse} columns={columns}>
       {swrResponse.data?.map(module => (
         <TableRow key={module.id}>
           <TableCell>{module.name}</TableCell>
