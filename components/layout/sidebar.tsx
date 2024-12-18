@@ -18,18 +18,21 @@ export default function Sidebar() {
   const size = isSidebarExpanded ? 18 : 20
 
   function getMenuItemsList() {
-    if (module.menuItemsOrder) {
+    if (module && module.menuItemsOrder) {
       const menuItemsOrder: MenuItemsOrder[] = JSON.parse(module.menuItemsOrder)
       module.menuItems = orderMenuItems(module.menuItems, menuItemsOrder)
     }
 
     return (
       <React.Fragment>
-        {module.menuItems?.map((item: MenuItem, index: number) => (
-          <Menu.Item key={index} href={item.route} icon={<LucideIcon name={item.icon} size={size} />}>
-            {item.label}
-          </Menu.Item>
-        ))}
+        <Menu.Label>Menu</Menu.Label>
+        <Menu.List>
+          {module?.menuItems?.map((item: MenuItem, index: number) => (
+            <Menu.Item key={index} href={item.route} icon={<LucideIcon name={item.icon} size={size} />}>
+              {item.label}
+            </Menu.Item>
+          ))}
+        </Menu.List>
       </React.Fragment>
     )
   }
@@ -38,12 +41,12 @@ export default function Sidebar() {
     if (isLoading) {
       return <Skeleton className="h-11 w-full" />
     }
-    return (
-      <Drawer.Menu.Root>
-        <Menu.Label>Menu</Menu.Label>
-        <Menu.List>{getMenuItemsList()}</Menu.List>
-      </Drawer.Menu.Root>
-    )
+
+    if (!module || !module.menuItems) {
+      return null
+    }
+
+    return <Drawer.Menu.Root>{getMenuItemsList()}</Drawer.Menu.Root>
   }
 
   return (
