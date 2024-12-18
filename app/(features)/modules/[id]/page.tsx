@@ -30,7 +30,7 @@ export default function ShowModulePage() {
     }
 
     return (
-      <div className="col-end-9 flex flex-col items-center space-y-4">
+      <div className="col-span-9 flex flex-col items-start justify-start">
         <Label>Itens de menu</Label>
         <MenuItemDraggableList module={module} />
       </div>
@@ -43,7 +43,7 @@ export default function ShowModulePage() {
     }
 
     return (
-      <div className="grid grid-cols-12 space-y-4">
+      <div className="grid grid-cols-12 gap-4">
         <div className="form-group col-span-3">
           <Label>Nome</Label>
           <span>{module?.name}</span>
@@ -55,7 +55,7 @@ export default function ShowModulePage() {
 
   return (
     <div>
-      <BreadcrumbContent items={[{ label: " Módulos", href: routes.modules.index }, { label: " Visualizar" }]} />
+      <BreadcrumbContent items={[{ label: "Módulos", href: routes.modules.index }, { label: "Visualizar" }]} />
       <PageTitle>Visualizar Módulo</PageTitle>
       <ButtonBack href={routes.modules.index} />
 

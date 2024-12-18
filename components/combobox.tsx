@@ -45,8 +45,8 @@ export default function Combobox({
           variant="dropdown"
           role="combobox"
           aria-expanded={open}
-          className={cn("flex justify-between gap-2", !defaultItem && "text-muted-foreground", className)}>
-          {defaultItem ? items.find(item => item.value === defaultItem)?.label : placeholder || "Selecione"}
+          className={cn("flex w-full justify-between gap-2", !defaultItem && "text-muted-foreground", className)}>
+          {value ? items.find(item => item.value === value)?.label : placeholder || "Selecione"}
           <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -57,7 +57,7 @@ export default function Combobox({
             <CommandEmpty>{emptyMessage}</CommandEmpty>
             <CommandGroup>
               {items.map(item => (
-                <CommandItem value={item.label} key={item.value} onSelect={handleSelect}>
+                <CommandItem value={item.value} key={item.value} onSelect={handleSelect}>
                   {item.label}
                   <Check className={cn("ml-auto", item.value === value ? "opacity-100" : "opacity-0")} />
                 </CommandItem>

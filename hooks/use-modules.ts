@@ -1,14 +1,14 @@
-import { apiRoutes } from "@/routes"
-import { DataPagination, PAGEABLE, Pageable, SWRDataPaginationResponse } from "@/types"
+import moduleService from "@/services/module-service"
+import { PAGEABLE, Pageable, SWRDataPaginationResponse } from "@/types"
+import { useQuery } from "@tanstack/react-query"
 
-import { Module } from "@/types/backend-model"
-import useNoCacheQuery from "@/lib/use-fetch"
+import { Module } from "@/types/model-types"
 
 export function useModules(pageable: Pageable): SWRDataPaginationResponse<Module> {
-  const { page, size, sort, filters } = pageable || PAGEABLE
-  const url = `${apiRoutes.modules.allWithPagination}?page=${page}&size=${size}&sort=${sort}&filters=${filters}`
-
-  const { data, isLoading, error, mutate } = useNoCacheQuery<DataPagination<Module>>(url)
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["modules"],
+    queryFn: () => moduleService.fetchAllWithPagination(pageable || PAGEABLE),
+  })
 
   if (error) {
     error.message = "Falha ao buscar módulos"
@@ -19,12 +19,14 @@ export function useModules(pageable: Pageable): SWRDataPaginationResponse<Module
     error,
     isLoading,
     pagination: data?.pagination || PAGEABLE,
-    mutate,
   } as SWRDataPaginationResponse<Module>
 }
 
 export function useModule(id: string) {
-  const { data, isLoading, error } = useNoCacheQuery<Module>(apiRoutes.modules.show(id))
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["module"],
+    queryFn: () => moduleService.fetchById(id),
+  })
 
   if (error) {
     error.message = "Falha ao buscar módulo"

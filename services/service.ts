@@ -5,10 +5,24 @@ import apiClient from "@/lib/api-client"
 export abstract class Service<T> {
   abstract getUrl(): string
 
+  /**
+   * Busca todos os registros com paginação
+   * @param page Página
+   * @param size Tamanho de registros por página
+   * @param sort Ordenação no formato campo:asc|desc
+   * @param filters Filtros no formato campo;operador;valor
+   */
   async fetchAllWithPagination({ page, size, sort, filters }: Pageable): Promise<DataPagination<T>> {
     return apiClient.get<DataPagination<T>>(
       `${this.getUrl()}?page=${page}&size=${size}&sort=${sort}&filters=${filters}`,
     )
+  }
+
+  /**
+   * Busca todos os registros sem paginação
+   */
+  async fetchAll(): Promise<T[]> {
+    return apiClient.get<T[]>(`${this.getUrl()}/all`)
   }
 
   async fetchById(id: string): Promise<T> {

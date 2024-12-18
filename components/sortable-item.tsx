@@ -2,7 +2,7 @@ import React from "react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 
-import { MenuItem } from "@/types/backend-model"
+import { MenuItem } from "@/types/model-types"
 import { LucideIcon } from "@/components/ui/lucide-icon"
 
 interface SortableItemProps {

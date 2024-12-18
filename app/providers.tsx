@@ -2,19 +2,15 @@
 
 import React from "react"
 import { SidebarProvider } from "@/contexts/sidebar-context"
-import { SWRConfig } from "swr"
+import { getQueryClient } from "@/get-query-client"
+import { QueryClientProvider } from "@tanstack/react-query"
 
 export default function Providers({ children }: { children: React.ReactNode }) {
+  const queryClient = getQueryClient()
+
   return (
-    <SWRConfig
-      value={{
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
-        revalidateIfStale: false,
-        revalidateOnMount: true,
-        errorRetryCount: 0,
-      }}>
+    <QueryClientProvider client={queryClient}>
       <SidebarProvider>{children}</SidebarProvider>
-    </SWRConfig>
+    </QueryClientProvider>
   )
 }

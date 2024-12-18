@@ -1,9 +1,9 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react"
 import { changeCurrentModuleCookie, getCurrentModuleCookieId } from "@/actions/actions"
-import useSWR from "swr"
+import userService from "@/services/user-service"
+import { useQuery } from "@tanstack/react-query"
 
-import { Module } from "@/types/backend-model"
-import { fetcher } from "@/lib/api-client"
+import { Module } from "@/types/model-types"
 
 type SidebarContextType = {
   isLoading: boolean
@@ -21,7 +21,10 @@ export const SidebarProvider = ({ children }: { children: ReactNode }) => {
   const [currentModule, setCurrentModule] = useState<Module>({} as Module)
   const [modules, setModules] = useState<Module[]>([])
   const id = "123e4567-e89b-12d3-a456-426614174001"
-  const { data: modulesApi, isLoading } = useSWR<Module[]>(`/users/${id}/modules`, fetcher)
+  const { data: modulesApi, isLoading } = useQuery({
+    queryKey: ["user-modules"],
+    queryFn: () => userService.getModulesByUserId(id),
+  })
 
   function toggleSidebar() {
     setIsSidebarExpanded(prev => !prev)

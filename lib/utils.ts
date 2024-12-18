@@ -2,7 +2,7 @@ import { PAGEABLE, Pageable } from "@/types"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
-import { MenuItem } from "@/types/backend-model"
+import { MenuItem } from "@/types/model-types"
 import { MenuItemsOrder } from "@/components/menu-item-draggable-list"
 
 export function cn(...inputs: ClassValue[]) {

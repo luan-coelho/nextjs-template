@@ -20,19 +20,26 @@ const routes = {
 }
 
 const apiRoutes = {
-  home: "/",
+  users: {
+    all: "/users",
+    create: "/users",
+    edit: (id: string) => `/users/${id}`,
+    show: (id: string) => `/users/${id}`,
+    modules: (id: string) => `/users/${id}/modules`,
+  },
   modules: {
     allWithPagination: "/modules",
     all: "/modules/all",
-    create: "/modules/create",
+    create: "/modules",
     edit: (id: string) => `/modules/${id}/edit`,
     show: (id: string) => `/modules/${id}`,
     updateMenuItems: (id: string) => `/modules/${id}/update-menu-items-order`,
+    addMenuItem: (id: string, menuItemId: string) => `/modules/${id}/add-menu-item/${menuItemId}`,
   },
   menuItems: {
     allWithPagination: "/menu-items",
     all: "/menu-items/all",
-    create: "/menu-items/create",
+    create: "/menu-items",
     edit: (id: string) => `/menu-items/${id}/edit`,
     show: (id: string) => `/menu-items/${id}`,
   },

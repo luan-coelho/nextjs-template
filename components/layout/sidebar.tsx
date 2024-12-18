@@ -4,7 +4,7 @@ import * as React from "react"
 import { useSidebarContext } from "@/contexts/sidebar-context"
 import { Rocket } from "lucide-react"
 
-import { MenuItem } from "@/types/backend-model"
+import { MenuItem } from "@/types/model-types"
 import { orderMenuItems } from "@/lib/utils"
 import { LucideIcon } from "@/components/ui/lucide-icon"
 import { Skeleton } from "@/components/ui/skeleton"

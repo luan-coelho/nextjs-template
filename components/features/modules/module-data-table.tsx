@@ -4,10 +4,11 @@ import React from "react"
 import { routes } from "@/routes"
 import moduleService from "@/services/module-service"
 import { ApiError, SWRDataPaginationResponse } from "@/types"
+import { useQueryClient } from "@tanstack/react-query"
 import { Activity, CirclePower, Eye, Pencil } from "lucide-react"
 import { toast } from "sonner"
 
-import { Module } from "@/types/backend-model"
+import { Module } from "@/types/model-types"
 import { ActionButton, actionButtoncolorClasses } from "@/components/ui/action-button"
 import { Button } from "@/components/ui/button"
 import DataTable, { DataTableColumn } from "@/components/ui/data-table/data-table"
@@ -69,11 +70,13 @@ const filterConfig: FilterConfig = {
 }
 
 export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
+  const queryClient = useQueryClient()
+
   async function handleDelete(id: string) {
     try {
       await moduleService.deleteById(id)
+      await queryClient.invalidateQueries({ queryKey: "modules" })
       toast.success("Módulo deletado com sucesso.")
-      swrResponse.mutate()
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao deletar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -83,8 +86,8 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
   async function handleDisable(id: string) {
     try {
       await moduleService.disableById(id)
+      await queryClient.invalidateQueries({ queryKey: "modules" })
       toast.success("Módulo desativado com sucesso.")
-      swrResponse.mutate()
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao desativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -94,8 +97,8 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
   async function handleActivate(id: string) {
     try {
       await moduleService.activateById(id)
+      await queryClient.invalidateQueries({ queryKey: "modules" })
       toast.success("Módulo ativado com sucesso.")
-      swrResponse.mutate()
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao ativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)

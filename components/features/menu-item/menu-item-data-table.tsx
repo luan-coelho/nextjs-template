@@ -7,7 +7,7 @@ import { ApiError, SWRDataPaginationResponse } from "@/types"
 import { Activity, CirclePower, Eye, Pencil } from "lucide-react"
 import { toast } from "sonner"
 
-import { MenuItem } from "@/types/backend-model"
+import { MenuItem } from "@/types/model-types"
 import { ActionButton, actionButtoncolorClasses } from "@/components/ui/action-button"
 import { Button } from "@/components/ui/button"
 import DataTable, { DataTableColumn } from "@/components/ui/data-table/data-table"

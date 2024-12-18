@@ -1,9 +1,10 @@
 "use client"
 
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { routes } from "@/routes"
 import moduleService from "@/services/module-service"
 import { ApiError } from "@/types"
+import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 import { useModule } from "@/hooks/use-modules"
@@ -14,12 +15,16 @@ import PageTitle from "@/components/layout/page-title"
 import SpinnerLoading from "@/components/layout/spinner-loading"
 
 export default function EditModulePage() {
+  const queryClient = useQueryClient()
+  const router = useRouter()
   const params = useParams<{ id: string }>()
   const { data: module, isLoading } = useModule(params.id)
 
   async function onUpdate(data: ModuleSchema) {
     try {
-      await moduleService.updateById(params.id, data)
+      const updatedModule = await moduleService.updateById(params.id, data)
+      await queryClient.invalidateQueries({ queryKey: "modules" })
+      router.replace(routes.modules.show(updatedModule.id))
       toast.success("Módulo atualizado com sucesso.")
     } catch (error) {
       const apiError = error as ApiError

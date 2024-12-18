@@ -1,7 +1,7 @@
 import { apiRoutes } from "@/routes"
 import { DataPagination, PAGEABLE, Pageable, SWRDataPaginationResponse } from "@/types"
 
-import { MenuItem } from "@/types/backend-model"
+import { MenuItem } from "@/types/model-types"
 import useNoCacheQuery from "@/lib/use-fetch"
 
 export function useMenuItems(pageable: Pageable): SWRDataPaginationResponse<MenuItem> {

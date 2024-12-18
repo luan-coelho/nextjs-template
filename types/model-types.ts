@@ -18,3 +18,12 @@ export interface MenuItem extends BaseEntity {
   icon: string
   subItems?: MenuItem[]
 }
+
+export interface User extends BaseEntity {
+  name: string
+  email: string
+  cpf: string
+  password: string
+  primaryPhone: string
+  secondaryPhone: string
+}

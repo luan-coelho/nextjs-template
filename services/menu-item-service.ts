@@ -1,7 +1,7 @@
 import { apiRoutes } from "@/routes"
 import { Service } from "@/services/service"
 
-import { MenuItem } from "@/types/backend-model"
+import { MenuItem } from "@/types/model-types"
 
 export class MenuItemService extends Service<MenuItem> {
   getUrl(): string {
