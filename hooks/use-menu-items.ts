@@ -1,14 +1,15 @@
 import { apiRoutes } from "@/routes"
-import { DataPagination, PAGEABLE, Pageable, SWRDataPaginationResponse } from "@/types"
+import menuItemService from "@/services/menu-item-service"
+import { PAGEABLE, Pageable, SWRDataPaginationResponse } from "@/types"
+import { useQuery } from "@tanstack/react-query"
 
 import { MenuItem } from "@/types/model-types"
-import useNoCacheQuery from "@/lib/use-fetch"
 
 export function useMenuItems(pageable: Pageable): SWRDataPaginationResponse<MenuItem> {
-  const { page, size, sort, filters } = pageable || PAGEABLE
-  const url = `${apiRoutes.menuItems.allWithPagination}?page=${page}&size=${size}&sort=${sort}&filters=${filters}`
-
-  const { data, isLoading, error, mutate } = useNoCacheQuery<DataPagination<MenuItem>>(url)
+  const { data, isLoading, error } = useQuery({
+    queryKey: [apiRoutes.menuItems.index],
+    queryFn: () => menuItemService.fetchAllWithPagination(pageable || PAGEABLE),
+  })
 
   if (error) {
     error.message = "Falha ao buscar items de menu"
@@ -19,12 +20,14 @@ export function useMenuItems(pageable: Pageable): SWRDataPaginationResponse<Menu
     error,
     isLoading,
     pagination: data?.pagination || PAGEABLE,
-    mutate,
   } as SWRDataPaginationResponse<MenuItem>
 }
 
 export function useMenuItem(id: string) {
-  const { data, isLoading, error } = useNoCacheQuery<MenuItem>(apiRoutes.menuItems.show(id))
+  const { data, isLoading, error } = useQuery({
+    queryKey: [apiRoutes.menuItems.index, id],
+    queryFn: () => menuItemService.fetchById(id),
+  })
 
   if (error) {
     error.message = "Falha ao buscar item de menu"

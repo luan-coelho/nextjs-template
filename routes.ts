@@ -28,7 +28,7 @@ const apiRoutes = {
     modules: (id: string) => `/users/${id}/modules`,
   },
   modules: {
-    allWithPagination: "/modules",
+    index: "/modules",
     all: "/modules/all",
     create: "/modules",
     edit: (id: string) => `/modules/${id}/edit`,
@@ -37,7 +37,7 @@ const apiRoutes = {
     addMenuItem: (id: string, menuItemId: string) => `/modules/${id}/add-menu-item/${menuItemId}`,
   },
   menuItems: {
-    allWithPagination: "/menu-items",
+    index: "/menu-items",
     all: "/menu-items/all",
     create: "/menu-items",
     edit: (id: string) => `/menu-items/${id}/edit`,

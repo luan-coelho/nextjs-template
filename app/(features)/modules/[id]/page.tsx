@@ -1,13 +1,14 @@
 "use client"
 
 import React from "react"
+import Image from "next/image"
 import { useParams } from "next/navigation"
+import ModuleImg from "@/public/images/module.png"
 import { routes } from "@/routes"
 
 import { orderMenuItems } from "@/lib/utils"
 import { useModule } from "@/hooks/use-modules"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
 import EmptyData from "@/components/empty-data"
 import ButtonBack from "@/components/layout/button-back"
 import BreadcrumbContent from "@/components/layout/content-breadcrumb"
@@ -29,12 +30,7 @@ export default function ShowModulePage() {
       module.menuItems = orderMenuItems(module.menuItems, menuItemsOrder)
     }
 
-    return (
-      <div className="col-span-9 flex flex-col items-start justify-start">
-        <Label>Itens de menu</Label>
-        <MenuItemDraggableList module={module} />
-      </div>
-    )
+    return <MenuItemDraggableList module={module} />
   }
 
   function getCardContent() {
@@ -43,10 +39,10 @@ export default function ShowModulePage() {
     }
 
     return (
-      <div className="grid grid-cols-12 gap-4">
-        <div className="form-group col-span-3">
-          <Label>Nome</Label>
-          <span>{module?.name}</span>
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div className="flex flex-col items-center justify-center gap-3">
+          <Image src={ModuleImg} alt="Ícone de módulo" className="w-32" />
+          <span className="text-xl font-medium">{module?.name}</span>
         </div>
         {getMenuItems()}
       </div>

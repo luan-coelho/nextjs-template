@@ -1,3 +1,4 @@
+import { apiRoutes } from "@/routes"
 import moduleService from "@/services/module-service"
 import { PAGEABLE, Pageable, SWRDataPaginationResponse } from "@/types"
 import { useQuery } from "@tanstack/react-query"
@@ -6,7 +7,7 @@ import { Module } from "@/types/model-types"
 
 export function useModules(pageable: Pageable): SWRDataPaginationResponse<Module> {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["modules"],
+    queryKey: [apiRoutes.modules.index],
     queryFn: () => moduleService.fetchAllWithPagination(pageable || PAGEABLE),
   })
 
@@ -24,7 +25,7 @@ export function useModules(pageable: Pageable): SWRDataPaginationResponse<Module
 
 export function useModule(id: string) {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["module"],
+    queryKey: [apiRoutes.modules.index, id],
     queryFn: () => moduleService.fetchById(id),
   })
 

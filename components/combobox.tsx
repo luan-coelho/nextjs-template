@@ -18,7 +18,8 @@ interface ComboboxProps extends React.HTMLAttributes<HTMLDivElement> {
   items: ComboboxItem[]
   placeholder?: string
   emptyMessage?: string
-  onSelectItem: (value: string) => void
+
+  onSelectItem(value: string): void
 }
 
 export default function Combobox({

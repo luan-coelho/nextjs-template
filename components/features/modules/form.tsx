@@ -20,7 +20,7 @@ export type ModuleSchema = z.infer<typeof schema>
 
 type ModuleFormProps = {
   module?: ModuleSchema
-  onSubmit: (data: ModuleSchema) => void
+  onSubmit(data: ModuleSchema): void
 }
 
 export default function ModuleForm({ module, onSubmit }: ModuleFormProps) {

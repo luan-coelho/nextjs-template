@@ -1,10 +1,10 @@
 "use client"
 
 import React from "react"
-import { routes } from "@/routes"
+import { apiRoutes, routes } from "@/routes"
 import moduleService from "@/services/module-service"
 import { ApiError, SWRDataPaginationResponse } from "@/types"
-import { useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Activity, CirclePower, Eye, Pencil } from "lucide-react"
 import { toast } from "sonner"
 
@@ -12,7 +12,6 @@ import { Module } from "@/types/model-types"
 import { ActionButton, actionButtoncolorClasses } from "@/components/ui/action-button"
 import { Button } from "@/components/ui/button"
 import DataTable, { DataTableColumn } from "@/components/ui/data-table/data-table"
-import { FilterConfig, FilterOperationLabel } from "@/components/ui/data-table/data-table-filters"
 import ImprovedAlertDialog from "@/components/ui/improved-alert-dialog"
 import { TableCell, TableRow } from "@/components/ui/table"
 import StatusBadge from "@/components/layout/status-badge"
@@ -27,6 +26,7 @@ const columns: DataTableColumn[] = [
   { title: "Ações", position: "center", className: "w-1/6 text-center" },
 ]
 
+/*
 const filterConfig: FilterConfig = {
   options: [
     {
@@ -68,6 +68,7 @@ const filterConfig: FilterConfig = {
     },
   ],
 }
+*/
 
 export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
   const queryClient = useQueryClient()
@@ -75,7 +76,7 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
   async function handleDelete(id: string) {
     try {
       await moduleService.deleteById(id)
-      await queryClient.invalidateQueries({ queryKey: "modules" })
+      await queryClient.invalidateQueries({ queryKey: apiRoutes.modules.index })
       toast.success("Módulo deletado com sucesso.")
     } catch (error) {
       const apiError = error as ApiError
@@ -83,24 +84,26 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
     }
   }
 
-  async function handleDisable(id: string) {
-    try {
-      await moduleService.disableById(id)
-      await queryClient.invalidateQueries({ queryKey: "modules" })
+  const { mutateAsync: handleDisable, isPending } = useMutation({
+    mutationFn: (id: string) => moduleService.disableById(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: apiRoutes.modules.index })
       toast.success("Módulo desativado com sucesso.")
-    } catch (error) {
-      const apiError = error as ApiError
+    },
+    onError: error => {
+      const apiError = error as unknown as ApiError
       toast.error(`Erro ao desativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
-    }
-  }
+    },
+  })
 
   async function handleActivate(id: string) {
     try {
       await moduleService.activateById(id)
-      await queryClient.invalidateQueries({ queryKey: "modules" })
+      await queryClient.invalidateQueries({ queryKey: apiRoutes.modules.index })
       toast.success("Módulo ativado com sucesso.")
     } catch (error) {
       const apiError = error as ApiError
+      console.log(error)
       toast.error(`Erro ao ativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
     }
   }
@@ -129,7 +132,8 @@ export default function ModuleDataTable({ swrResponse }: ModuleDataTableProps) {
                 confirmActionLabel="Desativar"
                 icon={<CirclePower />}
                 tooltip="Desativar"
-                type="disable">
+                type="disable"
+                isLoading={isPending}>
                 <span>O módulo será desativado e deixará de ser exibido em outras partes do sistema.</span>
               </ImprovedAlertDialog>
             ) : (

@@ -5,7 +5,7 @@ import { MenuItem } from "@/types/model-types"
 
 export class MenuItemService extends Service<MenuItem> {
   getUrl(): string {
-    return apiRoutes.menuItems.allWithPagination
+    return apiRoutes.menuItems.index
   }
 }
 

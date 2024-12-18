@@ -7,7 +7,7 @@ import { MenuItemsOrder } from "@/components/menu-item-draggable-list"
 
 export class ModuleService extends Service<Module> {
   getUrl(): string {
-    return apiRoutes.modules.allWithPagination
+    return apiRoutes.modules.index
   }
 
   async updateMenuItemsOrder(id: string, menuItemsOrder: MenuItemsOrder[]): Promise<Module> {

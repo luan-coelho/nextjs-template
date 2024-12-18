@@ -6,7 +6,7 @@ import apiClient from "@/lib/api-client"
 
 export class UserService extends Service<User> {
   getUrl(): string {
-    return apiRoutes.menuItems.allWithPagination
+    return apiRoutes.menuItems.index
   }
 
   getModulesByUserId(id: string): Promise<Module[]> {

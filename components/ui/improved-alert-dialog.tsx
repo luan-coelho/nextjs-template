@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { Trash } from "lucide-react"
+import { PulseLoader } from "react-spinners"
 
 import { cn } from "@/lib/utils"
 import { actionButtoncolorClasses } from "@/components/ui/action-button"
@@ -27,6 +28,7 @@ type ImprovedAlertDialogProps = {
   type?: "delete" | "disable"
   children?: React.ReactNode
   icon?: React.ReactNode
+  isLoading?: boolean
 }
 
 export default function ImprovedAlertDialog({
@@ -39,6 +41,7 @@ export default function ImprovedAlertDialog({
   type = "delete",
   children,
   icon,
+  isLoading,
 }: ImprovedAlertDialogProps) {
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false)
 
@@ -72,7 +75,8 @@ export default function ImprovedAlertDialog({
         <AlertDialogFooter>
           <AlertDialogCancel onClick={cancelAction}>{cancelActionLabel || "Cancelar"}</AlertDialogCancel>
           <AlertDialogAction onClick={confirmAction} className="bg-red-500 hover:bg-red-600">
-            {confirmActionLabel || "Confirmar"}
+            {isLoading && <PulseLoader color="#3A72EC" className="text-primary" />}
+            {!isLoading ? confirmActionLabel || "Deletar" : null}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -1,7 +1,4 @@
-import pluginQuery from "@tanstack/eslint-plugin-query"
-
 module.exports = {
-  ...pluginQuery.configs["flat/recommended"],
   extends: [
     "next",
     "next/core-web-vitals",

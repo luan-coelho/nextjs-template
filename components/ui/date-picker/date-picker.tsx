@@ -11,7 +11,8 @@ import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 export interface DatePickerProps extends React.HTMLAttributes<HTMLDivElement> {
-  onDateChange: (date?: Date) => void
+  onDateChange(date?: Date): void
+
   disabled: boolean
 }
 

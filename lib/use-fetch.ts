@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useState } from "react"
 
 import { fetcher } from "@/lib/api-client"
 
@@ -10,17 +10,14 @@ interface UseNoCacheQueryResult<T> {
   data: T
   error: Error | null
   isLoading: boolean
-  mutate: () => void
 }
 
-function useNoCacheQuery<T>(url: string, options: UseNoCacheQueryOptions = {}): UseNoCacheQueryResult<T> {
+export default function useFetchs<T>(url: string, options: UseNoCacheQueryOptions = {}): UseNoCacheQueryResult<T> {
   const [data, setData] = useState<T>({} as T)
   const [error, setError] = useState<Error | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const hasFetched = useRef(false)
-  const previousUrl = useRef<string>(url)
 
-  const fetchData = useCallback(async () => {
+  useCallback(async () => {
     setIsLoading(true)
     setError(null)
 
@@ -35,19 +32,5 @@ function useNoCacheQuery<T>(url: string, options: UseNoCacheQueryOptions = {}): 
     // eslint-disable-next-line
   }, [url, options.headers])
 
-  useEffect(() => {
-    if (previousUrl.current !== url || !hasFetched.current) {
-      previousUrl.current = url
-      hasFetched.current = true
-      fetchData()
-    }
-  }, [url, fetchData])
-
-  const mutate = useCallback(() => {
-    fetchData()
-  }, [fetchData])
-
-  return { data, error, isLoading, mutate }
+  return { data, error, isLoading }
 }
-
-export default useNoCacheQuery
