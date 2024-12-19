@@ -1,6 +1,6 @@
 import { apiRoutes } from "@/routes"
 import menuItemService from "@/services/menu-item-service"
-import { PAGEABLE, Pageable, SWRDataPaginationResponse } from "@/types"
+import { DEFAULT_PAGEABLE, Pageable, SWRDataPaginationResponse } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 
 import { MenuItem } from "@/types/model-types"
@@ -8,7 +8,7 @@ import { MenuItem } from "@/types/model-types"
 export function useMenuItems(pageable: Pageable): SWRDataPaginationResponse<MenuItem> {
   const { data, isLoading, error } = useQuery({
     queryKey: [apiRoutes.menuItems.index],
-    queryFn: () => menuItemService.fetchAllWithPagination(pageable || PAGEABLE),
+    queryFn: () => menuItemService.fetchAllWithPagination(pageable || DEFAULT_PAGEABLE),
   })
 
   if (error) {
@@ -19,7 +19,7 @@ export function useMenuItems(pageable: Pageable): SWRDataPaginationResponse<Menu
     data: data?.content || [],
     error,
     isLoading,
-    pagination: data?.pagination || PAGEABLE,
+    pagination: data?.pagination || DEFAULT_PAGEABLE,
   } as SWRDataPaginationResponse<MenuItem>
 }
 

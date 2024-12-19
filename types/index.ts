@@ -42,4 +42,4 @@ export type SWRDataPaginationResponse<T> = {
 
 export const STANDARD_PAGE_SIZE = 25
 
-export const PAGEABLE = { page: 1, size: STANDARD_PAGE_SIZE, sort: "id:desc", filters: " " } as Pageable
+export const DEFAULT_PAGEABLE = { page: 1, size: STANDARD_PAGE_SIZE, sort: "id:desc", filters: " " } as Pageable

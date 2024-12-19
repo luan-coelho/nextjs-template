@@ -1,4 +1,4 @@
-import { ApiError, PAGEABLE, Pageable } from "@/types"
+import { ApiError, DEFAULT_PAGEABLE, Pageable } from "@/types"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -24,10 +24,10 @@ export function buildQueryParams({ page, size, sort }: Pageable): string {
 }
 
 export function extractPaginationQueryParams(searchParams: URLSearchParams): Pageable {
-  const page = Number(searchParams.get("page")) || PAGEABLE.page
-  const size = Number(searchParams.get("size")) || PAGEABLE.size
-  const sort = searchParams.get("sort") || PAGEABLE.sort
-  let filters = searchParams.get("filters") || PAGEABLE.filters
+  const page = Number(searchParams.get("page")) || DEFAULT_PAGEABLE.page
+  const size = Number(searchParams.get("size")) || DEFAULT_PAGEABLE.size
+  const sort = searchParams.get("sort") || DEFAULT_PAGEABLE.sort
+  let filters = searchParams.get("filters") || DEFAULT_PAGEABLE.filters
   if (filters?.trim()) {
     filters = encodeURIComponent(filters)
   }

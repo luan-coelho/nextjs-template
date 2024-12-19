@@ -1,13 +1,13 @@
 "use client"
 
-import React from "react"
+import React, { Suspense } from "react"
 import { DataTableProvider, useDataTableContext } from "@/contexts/data-table-context"
 import { DataPagination } from "@/types"
 
 import FilterComponent, { FilterConfig } from "@/components/ui/data-table/data-table-filters"
 import DataTableHeader from "@/components/ui/data-table/data-table-header"
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination"
-import { Table, TableHeader, TableRow } from "@/components/ui/table"
+import { Table, TableBody, TableHeader, TableRow } from "@/components/ui/table"
 import EmptyData from "@/components/empty-data"
 
 type DataTableProps<T> = {
@@ -27,16 +27,6 @@ export type DataTableColumn = {
 
 function DataTableWithProvider<T>({ columns, filterConfig, dataPagination, children }: DataTableProps<T>) {
   const { handlePageChange, handleItemsPerPageChange, handleFilterChange } = useDataTableContext<T>()
-
-  /*if (error) {
-    return (
-      <Alert variant="destructive" className="m-5 w-auto">
-        <AlertCircle className="size-4" />
-        <AlertTitle>Erro</AlertTitle>
-        <AlertDescription>{error?.message}</AlertDescription>
-      </Alert>
-    )
-  }*/
 
   const handleApplyFilters = (filters: { field: string; operation: string; value: string }[]) => {
     const queryParam = filters.map(filter => `${filter.field};${filter.operation};${filter.value}`).join(",")
@@ -61,7 +51,7 @@ function DataTableWithProvider<T>({ columns, filterConfig, dataPagination, child
             ))}
           </TableRow>
         </TableHeader>
-        {/*<TableBody>{!isLoading && children}</TableBody>*/}
+        <TableBody>{children}</TableBody>
       </Table>
       {/*{isLoading && (
         <div className="flex items-center justify-center p-5">
