@@ -1,66 +1,5 @@
 import { ApiError } from "@/types"
 
-export const fetcherWithCache = async <T>(endpoint: string, options?: RequestInit): Promise<T> => {
-  return fetcher(endpoint, { cache: "force-cache", ...options }, false)
-}
-
-export const fetcher = async <T>(endpoint: string, options?: RequestInit, useApiUrl: boolean = true): Promise<T> => {
-  const url: string = useApiUrl ? `${process.env.NEXT_PUBLIC_API_URL}${endpoint}` : endpoint
-
-  const res = await fetch(url, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options?.headers || {}),
-    },
-  })
-
-  let errorBody: ApiError | undefined
-
-  if (!res.ok) {
-    try {
-      errorBody = await res.json()
-    } catch {
-      errorBody = {
-        title: "Erro desconhecido",
-        detail: res.statusText,
-        status: res.status,
-      }
-    }
-
-    throw errorBody
-  }
-
-  return res.json()
-}
-
-export const fetcherWithoutResponse = async (endpoint: string, options?: RequestInit): Promise<void> => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
-    ...options,
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json",
-      ...(options?.headers || {}),
-    },
-  })
-
-  let errorBody: ApiError | undefined
-
-  if (!res.ok) {
-    try {
-      errorBody = await res.json()
-    } catch {
-      errorBody = {
-        title: "Erro desconhecido",
-        detail: res.statusText,
-        status: res.status,
-      }
-    }
-
-    throw errorBody
-  }
-}
-
 enum RequestMethod {
   GET = "GET",
   POST = "POST",
@@ -70,64 +9,78 @@ enum RequestMethod {
 }
 
 class ApiClient {
-  /**
-   * Requisição para métodos sem body (GET, DELETE).
-   */
-  private async requestWithoutBody<T>(method: RequestMethod, endpoint: string, headers?: HeadersInit): Promise<T> {
-    return fetcher<T>(endpoint, {
-      method,
-      headers,
+  async fetcher(endpoint: string, options?: RequestInit): Promise<Response> {
+    const url: string = `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`
+    return await fetch(url, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...(options?.headers || {}),
+      },
     })
   }
 
-  private async requestWithoutResponse(method: RequestMethod, endpoint: string, headers?: HeadersInit): Promise<void> {
-    return fetcherWithoutResponse(endpoint, {
-      method,
-      headers,
+  async fetch<T>(endpoint: string, options?: RequestInit): Promise<T> {
+    const res = await this.fetcher(endpoint, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...(options?.headers || {}),
+      },
     })
-  }
 
-  /**
-   * Requisição para métodos com body (POST, PUT, PATCH).
-   */
-  private async requestWithBody<T>(
-    method: RequestMethod,
-    endpoint: string,
-    body: any,
-    headers?: HeadersInit,
-  ): Promise<T> {
-    return fetcher<T>(endpoint, {
-      method,
-      body: JSON.stringify(body),
-      headers,
-    })
-  }
+    let errorBody: ApiError | undefined
 
-  // Métodos públicos para uso direto
-  get<T>(endpoint: string, headers?: HeadersInit): Promise<T> {
-    return this.requestWithoutBody<T>(RequestMethod.GET, endpoint, headers)
-  }
+    if (!res.ok) {
+      try {
+        errorBody = await res.json()
+      } catch {
+        errorBody = {
+          title: "Erro desconhecido",
+          detail: res.statusText,
+          status: res.status,
+        }
+      }
 
-  async delete(endpoint: string, headers?: HeadersInit): Promise<void> {
-    await this.requestWithoutResponse(RequestMethod.DELETE, endpoint, headers)
-  }
-
-  post<T>(endpoint: string, body: any, headers?: HeadersInit): Promise<T> {
-    return this.requestWithBody<T>(RequestMethod.POST, endpoint, body, headers)
-  }
-
-  put<T>(endpoint: string, body?: any, headers?: HeadersInit): Promise<T> {
-    if (typeof body === "undefined") {
-      return this.requestWithoutBody(RequestMethod.PUT, endpoint, headers)
+      throw errorBody
     }
-    return this.requestWithBody<T>(RequestMethod.PUT, endpoint, body, headers)
+
+    return res.json()
   }
 
-  patch<T>(endpoint: string, body?: any, headers?: HeadersInit): Promise<T> {
-    if (typeof body === "undefined") {
-      return this.requestWithoutBody(RequestMethod.PATCH, endpoint, headers)
+  async buildResponseError(res: Response): Promise<ApiError> {
+    const errorBody: ApiError = {
+      title: "Erro desconhecido",
+      detail: res.statusText,
+      status: res.status,
     }
-    return this.requestWithBody<T>(RequestMethod.PATCH, endpoint, body, headers)
+    try {
+      const json = await res.json()
+      console.log(json)
+      return json as ApiError
+    } catch {
+      return errorBody
+    }
+  }
+
+  async get<T>(endpoint: string, options?: RequestInit): Promise<T> {
+    return this.fetch<T>(endpoint, { method: RequestMethod.GET, ...options })
+  }
+
+  async delete(endpoint: string, options?: RequestInit): Promise<void> {
+    await this.fetch(endpoint, { method: RequestMethod.DELETE, ...options })
+  }
+
+  async post<T>(endpoint: string, body: any, options?: RequestInit): Promise<T> {
+    return this.fetch(endpoint, { method: RequestMethod.POST, body, ...options })
+  }
+
+  async put<T>(endpoint: string, body?: any, options?: RequestInit): Promise<T> {
+    return this.fetch(endpoint, { method: RequestMethod.PUT, body, ...options })
+  }
+
+  async patch<T>(endpoint: string, body?: any, options?: RequestInit): Promise<T> {
+    return this.fetch(endpoint, { method: RequestMethod.PATCH, body, ...options })
   }
 }
 

@@ -1,4 +1,4 @@
-import { PAGEABLE, Pageable } from "@/types"
+import { ApiError, PAGEABLE, Pageable } from "@/types"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 

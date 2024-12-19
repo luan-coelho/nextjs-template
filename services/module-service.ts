@@ -6,7 +6,7 @@ import apiClient from "@/lib/api-client"
 import { MenuItemsOrder } from "@/components/menu-item-draggable-list"
 
 export class ModuleService extends Service<Module> {
-  getUrl(): string {
+  private getUrl(): string {
     return apiRoutes.modules.index
   }
 

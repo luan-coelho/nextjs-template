@@ -3,7 +3,7 @@ import { DataPagination, Pageable } from "@/types"
 import apiClient from "@/lib/api-client"
 
 export abstract class Service<T> {
-  abstract getUrl(): string
+  protected abstract getUrl(): string
 
   /**
    * Busca todos os registros com paginação
@@ -11,41 +11,46 @@ export abstract class Service<T> {
    * @param size Tamanho de registros por página
    * @param sort Ordenação no formato campo:asc|desc
    * @param filters Filtros no formato campo;operador;valor
+   * @param options Opções de requisição
    */
-  async fetchAllWithPagination({ page, size, sort, filters }: Pageable): Promise<DataPagination<T>> {
+  async fetchAllWithPagination(
+    { page, size, sort, filters }: Pageable,
+    options?: RequestInit,
+  ): Promise<DataPagination<T>> {
     return apiClient.get<DataPagination<T>>(
       `${this.getUrl()}?page=${page}&size=${size}&sort=${sort}&filters=${filters}`,
+      options,
     )
   }
 
   /**
    * Busca todos os registros sem paginação
    */
-  async fetchAll(): Promise<T[]> {
-    return apiClient.get<T[]>(`${this.getUrl()}/all`)
+  async fetchAll(options?: RequestInit): Promise<T[]> {
+    return apiClient.get<T[]>(`${this.getUrl()}/all`, options)
   }
 
-  async fetchById(id: string): Promise<T> {
-    return apiClient.get<T>(`${this.getUrl()}/${id}`)
+  async fetchById(id: string, options?: RequestInit): Promise<T> {
+    return apiClient.get<T>(`${this.getUrl()}/${id}`, options)
   }
 
-  async create(data: Partial<T>): Promise<T> {
-    return apiClient.post<T>(this.getUrl(), data)
+  async create(data: Partial<T>, options?: RequestInit): Promise<T> {
+    return apiClient.post<T>(this.getUrl(), data, options)
   }
 
-  async updateById(id: string, data: Partial<T>): Promise<T> {
-    return apiClient.put<T>(`${this.getUrl()}/${id}`, data)
+  async updateById(id: string, data: Partial<T>, options?: RequestInit): Promise<T> {
+    return apiClient.put<T>(`${this.getUrl()}/${id}`, data, options)
   }
 
-  async deleteById(id: string): Promise<void> {
-    return apiClient.delete(`${this.getUrl()}/${id}`)
+  async deleteById(id: string, options?: RequestInit): Promise<void> {
+    return apiClient.delete(`${this.getUrl()}/${id}`, options)
   }
 
-  async activateById(id: string): Promise<void> {
-    return apiClient.patch(`${this.getUrl()}/${id}/activate`)
+  async activateById(id: string, options?: RequestInit): Promise<void> {
+    return apiClient.patch(`${this.getUrl()}/${id}/activate`, options)
   }
 
-  async disableById(id: string): Promise<void> {
-    return apiClient.patch(`${this.getUrl()}/${id}/disable`)
+  async disableById(id: string, options?: RequestInit): Promise<void> {
+    return apiClient.patch(`${this.getUrl()}/${id}/disable`, options)
   }
 }

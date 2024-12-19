@@ -1,16 +1,12 @@
 import React from "react"
-import { apiRoutes, routes } from "@/routes"
+import { routes } from "@/routes"
 import moduleService from "@/services/module-service"
-import { ApiError, DataPagination, Pageable } from "@/types"
-import { Activity, CirclePower, Eye, Pencil } from "lucide-react"
-import { toast } from "sonner"
+import { ApiError, Pageable } from "@/types"
+import { AlertCircle, Eye, Pencil } from "lucide-react"
 
-import { Module } from "@/types/model-types"
-import { fetcher } from "@/lib/api-client"
-import { ActionButton, actionButtoncolorClasses } from "@/components/ui/action-button"
-import { Button } from "@/components/ui/button"
+import { ActionButton } from "@/components/ui/action-button"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import DataTable, { DataTableColumn } from "@/components/ui/data-table/data-table"
-import ImprovedAlertDialog from "@/components/ui/improved-alert-dialog"
 import { TableCell, TableRow } from "@/components/ui/table"
 import StatusBadge from "@/components/layout/status-badge"
 
@@ -21,38 +17,22 @@ const columns: DataTableColumn[] = [
 ]
 
 export default async function ModuleDataTable({ pageable }: { pageable: Pageable }) {
-  console.log(pageable)
-  const dataPagination = await fetcher<DataPagination<Module>>(apiRoutes.modules.index, { next: { tags: ["modules"] } })
-
-  async function handleDelete(id: string) {
-    try {
-      await moduleService.deleteById(id)
-      toast.success("Módulo deletado com sucesso.")
-    } catch (error) {
-      const apiError = error as ApiError
-      toast.error(`Erro ao deletar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
-    }
-  }
-
-  async function handleDisable(id: string) {
-    try {
-      await moduleService.disableById(id)
-      toast.success("Módulo desativado com sucesso.")
-    } catch (error) {
-      const apiError = error as ApiError
-      toast.error(`Erro ao desativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
-    }
-  }
-
-  async function handleActivate(id: string) {
-    try {
-      await moduleService.activateById(id)
-      toast.success("Módulo ativado com sucesso.")
-    } catch (error) {
-      const apiError = error as ApiError
-      console.log(error)
-      toast.error(`Erro ao ativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
-    }
+  let dataPagination
+  try {
+    dataPagination = await moduleService.fetchAllWithPagination(pageable, {
+      next: { tags: ["modules"] },
+    })
+  } catch (error) {
+    const apiError = error as ApiError
+    return (
+      <Alert variant="destructive" className="rounded-none">
+        <AlertCircle className="size-4" />
+        <AlertTitle>{apiError.title}</AlertTitle>
+        <AlertDescription>
+          Motivo: {apiError.detail} - Não foi possível buscar os módulos. Tente novamente mais tarde.
+        </AlertDescription>
+      </Alert>
+    )
   }
 
   return (
