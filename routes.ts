@@ -1,9 +1,13 @@
+/**
+ * Routes for the application
+ */
+
 const routes = {
+  home: "/",
   auth: {
     login: "/auth/login",
     register: "/auth/register",
   },
-  home: "/",
   dashboard: "/dashboard",
   modules: {
     index: "/modules",
@@ -18,6 +22,10 @@ const routes = {
     show: (id: string) => `/menu-items/${id}`,
   },
 }
+
+/**
+ * API routes
+ */
 
 const apiRoutes = {
   users: {

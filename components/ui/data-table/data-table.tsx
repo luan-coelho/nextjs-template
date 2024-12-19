@@ -2,19 +2,16 @@
 
 import React from "react"
 import { DataTableProvider, useDataTableContext } from "@/contexts/data-table-context"
-import { SWRDataPaginationResponse } from "@/types"
-import { AlertCircle } from "lucide-react"
+import { DataPagination } from "@/types"
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import FilterComponent, { FilterConfig } from "@/components/ui/data-table/data-table-filters"
 import DataTableHeader from "@/components/ui/data-table/data-table-header"
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination"
-import { Table, TableBody, TableHeader, TableRow } from "@/components/ui/table"
+import { Table, TableHeader, TableRow } from "@/components/ui/table"
 import EmptyData from "@/components/empty-data"
-import SpinnerLoading from "@/components/layout/spinner-loading"
 
 type DataTableProps<T> = {
-  swrResponse: SWRDataPaginationResponse<T>
+  dataPagination: DataPagination<T>
   columns?: DataTableColumn[]
   filterConfig?: FilterConfig
   children?: React.ReactNode
@@ -28,15 +25,10 @@ export type DataTableColumn = {
   showSort?: boolean
 }
 
-function DataTableWithProvider<T>({
-  swrResponse: { isLoading, error, pagination },
-  columns,
-  filterConfig,
-  children,
-}: DataTableProps<T>) {
+function DataTableWithProvider<T>({ columns, filterConfig, dataPagination, children }: DataTableProps<T>) {
   const { handlePageChange, handleItemsPerPageChange, handleFilterChange } = useDataTableContext<T>()
 
-  if (error) {
+  /*if (error) {
     return (
       <Alert variant="destructive" className="m-5 w-auto">
         <AlertCircle className="size-4" />
@@ -44,7 +36,7 @@ function DataTableWithProvider<T>({
         <AlertDescription>{error?.message}</AlertDescription>
       </Alert>
     )
-  }
+  }*/
 
   const handleApplyFilters = (filters: { field: string; operation: string; value: string }[]) => {
     const queryParam = filters.map(filter => `${filter.field};${filter.operation};${filter.value}`).join(",")
@@ -69,20 +61,20 @@ function DataTableWithProvider<T>({
             ))}
           </TableRow>
         </TableHeader>
-        <TableBody>{!isLoading && children}</TableBody>
+        {/*<TableBody>{!isLoading && children}</TableBody>*/}
       </Table>
-      {isLoading && (
+      {/*{isLoading && (
         <div className="flex items-center justify-center p-5">
           <SpinnerLoading />
         </div>
-      )}
-      {!isLoading && pagination.itemsOnPage === 0 && <EmptyData />}
+      )}*/}
+      {dataPagination.pagination.itemsOnPage === 0 && <EmptyData />}
       <DataTablePagination
-        currentPage={pagination.currentPage}
-        itemsPerPage={pagination.itemsPerPage}
-        itemsOnPage={pagination.itemsOnPage}
-        totalPages={pagination.totalPages}
-        totalItems={pagination.totalItems}
+        currentPage={dataPagination.pagination.currentPage}
+        itemsPerPage={dataPagination.pagination.itemsPerPage}
+        itemsOnPage={dataPagination.pagination.itemsOnPage}
+        totalPages={dataPagination.pagination.totalPages}
+        totalItems={dataPagination.pagination.totalItems}
         onPageChange={page => handlePageChange(page)}
         onItemsPerPageChange={itemsPerPage => handleItemsPerPageChange(itemsPerPage)}
       />
@@ -90,11 +82,10 @@ function DataTableWithProvider<T>({
   )
 }
 
-export default function DataTable<T>({ swrResponse, columns, filterConfig, children }: DataTableProps<T>) {
-  const { data } = swrResponse
+export default function DataTable<T>({ dataPagination, columns, filterConfig, children }: DataTableProps<T>) {
   return (
-    <DataTableProvider<T> initialData={data} swrResponse={swrResponse}>
-      <DataTableWithProvider<T> swrResponse={swrResponse} columns={columns} filterConfig={filterConfig}>
+    <DataTableProvider<T> dataPagination={dataPagination}>
+      <DataTableWithProvider<T> dataPagination={dataPagination} columns={columns} filterConfig={filterConfig}>
         {children}
       </DataTableWithProvider>
     </DataTableProvider>
