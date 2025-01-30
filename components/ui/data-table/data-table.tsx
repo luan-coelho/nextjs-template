@@ -1,6 +1,6 @@
 "use client"
 
-import React, { Suspense } from "react"
+import React from "react"
 import { DataTableProvider, useDataTableContext } from "@/contexts/data-table-context"
 import { DataPagination } from "@/types"
 

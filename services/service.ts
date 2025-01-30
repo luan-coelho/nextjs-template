@@ -17,10 +17,11 @@ export abstract class Service<T> {
     { page, size, sort, filters }: Pageable,
     options?: RequestInit,
   ): Promise<DataPagination<T>> {
-    return apiClient.get<DataPagination<T>>(
-      `${this.getUrl()}?page=${page}&size=${size}&sort=${sort}&filters=${filters}`,
-      options,
-    )
+    const endpoint = `${this.getUrl()}?page=${page}&size=${size}&sort=${sort}`
+    if (filters) {
+      endpoint.concat(`&filters=${filters}`)
+    }
+    return apiClient.get<DataPagination<T>>(endpoint, options)
   }
 
   /**

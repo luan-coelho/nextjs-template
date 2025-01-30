@@ -3,7 +3,7 @@ import { routes } from "@/routes"
 import { DEFAULT_PAGEABLE } from "@/types"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import ModuleDataTable from "@/components/features/modules/module-data-table"
+import { ModuleDataTable } from "@/components/features/modules/module-data-table"
 import { CreateButtonLink } from "@/components/layout/create-button-link"
 import PageTitle from "@/components/layout/page-title"
 import SpinnerLoading from "@/components/layout/spinner-loading"
@@ -12,7 +12,7 @@ export default async function ModulesPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  searchParams: Promise<{ [key: string]: string | undefined }>
 }) {
   const queryParams = await searchParams
   const page = Number(queryParams.page || DEFAULT_PAGEABLE.page)

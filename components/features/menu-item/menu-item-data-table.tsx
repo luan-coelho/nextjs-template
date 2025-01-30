@@ -11,7 +11,7 @@ import { MenuItem } from "@/types/model-types"
 import { ActionButton, actionButtoncolorClasses } from "@/components/ui/action-button"
 import { Button } from "@/components/ui/button"
 import DataTable, { DataTableColumn } from "@/components/ui/data-table/data-table"
-import ImprovedAlertDialog from "@/components/ui/improved-alert-dialog"
+import DeleteModuleButton from "@/components/ui/delete-module-button"
 import { LucideIcon } from "@/components/ui/lucide-icon"
 import { TableCell, TableRow } from "@/components/ui/table"
 import StatusBadge from "@/components/layout/status-badge"
@@ -87,16 +87,16 @@ export default function MenuItemDataTable({ swrResponse }: MenuItemDataTableProp
             <ActionButton link={routes.menuItems.edit(menuItem.id)} color="purple" tooltip="Editar">
               <Pencil className="w-5" />
             </ActionButton>
-            <ImprovedAlertDialog confirmAction={() => handleDelete(menuItem.id)} />
+            <DeleteModuleButton confirmAction={() => handleDelete(menuItem.id)} />
             {menuItem.active ? (
-              <ImprovedAlertDialog
+              <DeleteModuleButton
                 confirmAction={() => handleDisable(menuItem.id)}
                 confirmActionLabel="Desativar"
                 icon={<CirclePower />}
                 tooltip="Desativar"
                 type="disable">
                 <span>O Item de menu será desativado e deixará de ser exibido em outras partes do sistema.</span>
-              </ImprovedAlertDialog>
+              </DeleteModuleButton>
             ) : (
               <Button
                 variant="default"

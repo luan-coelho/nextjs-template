@@ -1,13 +1,19 @@
-import React from "react"
-import { routes } from "@/routes"
-import moduleService from "@/services/module-service"
-import { ApiError, Pageable } from "@/types"
-import { AlertCircle, Eye, Pencil } from "lucide-react"
+"use client"
 
-import { ActionButton } from "@/components/ui/action-button"
+import { revalidateTag } from "next/cache"
+import { routes } from "@/routes"
+import menuItemService from "@/services/menu-item-service"
+import { ApiError, Pageable } from "@/types"
+import { Activity, AlertCircle, CirclePower, Eye, Pencil, Trash } from "lucide-react"
+import { toast } from "sonner"
+
+import { useModules } from "@/hooks/use-modules"
+import { ActionButton, actionButtoncolorClasses } from "@/components/ui/action-button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
 import DataTable, { DataTableColumn } from "@/components/ui/data-table/data-table"
 import { TableCell, TableRow } from "@/components/ui/table"
+import ToolTipButton from "@/components/ui/tool-tip-button"
 import StatusBadge from "@/components/layout/status-badge"
 
 const columns: DataTableColumn[] = [
@@ -16,28 +22,60 @@ const columns: DataTableColumn[] = [
   { title: "Ações", position: "center", className: "w-1/6 text-center" },
 ]
 
-export default async function ModuleDataTable({ pageable }: { pageable: Pageable }) {
-  let dataPagination
-  try {
-    dataPagination = await moduleService.fetchAllWithPagination(pageable, {
-      next: { tags: ["modules"] },
-    })
-  } catch (error) {
-    const apiError = error as ApiError
+export function ModuleDataTable({ pageable }: { pageable: Pageable }) {
+  const { data, error, pagination } = useModules(pageable)
+
+  if (error) {
     return (
       <Alert variant="destructive" className="rounded-none">
         <AlertCircle className="size-4" />
-        <AlertTitle>{apiError.title}</AlertTitle>
-        <AlertDescription>
-          Motivo: {apiError.detail} - Não foi possível buscar os módulos. Tente novamente mais tarde.
-        </AlertDescription>
+        <AlertTitle>Erro ao buscar módulos</AlertTitle>
+        <AlertDescription>Motivo: {error}</AlertDescription>
       </Alert>
     )
   }
 
+  async function handleDelete(id: string) {
+    try {
+      await menuItemService.deleteById(id)
+      toast.success("Módulo deletado com sucesso.")
+      revalidateTag("modules")
+    } catch (error) {
+      const apiError = error as ApiError
+      toast.error(`Erro ao deletar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
+    }
+  }
+
+  async function handleDisable(id: string) {
+    try {
+      await menuItemService.disableById(id)
+      toast.success("Módulo desativado com sucesso.")
+      revalidateTag("modules")
+    } catch (error) {
+      const apiError = error as ApiError
+      toast.error(`Erro ao desativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
+    }
+  }
+
+  async function handleActivate(id: string) {
+    try {
+      await menuItemService.activateById(id)
+      toast.success("Módulo ativado com sucesso.")
+      revalidateTag("modules")
+    } catch (error) {
+      const apiError = error as ApiError
+      toast.error(`Erro ao ativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
+    }
+  }
+
   return (
-    <DataTable dataPagination={dataPagination} columns={columns}>
-      {dataPagination.content.map(module => (
+    <DataTable
+      dataPagination={{
+        content: data,
+        pagination: pagination,
+      }}
+      columns={columns}>
+      {data.map(module => (
         <TableRow key={module.id}>
           <TableCell>{module.name}</TableCell>
           <TableCell>
@@ -52,16 +90,16 @@ export default async function ModuleDataTable({ pageable }: { pageable: Pageable
             <ActionButton link={routes.modules.edit(module.id)} color="purple" tooltip="Editar">
               <Pencil className="w-5" />
             </ActionButton>
-            {/*<ImprovedAlertDialog confirmAction={() => handleDelete(module.id)} />
+            <ToolTipButton
+              onClick={() => handleDelete(module.id)}
+              className={actionButtoncolorClasses.red}
+              tooltipText="Deletar">
+              <Trash className="w-5" />
+            </ToolTipButton>
             {module.active ? (
-              <ImprovedAlertDialog
-                confirmAction={() => handleDisable(module.id)}
-                confirmActionLabel="Desativar"
-                icon={<CirclePower />}
-                tooltip="Desativar"
-                type="disable">
-                <span>O módulo será desativado e deixará de ser exibido em outras partes do sistema.</span>
-              </ImprovedAlertDialog>
+              <ToolTipButton onClick={() => handleDisable(module.id)} tooltipText="Desativar">
+                <CirclePower className="w-5" /> Desativar
+              </ToolTipButton>
             ) : (
               <Button
                 variant="default"
@@ -70,7 +108,7 @@ export default async function ModuleDataTable({ pageable }: { pageable: Pageable
                 onClick={() => handleActivate(module.id)}>
                 <Activity className="w-5" />
               </Button>
-            )}*/}
+            )}
           </TableCell>
         </TableRow>
       ))}
