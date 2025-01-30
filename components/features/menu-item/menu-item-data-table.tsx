@@ -3,22 +3,18 @@
 import React from "react"
 import { routes } from "@/routes"
 import menuItemService from "@/services/menu-item-service"
-import { ApiError, SWRDataPaginationResponse } from "@/types"
-import { Activity, CirclePower, Eye, Pencil } from "lucide-react"
+import { ApiError, Pageable } from "@/types"
+import { Activity, AlertCircle, CirclePower, Eye, Pencil, Trash } from "lucide-react"
 import { toast } from "sonner"
 
-import { MenuItem } from "@/types/model-types"
+import { useMenuItems } from "@/hooks/use-menu-items"
 import { ActionButton, actionButtoncolorClasses } from "@/components/ui/action-button"
-import { Button } from "@/components/ui/button"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import DataTable, { DataTableColumn } from "@/components/ui/data-table/data-table"
-import DeleteModuleButton from "@/components/ui/delete-module-button"
 import { LucideIcon } from "@/components/ui/lucide-icon"
 import { TableCell, TableRow } from "@/components/ui/table"
+import ToolTipButton from "@/components/ui/tool-tip-button"
 import StatusBadge from "@/components/layout/status-badge"
-
-type MenuItemDataTableProps = {
-  swrResponse: SWRDataPaginationResponse<MenuItem>
-}
 
 const columns: DataTableColumn[] = [
   { title: "Label", field: "label", position: "left", className: "w-2/12" },
@@ -29,12 +25,24 @@ const columns: DataTableColumn[] = [
   { title: "Ações", position: "center", className: "w-2/12 text-center" },
 ]
 
-export default function MenuItemDataTable({ swrResponse }: MenuItemDataTableProps) {
+export default function MenuItemDataTable({ pageable }: { pageable: Pageable }) {
+  const { data, error, pagination, mutate } = useMenuItems(pageable)
+
+  if (error) {
+    return (
+      <Alert variant="destructive" className="rounded-none">
+        <AlertCircle className="size-4" />
+        <AlertTitle>Erro ao buscar itens de menu</AlertTitle>
+        <AlertDescription>Motivo: {error}</AlertDescription>
+      </Alert>
+    )
+  }
+
   async function handleDelete(id: string) {
     try {
       await menuItemService.deleteById(id)
       toast.success("Item de menu deletado com sucesso.")
-      swrResponse.mutate()
+      mutate()
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao deletar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -45,7 +53,7 @@ export default function MenuItemDataTable({ swrResponse }: MenuItemDataTableProp
     try {
       await menuItemService.disableById(id)
       toast.success("Item de menu desativado com sucesso.")
-      swrResponse.mutate()
+      mutate()
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao desativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -56,7 +64,7 @@ export default function MenuItemDataTable({ swrResponse }: MenuItemDataTableProp
     try {
       await menuItemService.activateById(id)
       toast.success("Item de menu ativado com sucesso.")
-      swrResponse.mutate()
+      mutate()
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao ativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -64,8 +72,13 @@ export default function MenuItemDataTable({ swrResponse }: MenuItemDataTableProp
   }
 
   return (
-    <DataTable swrResponse={swrResponse} columns={columns}>
-      {swrResponse.data?.map(menuItem => (
+    <DataTable
+      dataPagination={{
+        content: data,
+        pagination: pagination,
+      }}
+      columns={columns}>
+      {data.map(menuItem => (
         <TableRow key={menuItem.id}>
           <TableCell>{menuItem.label}</TableCell>
           <TableCell>{menuItem.description}</TableCell>
@@ -87,24 +100,26 @@ export default function MenuItemDataTable({ swrResponse }: MenuItemDataTableProp
             <ActionButton link={routes.menuItems.edit(menuItem.id)} color="purple" tooltip="Editar">
               <Pencil className="w-5" />
             </ActionButton>
-            <DeleteModuleButton confirmAction={() => handleDelete(menuItem.id)} />
+            <ToolTipButton
+              onClick={() => handleDelete(menuItem.id)}
+              className={actionButtoncolorClasses.red}
+              tooltipText="Deletar">
+              <Trash className="w-5" />
+            </ToolTipButton>
             {menuItem.active ? (
-              <DeleteModuleButton
-                confirmAction={() => handleDisable(menuItem.id)}
-                confirmActionLabel="Desativar"
-                icon={<CirclePower />}
-                tooltip="Desativar"
-                type="disable">
-                <span>O Item de menu será desativado e deixará de ser exibido em outras partes do sistema.</span>
-              </DeleteModuleButton>
+              <ToolTipButton
+                onClick={() => handleDisable(menuItem.id)}
+                className={actionButtoncolorClasses.red}
+                tooltipText="Desativar">
+                <CirclePower className="w-5" />
+              </ToolTipButton>
             ) : (
-              <Button
-                variant="default"
-                size="icon"
+              <ToolTipButton
+                onClick={() => handleActivate(menuItem.id)}
                 className={actionButtoncolorClasses.green}
-                onClick={() => handleActivate(menuItem.id)}>
+                tooltipText="Ativar">
                 <Activity className="w-5" />
-              </Button>
+              </ToolTipButton>
             )}
           </TableCell>
         </TableRow>

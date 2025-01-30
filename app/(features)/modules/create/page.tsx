@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import { useRouter } from "next/navigation"
 import { routes } from "@/routes"
 import moduleService from "@/services/module-service"
@@ -18,6 +19,7 @@ export default function CreateModulePage() {
 
   async function createModule(data: ModuleSchema) {
     try {
+      console.log(data)
       const createdModule = await moduleService.create(data)
       await queryClient.invalidateQueries({ queryKey: "modules" })
       router.replace(routes.modules.show(createdModule.id))
@@ -30,7 +32,7 @@ export default function CreateModulePage() {
   }
 
   return (
-    <>
+    <React.Fragment>
       <BreadcrumbContent items={[{ label: "Módulos", href: routes.modules.index }, { label: "Cadastrar" }]} />
       <PageTitle>Cadastrar módulo</PageTitle>
 
@@ -42,6 +44,6 @@ export default function CreateModulePage() {
           <ModuleForm onSubmit={createModule} />
         </CardContent>
       </Card>
-    </>
+    </React.Fragment>
   )
 }

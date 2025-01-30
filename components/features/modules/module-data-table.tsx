@@ -96,8 +96,11 @@ export function ModuleDataTable({ pageable }: { pageable: Pageable }) {
               <Trash className="w-5" />
             </ToolTipButton>
             {module.active ? (
-              <ToolTipButton onClick={() => handleDisable(module.id)} tooltipText="Desativar">
-                <CirclePower className="w-5" /> Desativar
+              <ToolTipButton
+                onClick={() => handleDisable(module.id)}
+                className={actionButtoncolorClasses.red}
+                tooltipText="Desativar">
+                <CirclePower className="w-5" />
               </ToolTipButton>
             ) : (
               <ToolTipButton
