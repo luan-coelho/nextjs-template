@@ -10,7 +10,6 @@ import { toast } from "sonner"
 import { useModules } from "@/hooks/use-modules"
 import { ActionButton, actionButtoncolorClasses } from "@/components/ui/action-button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
 import DataTable, { DataTableColumn } from "@/components/ui/data-table/data-table"
 import { TableCell, TableRow } from "@/components/ui/table"
 import ToolTipButton from "@/components/ui/tool-tip-button"
@@ -101,13 +100,12 @@ export function ModuleDataTable({ pageable }: { pageable: Pageable }) {
                 <CirclePower className="w-5" /> Desativar
               </ToolTipButton>
             ) : (
-              <Button
-                variant="default"
-                size="icon"
+              <ToolTipButton
+                onClick={() => handleActivate(module.id)}
                 className={actionButtoncolorClasses.green}
-                onClick={() => handleActivate(module.id)}>
+                tooltipText="Ativar">
                 <Activity className="w-5" />
-              </Button>
+              </ToolTipButton>
             )}
           </TableCell>
         </TableRow>
