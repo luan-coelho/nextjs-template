@@ -15,17 +15,18 @@ class ApiClient {
       ...options,
       headers: {
         "Content-Type": "application/json",
-        ...(options?.headers || {}),
+        ...options?.headers,
       },
     })
   }
 
   async fetch<T>(endpoint: string, options?: RequestInit): Promise<T> {
+    console.log(options?.body)
     const res = await this.fetcher(endpoint, {
       ...options,
       headers: {
         "Content-Type": "application/json",
-        ...(options?.headers || {}),
+        ...options?.headers,
       },
     })
 
