@@ -82,7 +82,7 @@ export default function Sidebar() {
       <div
         className={`${
           isSidebarExpanded ? "justify-start" : "justify-center"
-        } flex h-16 w-full items-center gap-3 border-b border-gray-800 px-6 text-xl font-semibold text-white`}>
+        } flex h-20 w-full items-center gap-3 border-b border-gray-800 px-6 text-xl font-semibold text-white`}>
         <Rocket className="text-primary" /> {isSidebarExpanded && <h1>Logo</h1>}
       </div>
       <div className="flex-1 overflow-hidden bg-[#1E1E1E] text-white">

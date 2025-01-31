@@ -28,34 +28,35 @@ export default function ShowMenuItemPage() {
       <div className="grid grid-cols-12 gap-4">
         <div className="form-group">
           <Label>Label</Label>
-          <span>{menuItem.label}</span>
+          <span>{menuItem?.label}</span>
         </div>
 
         <div className="form-group">
           <Label>Rota</Label>
           <Link
             className="flex size-fit items-center justify-center gap-2 rounded-sm border border-primary bg-primary/5 px-2 py-1 text-xs font-semibold text-primary"
-            href={menuItem?.route || "#"}>
+            href={menuItem?.route || "#"}
+            target="_blank">
             <LucideIcon name="link" size={16} /> {menuItem?.route}
           </Link>
         </div>
 
         <div className="form-group">
           <Label>Descrição</Label>
-          <span>{menuItem.description}</span>
+          <span>{menuItem?.description}</span>
         </div>
 
         <div className="form-group col-span-12 md:col-span-4 lg:col-span-3">
           <Label>Ícone</Label>
           <div className="flex items-center gap-2">
-            <LucideIcon name={menuItem.icon} />
-            <span>{menuItem.icon}</span>
+            <LucideIcon name={menuItem?.icon || "x"} />
+            <span>{menuItem?.icon}</span>
           </div>
         </div>
 
         <div className="col-span-6 flex size-fit flex-col gap-2 md:col-span-4 lg:col-span-3">
           <Label>Situação</Label>
-          <StatusBadge status={menuItem.active} />
+          <StatusBadge status={menuItem?.active || false} />
         </div>
 
         <div className="form-group">
