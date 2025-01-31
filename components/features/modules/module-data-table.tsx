@@ -1,9 +1,9 @@
 "use client"
 
-import { revalidateTag } from "next/cache"
 import { routes } from "@/routes"
-import menuItemService from "@/services/menu-item-service"
+import moduleService from "@/services/module-service"
 import { ApiError, Pageable } from "@/types"
+import { useQueryClient } from "@tanstack/react-query"
 import { Activity, AlertCircle, CirclePower, Eye, Pencil, Trash } from "lucide-react"
 import { toast } from "sonner"
 
@@ -22,6 +22,7 @@ const columns: DataTableColumn[] = [
 ]
 
 export function ModuleDataTable({ pageable }: { pageable: Pageable }) {
+  const queryClient = useQueryClient()
   const { data, error, pagination } = useModules(pageable)
 
   if (error) {
@@ -36,9 +37,9 @@ export function ModuleDataTable({ pageable }: { pageable: Pageable }) {
 
   async function handleDelete(id: string) {
     try {
-      await menuItemService.deleteById(id)
+      await moduleService.deleteById(id)
       toast.success("Módulo deletado com sucesso.")
-      revalidateTag("modules")
+      await queryClient.invalidateQueries({ queryKey: "modules" })
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao deletar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -47,9 +48,9 @@ export function ModuleDataTable({ pageable }: { pageable: Pageable }) {
 
   async function handleDisable(id: string) {
     try {
-      await menuItemService.disableById(id)
+      await moduleService.disableById(id)
       toast.success("Módulo desativado com sucesso.")
-      revalidateTag("modules")
+      await queryClient.invalidateQueries({ queryKey: "modules" })
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao desativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -58,9 +59,9 @@ export function ModuleDataTable({ pageable }: { pageable: Pageable }) {
 
   async function handleActivate(id: string) {
     try {
-      await menuItemService.activateById(id)
+      await moduleService.activateById(id)
       toast.success("Módulo ativado com sucesso.")
-      revalidateTag("modules")
+      await queryClient.invalidateQueries({ queryKey: "modules" })
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao ativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)

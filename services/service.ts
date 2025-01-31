@@ -48,10 +48,10 @@ export abstract class Service<T> {
   }
 
   async activateById(id: string, options?: RequestInit): Promise<void> {
-    return apiClient.patch(`${this.getUrl()}/${id}/activate`, options)
+    return apiClient.patch(`${this.getUrl()}/${id}/activate`, undefined, options)
   }
 
   async disableById(id: string, options?: RequestInit): Promise<void> {
-    return apiClient.patch(`${this.getUrl()}/${id}/disable`, options)
+    return apiClient.patch(`${this.getUrl()}/${id}/disable`, undefined, options)
   }
 }

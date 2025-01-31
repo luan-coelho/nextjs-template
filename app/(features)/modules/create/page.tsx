@@ -19,13 +19,11 @@ export default function CreateModulePage() {
 
   async function createModule(data: ModuleSchema) {
     try {
-      console.log(data)
       const createdModule = await moduleService.create(data)
       await queryClient.invalidateQueries({ queryKey: "modules" })
       router.replace(routes.modules.show(createdModule.id))
       toast.success("Módulo cadastrado com sucesso.")
     } catch (error) {
-      console.log(error)
       const apiError = error as ApiError
       toast.error(`Erro ao cadastrar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
     }

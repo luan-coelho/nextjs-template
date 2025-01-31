@@ -53,11 +53,6 @@ function DataTableWithProvider<T>({ columns, filterConfig, dataPagination, child
         </TableHeader>
         <TableBody>{children}</TableBody>
       </Table>
-      {/*{isLoading && (
-        <div className="flex items-center justify-center p-5">
-          <SpinnerLoading />
-        </div>
-      )}*/}
       {dataPagination.pagination.itemsOnPage === 0 && <EmptyData />}
       <DataTablePagination
         currentPage={dataPagination.pagination.currentPage}

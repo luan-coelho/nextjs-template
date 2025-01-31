@@ -10,39 +10,45 @@ enum RequestMethod {
 
 class ApiClient {
   async fetcher(endpoint: string, options?: RequestInit): Promise<Response> {
-    const url: string = `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`
-    return await fetch(url, {
-      ...options,
-      headers: {
-        "Content-Type": "application/json",
-        ...options?.headers,
-      },
-    })
+    const url = `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`
+    return fetch(url, options)
   }
 
   async fetch<T>(endpoint: string, options?: RequestInit): Promise<T> {
-    console.log(options?.body)
+    const headers = new Headers(options?.headers)
+    const body = options?.body
+
+    const isPlainObject =
+      typeof body === "object" &&
+      body !== null &&
+      !(body instanceof FormData) &&
+      !(body instanceof Blob) &&
+      !(body instanceof ArrayBuffer) &&
+      !(body instanceof URLSearchParams) &&
+      body.constructor === Object
+
+    if (isPlainObject) {
+      options = {
+        ...options,
+        body: JSON.stringify(body),
+      }
+
+      if (!headers.has("Content-Type")) {
+        headers.set("Content-Type", "application/json")
+      }
+    } else if (body instanceof FormData) {
+      headers.delete("Content-Type")
+    }
+
     const res = await this.fetcher(endpoint, {
       ...options,
-      headers: {
-        "Content-Type": "application/json",
-        ...options?.headers,
-      },
+      headers,
     })
 
     let errorBody: ApiError | undefined
 
     if (!res.ok) {
-      try {
-        errorBody = await res.json()
-      } catch {
-        errorBody = {
-          title: "Erro desconhecido",
-          detail: res.statusText,
-          status: res.status,
-        }
-      }
-
+      errorBody = await this.buildResponseError(res)
       throw errorBody
     }
 
@@ -57,8 +63,6 @@ class ApiClient {
     }
     try {
       const json = await res.json()
-      console.log(res)
-      console.log(json)
       return json as ApiError
     } catch {
       return errorBody
