@@ -8,14 +8,14 @@ import { ChevronDown } from "lucide-react"
 
 import { LucideIcon } from "@/components/ui/lucide-icon"
 
-interface ItemProps {
+interface SidebarItemProps {
   icon?: ReactNode
-  children: ReactNode
   href?: string
   items?: Array<{ label: string; href: string; icon: string }>
+  children: ReactNode
 }
 
-export function Item({ icon, children, href, items }: ItemProps) {
+export function SidebarItem({ icon, href, items, children }: SidebarItemProps) {
   const { isSidebarExpanded } = useSidebarContext()
   const pathname = usePathname()
   const [isOpen, setIsOpen] = useState<boolean>(false)

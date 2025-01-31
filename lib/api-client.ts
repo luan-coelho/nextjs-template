@@ -56,6 +56,7 @@ class ApiClient {
     }
     try {
       const json = await res.json()
+      console.log(res)
       console.log(json)
       return json as ApiError
     } catch {

@@ -8,7 +8,7 @@ import { Module } from "@/types/model-types"
 type SidebarContextType = {
   isLoading: boolean
   isSidebarExpanded: boolean
-  toggleSidebar: () => void
+  toggleSidebar(): void
   changeCurrentModule: (module: Module) => void
   currentModule: Module
   modules: Module[]
@@ -28,6 +28,16 @@ export const SidebarProvider = ({ children }: { children: ReactNode }) => {
 
   function toggleSidebar() {
     setIsSidebarExpanded(prev => !prev)
+    const main = document.querySelector("#main")
+    if (main) {
+      if (isSidebarExpanded) {
+        main.classList.add("md:ml-18")
+        main.classList.remove("md:ml-64")
+      } else {
+        main.classList.add("md:ml-18")
+        main.classList.remove("md:ml-64")
+      }
+    }
   }
 
   async function changeCurrentModule(module: Module) {
