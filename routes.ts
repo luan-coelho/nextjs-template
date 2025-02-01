@@ -43,6 +43,7 @@ const apiRoutes = {
     show: (id: string) => `/modules/${id}`,
     updateMenuItems: (id: string) => `/modules/${id}/update-menu-items-order`,
     addMenuItem: (id: string, menuItemId: string) => `/modules/${id}/add-menu-item/${menuItemId}`,
+    revisions: (id: string) => `/modules/${id}/revisions`,
   },
   menuItems: {
     index: "/menu-items",

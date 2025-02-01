@@ -1,4 +1,4 @@
-import { DataPagination, Pageable } from "@/types"
+import { DataPagination, Pageable, Revision } from "@/types"
 
 import apiClient from "@/lib/api-client"
 
@@ -53,5 +53,9 @@ export abstract class Service<T> {
 
   async disableById(id: string, options?: RequestInit): Promise<void> {
     return apiClient.patch(`${this.getUrl()}/${id}/disable`, undefined, options)
+  }
+
+  async fetchAllRevisions(id: string, options?: RequestInit): Promise<Revision<T>[]> {
+    return apiClient.get<Revision<T>[]>(`${this.getUrl()}/${id}/revisions`, options)
   }
 }

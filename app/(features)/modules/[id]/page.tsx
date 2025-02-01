@@ -6,6 +6,7 @@ import moduleService from "@/services/module-service"
 
 import { orderMenuItems } from "@/lib/utils"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import EmptyData from "@/components/empty-data"
 import ButtonBack from "@/components/layout/button-back"
 import BreadcrumbContent from "@/components/layout/content-breadcrumb"
@@ -15,9 +16,10 @@ import MenuItemDraggableList, { MenuItemsOrder } from "@/components/menu-item-dr
 
 export default async function ShowModulePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
+  const revisions = await moduleService.fetchAllRevisions(id)
 
   return (
-    <div>
+    <React.Fragment>
       <BreadcrumbContent items={[{ label: "Módulos", href: routes.modules.index }, { label: "Visualizar" }]} />
       <PageTitle>Visualizar Módulo</PageTitle>
       <ButtonBack href={routes.modules.index} />
@@ -32,7 +34,27 @@ export default async function ShowModulePage({ params }: { params: Promise<{ id:
           </Suspense>
         </CardContent>
       </Card>
-    </div>
+
+      <Card className="mt-10">
+        <CardHeader className="h-8 py-6">
+          <CardTitle>Auditoria</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <Suspense fallback={<SpinnerLoading />}>
+            <Table>
+              <TableBody>
+                {revisions.map(revision => (
+                  <TableRow key={revision.revisionId}>
+                    <TableCell className="font-medium">{revision.revisionId}</TableCell>
+                    <TableCell>{revision.revisionType}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Suspense>
+        </CardContent>
+      </Card>
+    </React.Fragment>
   )
 }
 
