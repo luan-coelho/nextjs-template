@@ -23,12 +23,13 @@ export default function EditMenuItemPage() {
 
   async function onUpdate(data: MenuItemSchema) {
     try {
-      const menuItem = await menuItemService.updateById(params.id, data)
-      router.replace(routes.menuItems.show(menuItem.id))
-      toast.success("Item de menu atualizado com sucesso.")
+      const updatedMenuItem = await menuItemService.updateById(params.id, data)
       await queryClient.invalidateQueries({
         queryKey: [apiRoutes.menuItems.index],
+        exact: false,
       })
+      router.replace(routes.menuItems.show(updatedMenuItem.id))
+      toast.success("Item de menu atualizado com sucesso.")
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao atualizar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)

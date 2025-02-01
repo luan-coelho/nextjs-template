@@ -23,11 +23,12 @@ export default function EditModulePage() {
   async function onUpdate(data: ModuleSchema) {
     try {
       const updatedModule = await moduleService.updateById(params.id, data)
-      router.replace(routes.modules.show(updatedModule.id))
-      toast.success("Módulo atualizado com sucesso.")
       await queryClient.invalidateQueries({
         queryKey: [apiRoutes.modules.index],
+        exact: false,
       })
+      router.replace(routes.modules.show(updatedModule.id))
+      toast.success("Módulo atualizado com sucesso.")
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao atualizar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
