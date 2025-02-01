@@ -42,6 +42,13 @@ export default async function ShowModulePage({ params }: { params: Promise<{ id:
         <CardContent className="p-0">
           <Suspense fallback={<SpinnerLoading />}>
             <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]"></TableHead>
+                  <TableHead>Tipo</TableHead>
+                  <TableHead></TableHead>
+                </TableRow>
+              </TableHeader>
               <TableBody>
                 {revisions.map(revision => (
                   <TableRow key={revision.revisionId}>
