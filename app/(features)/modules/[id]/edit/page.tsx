@@ -1,7 +1,7 @@
 "use client"
 
 import { useParams, useRouter } from "next/navigation"
-import { routes } from "@/routes"
+import { apiRoutes, routes } from "@/routes"
 import moduleService from "@/services/module-service"
 import { ApiError } from "@/types"
 import { useQueryClient } from "@tanstack/react-query"
@@ -23,9 +23,11 @@ export default function EditModulePage() {
   async function onUpdate(data: ModuleSchema) {
     try {
       const updatedModule = await moduleService.updateById(params.id, data)
-      await queryClient.invalidateQueries({ queryKey: "modules" })
       router.replace(routes.modules.show(updatedModule.id))
       toast.success("Módulo atualizado com sucesso.")
+      await queryClient.invalidateQueries({
+        queryKey: [apiRoutes.modules.index],
+      })
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao atualizar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)

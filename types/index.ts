@@ -37,7 +37,7 @@ export type SWRDataPaginationResponse<T> = {
   isLoading: boolean
   pagination: Pagination
   key?: string
-  mutate: () => void
+  mutate: () => void | Promise<void>
 }
 
 export const STANDARD_PAGE_SIZE = 25

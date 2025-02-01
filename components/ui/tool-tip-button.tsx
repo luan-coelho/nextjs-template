@@ -15,7 +15,7 @@ export default function ToolTipButton({ tooltipText, children, className, onClic
   return (
     <TooltipProvider delayDuration={200}>
       <Tooltip>
-        <TooltipTrigger onClick={onClick} className={cn(buttonVariants(), className)}>
+        <TooltipTrigger onClick={onClick} className={cn(buttonVariants({ size: "icon" }), className)}>
           {children}
         </TooltipTrigger>
         <TooltipContent className="bg-zinc-700">

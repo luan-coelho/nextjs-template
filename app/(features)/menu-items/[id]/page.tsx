@@ -73,8 +73,8 @@ export default function ShowMenuItemPage() {
   }
 
   return (
-    <div>
-      <BreadcrumbContent items={[{ label: "Itens de menu", href: routes.menuItems.index }, { label: "Visualizar" }]} />
+    <React.Fragment>
+      <BreadcrumbContent items={[{ label: "Itens de Menu", href: routes.menuItems.index }, { label: "Visualizar" }]} />
       <PageTitle>Visualizar Item de Menu</PageTitle>
       <ButtonBack href={routes.menuItems.index} />
 
@@ -84,6 +84,6 @@ export default function ShowMenuItemPage() {
         </CardHeader>
         <CardContent>{getContent()}</CardContent>
       </Card>
-    </div>
+    </React.Fragment>
   )
 }

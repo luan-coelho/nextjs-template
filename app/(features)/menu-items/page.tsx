@@ -17,7 +17,7 @@ export default function MenuItemPage() {
 
   return (
     <React.Fragment>
-      <PageTitle>Itens de menu</PageTitle>
+      <PageTitle>Itens de Menu</PageTitle>
       <CreateButtonLink href={routes.menuItems.create} />
 
       <Card className="mt-2">

@@ -3,7 +3,6 @@
 import { routes } from "@/routes"
 import moduleService from "@/services/module-service"
 import { ApiError, Pageable } from "@/types"
-import { useQueryClient } from "@tanstack/react-query"
 import { Activity, AlertCircle, CirclePower, Eye, Pencil, Trash } from "lucide-react"
 import { toast } from "sonner"
 
@@ -22,8 +21,7 @@ const columns: DataTableColumn[] = [
 ]
 
 export function ModuleDataTable({ pageable }: { pageable: Pageable }) {
-  const queryClient = useQueryClient()
-  const { data, error, pagination } = useModules(pageable)
+  const { data, error, pagination, mutate } = useModules(pageable)
 
   if (error) {
     return (
@@ -39,7 +37,7 @@ export function ModuleDataTable({ pageable }: { pageable: Pageable }) {
     try {
       await moduleService.deleteById(id)
       toast.success("Módulo deletado com sucesso.")
-      await queryClient.invalidateQueries({ queryKey: "modules" })
+      await mutate()
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao deletar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -50,7 +48,7 @@ export function ModuleDataTable({ pageable }: { pageable: Pageable }) {
     try {
       await moduleService.disableById(id)
       toast.success("Módulo desativado com sucesso.")
-      await queryClient.invalidateQueries({ queryKey: "modules" })
+      await mutate()
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao desativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -61,7 +59,7 @@ export function ModuleDataTable({ pageable }: { pageable: Pageable }) {
     try {
       await moduleService.activateById(id)
       toast.success("Módulo ativado com sucesso.")
-      await queryClient.invalidateQueries({ queryKey: "modules" })
+      await mutate()
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao ativar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)

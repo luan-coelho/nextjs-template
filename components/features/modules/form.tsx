@@ -53,9 +53,7 @@ export default function ModuleForm({ module, onSubmit }: ModuleFormProps) {
           <Link className={buttonVariants({ variant: "secondary" })} href={routes.modules.index}>
             Cancelar
           </Link>
-          <Button className="w-full md:w-auto" type="submit">
-            Salvar
-          </Button>
+          <Button type="submit">Salvar</Button>
         </div>
       </form>
     </FormProvider>

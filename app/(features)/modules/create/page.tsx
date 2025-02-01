@@ -2,7 +2,7 @@
 
 import React from "react"
 import { useRouter } from "next/navigation"
-import { routes } from "@/routes"
+import { apiRoutes, routes } from "@/routes"
 import moduleService from "@/services/module-service"
 import { ApiError } from "@/types"
 import { useQueryClient } from "@tanstack/react-query"
@@ -20,9 +20,11 @@ export default function CreateModulePage() {
   async function createModule(data: ModuleSchema) {
     try {
       const createdModule = await moduleService.create(data)
-      await queryClient.invalidateQueries({ queryKey: "modules" })
       router.replace(routes.modules.show(createdModule.id))
       toast.success("Módulo cadastrado com sucesso.")
+      await queryClient.invalidateQueries({
+        queryKey: [apiRoutes.modules.index],
+      })
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao cadastrar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
@@ -32,7 +34,7 @@ export default function CreateModulePage() {
   return (
     <React.Fragment>
       <BreadcrumbContent items={[{ label: "Módulos", href: routes.modules.index }, { label: "Cadastrar" }]} />
-      <PageTitle>Cadastrar módulo</PageTitle>
+      <PageTitle>Cadastrar Módulo</PageTitle>
 
       <Card className="mt-10">
         <CardHeader>

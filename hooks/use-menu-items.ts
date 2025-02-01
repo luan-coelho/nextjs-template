@@ -1,18 +1,20 @@
 import { apiRoutes } from "@/routes"
 import menuItemService from "@/services/menu-item-service"
 import { DEFAULT_PAGEABLE, Pageable, SWRDataPaginationResponse } from "@/types"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { MenuItem } from "@/types/model-types"
 
 export function useMenuItems(pageable: Pageable): SWRDataPaginationResponse<MenuItem> {
+  const queryClient = useQueryClient()
+
   const { data, isLoading, error } = useQuery({
     queryKey: [apiRoutes.menuItems.index],
     queryFn: () => menuItemService.fetchAllWithPagination(pageable || DEFAULT_PAGEABLE),
   })
 
   if (error) {
-    error.message = "Falha ao buscar items de menu"
+    error.message = "Falha ao buscar itens de menu"
   }
 
   return {
@@ -20,10 +22,17 @@ export function useMenuItems(pageable: Pageable): SWRDataPaginationResponse<Menu
     error,
     isLoading,
     pagination: data?.pagination || DEFAULT_PAGEABLE,
+    mutate: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: [apiRoutes.menuItems.index],
+      })
+    },
   } as SWRDataPaginationResponse<MenuItem>
 }
 
 export function useMenuItem(id: string) {
+  const queryClient = useQueryClient()
+
   const { data, isLoading, error } = useQuery({
     queryKey: [apiRoutes.menuItems.index, id],
     queryFn: () => menuItemService.fetchById(id),
@@ -37,5 +46,10 @@ export function useMenuItem(id: string) {
     data,
     error,
     isLoading,
+    mutate: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: [apiRoutes.menuItems.index, id],
+      })
+    },
   }
 }
