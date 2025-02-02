@@ -24,21 +24,16 @@ export function SortableItem({ id, item, position, onRemove }: SortableItemProps
   }
 
   return (
-    <li
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      className={
-        "flex min-h-11 w-full items-center justify-between gap-2.5 border-0 border-none bg-[#262626] pl-4 text-[#bfbfbf] hover:bg-[#262626] hover:text-white"
-      }>
-      <div className="flex w-full items-center justify-start gap-2.5 py-1.5">
-        <span>{position}</span>
-        <LucideIcon name={item.icon} size={16} />
-        <div className="text-sm font-normal leading-snug">{item.label}</div>
+    <li ref={setNodeRef} style={style} {...attributes} {...listeners} className="flex min-h-11 w-full">
+      <div className="flex w-full items-center justify-between gap-2.5 border-0 border-none bg-[#262626] pl-4 text-[#bfbfbf] hover:bg-[#262626] hover:text-white">
+        <div className="flex items-center justify-start gap-2.5 py-1.5">
+          <span>{position}</span>
+          <LucideIcon name={item.icon} size={16} />
+          <span className="text-sm font-normal leading-snug">{item.label}</span>
+        </div>
       </div>
-      <Button className="m-0 rounded-none bg-red-500 hover:bg-red-600" onClick={() => onRemove(id)}>
-        <Trash size={16} />
+      <Button className="m-0 size-11 rounded-none bg-red-500 hover:bg-red-600" onClick={() => onRemove(id)}>
+        <Trash />
       </Button>
     </li>
   )

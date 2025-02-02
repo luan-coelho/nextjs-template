@@ -1,12 +1,13 @@
 "use client"
 
 import React, { useState } from "react"
+import { useRouter } from "next/navigation"
 import menuItemService from "@/services/menu-item-service"
 import moduleService from "@/services/module-service"
 import { ApiError } from "@/types"
 import { closestCenter, DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core"
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { CirclePlus } from "lucide-react"
 import { toast } from "sonner"
 
@@ -25,7 +26,7 @@ type MenuItemDraggableListProps = {
 }
 
 export default function MenuItemDraggableList({ module }: MenuItemDraggableListProps) {
-  const queryClient = useQueryClient()
+  const router = useRouter()
   const [modulesMenuItems, setModulesMenuItems] = useState<MenuItem[]>(module.menuItems)
   const [orderedItems, setOrderedItems] = useState<{ order: number; item: MenuItem }[]>([])
   const [hasChanges, setHasChanges] = useState(false)
@@ -73,7 +74,7 @@ export default function MenuItemDraggableList({ module }: MenuItemDraggableListP
         return
       }
       await moduleService.addMenuItem(module.id, selectedMenuItem)
-      await queryClient.invalidateQueries({ queryKey: ["module", module.id] })
+      router.refresh()
       toast.success("Item de menu adicionado com sucesso!")
     } catch (error) {
       const apiError = error as ApiError
@@ -88,14 +89,20 @@ export default function MenuItemDraggableList({ module }: MenuItemDraggableListP
       menuItemId: menuItem.item.id,
     }))
 
-    await moduleService.updateMenuItemsOrder(module.id, menuItemsOrder)
-    toast.success("Ordem dos itens de menu atualizada com sucesso!")
+    try {
+      await moduleService.updateMenuItemsOrder(module.id, menuItemsOrder)
+      router.refresh()
+      toast.success("Ordem dos itens de menu atualizada com sucesso!")
+    } catch (error) {
+      const apiError = error as ApiError
+      toast.error(`Erro: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
+    }
   }
 
   async function handleRemoveMenuItem(menuItemId: string) {
     try {
       await moduleService.removeMenuItem(module.id, menuItemId)
-      await queryClient.invalidateQueries({ queryKey: ["module", module.id] })
+      router.refresh()
       toast.success("Item de menu removido com sucesso!")
     } catch (error) {
       const apiError = error as ApiError
@@ -105,7 +112,7 @@ export default function MenuItemDraggableList({ module }: MenuItemDraggableListP
 
   function getCombobox() {
     if (isLoading) {
-      return <span>Caregando itens de menu do combobox</span>
+      return <span>Carregando itens de menu do combobox</span>
     }
 
     if (!menuItems) {

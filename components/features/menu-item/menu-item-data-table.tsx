@@ -81,7 +81,7 @@ export default function MenuItemDataTable({ pageable }: { pageable: Pageable }) 
       {data.map(menuItem => (
         <TableRow key={menuItem.id}>
           <TableCell>{menuItem.label}</TableCell>
-          <TableCell>{menuItem.description}</TableCell>
+          <TableCell>{menuItem.description || "-"}</TableCell>
           <TableCell className="text-center">{menuItem.route}</TableCell>
           <TableCell className="text-center">
             <div className="flex items-center justify-center gap-2">

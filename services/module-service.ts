@@ -6,7 +6,7 @@ import apiClient from "@/lib/api-client"
 import { MenuItemsOrder } from "@/components/menu-item-draggable-list"
 
 export class ModuleService extends Service<Module> {
-  private getUrl(): string {
+  getUrl(): string {
     return apiRoutes.modules.index
   }
 
@@ -16,6 +16,10 @@ export class ModuleService extends Service<Module> {
 
   async addMenuItem(id: string, menuItemId: string): Promise<Module> {
     return apiClient.patch(`${this.getUrl()}/${id}/add-menu-item/${menuItemId}`)
+  }
+
+  async removeMenuItem(id: string, menuItemId: string): Promise<Module> {
+    return apiClient.patch(`${this.getUrl()}/${id}/remove-menu-item/${menuItemId}`)
   }
 }
 

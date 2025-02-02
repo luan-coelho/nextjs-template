@@ -1,93 +1,131 @@
 "use client"
 
-import React from "react"
+import { useState } from "react"
+import Image from "next/image"
+import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Rocket } from "lucide-react"
-import { FormProvider, useForm } from "react-hook-form"
-import { z } from "zod"
+import { Eye, EyeOff, Rocket } from "lucide-react"
+import { useForm } from "react-hook-form"
+import * as z from "zod"
 
 import { Button } from "@/components/ui/button"
-import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
 const schema = z.object({
-  login: z.string().min(1, "Login é obrigatório"),
-  password: z.string().min(1, "Senha é obrigatório"),
+  email: z.string().email("Email inválido").min(1, "Email é obrigatório"),
+  password: z.string().min(1, "Senha é obrigatória"),
+  rememberMe: z.boolean().default(false),
 })
 
 type FormData = z.infer<typeof schema>
 
 export default function LoginPage() {
+  const [showPassword, setShowPassword] = useState(false)
+
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      login: "",
+      email: "",
       password: "",
+      rememberMe: false,
     },
   })
 
-  const onSubmit = (data: FormData) => {
+  function onSubmit(data: FormData) {
     console.log(data)
   }
 
   return (
-    <React.Fragment>
-      <div className="flex size-full items-center justify-center">
-        <div className="relative hidden h-full bg-zinc-800 text-white md:block md:grow">
-          <div className="absolute left-10 top-10 flex items-center gap-2 text-lg font-medium">
-            <Rocket />
-            <span>Logo</span>
-          </div>
-        </div>
-        <div className="flex w-full flex-col justify-center gap-7 p-5 sm:p-10 md:w-[500px] lg:p-12">
-          <h1 className="text-center text-2xl font-semibold tracking-tight">Faça login no APP</h1>
-          <span className="text-center text-zinc-600">
-            Bem-vindo ao APP, insira seus dados de login abaixo para usar o aplicativo.
-          </span>
-          <div>
-            <FormProvider {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3">
-                <FormField
-                  control={form.control}
-                  name="login"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          placeholder="Informe o login"
-                          {...field}
-                          className="h-14 placeholder:text-base placeholder:text-zinc-700"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          placeholder="Informe a senha"
-                          {...field}
-                          className="h-14 placeholder:text-base placeholder:text-zinc-700"
-                          type="password"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button className="h-12 w-full" type="submit">
-                  Entrar
-                </Button>
-              </form>
-            </FormProvider>
-          </div>
+    <div className="flex min-h-screen">
+      {/* Lado esquerdo - Formulário */}
+      <div className="mx-auto flex w-1/2 max-w-md flex-col justify-center p-8">
+        {/* Cabeçalho */}
+        <h1 className="mb-2 text-center text-2xl font-bold">Bem-vindo de volta!</h1>
+        <p className="mb-8 text-center text-gray-600">Entre para ter acesso ilimitado aos dados e informações.</p>
+
+        {/* Formulário */}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Email<span className="text-red-500">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="Digite seu endereço de email" {...field} className="h-10" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Senha<span className="text-red-500">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Digite sua senha"
+                        {...field}
+                        className="h-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        {showPassword ? <EyeOff /> : <Eye />}
+                      </button>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex items-center justify-between">
+              <FormField
+                control={form.control}
+                name="rememberMe"
+                render={({ field }) => (
+                  <FormItem className="flex items-center space-x-2">
+                    <FormControl>
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                    <FormLabel className="text-sm text-gray-600">Lembrar-me</FormLabel>
+                  </FormItem>
+                )}
+              />
+              <Link href="/forgot-password" className="text-sm text-indigo-600 hover:underline">
+                Esqueceu a senha?
+              </Link>
+            </div>
+
+            <Button type="submit" className="w-full">
+              Entrar
+            </Button>
+          </form>
+        </Form>
+      </div>
+
+      {/* Lado direito - Arte decorativa */}
+      <div className="relative w-1/2 overflow-hidden bg-indigo-600">
+        <div className="absolute inset-0">
+          <div className="absolute bottom-0 right-0 size-64 rounded-tl-full bg-indigo-500"></div>
+          <div className="absolute left-20 top-20 size-20 bg-teal-400"></div>
+          <div className="absolute right-40 top-40 size-16 rotate-45 bg-yellow-400"></div>
         </div>
       </div>
-    </React.Fragment>
+    </div>
   )
 }
