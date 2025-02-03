@@ -5,7 +5,14 @@ import { cn } from "@/lib/utils"
 
 const WidgetCard = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("relative w-72 overflow-hidden rounded-lg p-6", className)} {...props} />
+    <div
+      ref={ref}
+      className={cn(
+        "relative w-64 overflow-hidden rounded-lg bg-gradient-to-r from-green-400 to-blue-500 p-6",
+        className,
+      )}
+      {...props}
+    />
   ),
 )
 WidgetCard.displayName = "WidgetCard"
