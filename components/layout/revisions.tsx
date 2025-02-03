@@ -1,13 +1,16 @@
 import React, { Suspense } from "react"
 import { Revision, RevisionType } from "@/types"
+import { Trash } from "lucide-react"
 
 import { dateUtils } from "@/lib/date-utils"
 import { cn } from "@/lib/utils"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Card, CardHeader, CardTitle } from "@/components/ui/card"
+import { actionButtoncolorClasses } from "@/components/ui/action-button"
 import { LucideIcon } from "@/components/ui/lucide-icon"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import ToolTipButton from "@/components/ui/tool-tip-button"
 import SpinnerLoading from "@/components/layout/spinner-loading"
+import RevisionDetail from "@/components/revision-detail"
 
 type RevisionListProps<T> = {
   revisions: Revision<T>[]
@@ -60,6 +63,7 @@ export default function Revisions<T>({ revisions, className }: RevisionListProps
                   <TableHead className="w-[100px]">Tipo</TableHead>
                   <TableHead>Responsável</TableHead>
                   <TableHead>Data</TableHead>
+                  <TableHead></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -78,6 +82,9 @@ export default function Revisions<T>({ revisions, className }: RevisionListProps
                         {revision.cpf} - {revision.username}
                       </TableCell>
                       <TableCell className="px-4">{dateUtils.formatDateTime(revision.revisionDate)}</TableCell>
+                      <TableCell className="px-4">
+                        {revision.revisionType === RevisionType.MOD && <RevisionDetail revision={revision} />}
+                      </TableCell>
                     </TableRow>
                   )
                 })}
