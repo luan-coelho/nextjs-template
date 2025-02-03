@@ -3,7 +3,8 @@ import { Revision, RevisionType } from "@/types"
 
 import { dateUtils } from "@/lib/date-utils"
 import { cn } from "@/lib/utils"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { LucideIcon } from "@/components/ui/lucide-icon"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import SpinnerLoading from "@/components/layout/spinner-loading"
@@ -46,43 +47,45 @@ export default function Revisions<T>({ revisions, className }: RevisionListProps
   }
 
   return (
-    <Card className={cn("mt-10", className)}>
-      <CardHeader className="h-8 py-6">
-        <CardTitle>Auditoria</CardTitle>
-      </CardHeader>
-      <CardContent className="p-0">
-        <Suspense fallback={<SpinnerLoading />}>
-          <Table>
-            <TableHeader className="bg-white">
-              <TableRow>
-                <TableHead className="w-[100px]">Tipo</TableHead>
-                <TableHead>Responsável</TableHead>
-                <TableHead>Data</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {revisions.map(revision => {
-                const revisionDetails = getRevisionTypeDetails(revision.revisionType)
-                return (
-                  <TableRow key={revision.revisionId}>
-                    <TableCell className="flex items-center justify-start px-4">
-                      <div
-                        className={`flex size-6 w-auto items-center justify-center space-x-1 rounded-sm px-1 py-2 ${revisionDetails.color}`}>
-                        <LucideIcon size={16} name={revisionDetails.icon} />
-                        <span className="text-xs">{revisionDetails.description.toUpperCase()}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="px-4">
-                      {revision.cpf} - {revision.username}
-                    </TableCell>
-                    <TableCell className="px-4">{dateUtils.formatDateTime(revision.revisionDate)}</TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </Suspense>
-      </CardContent>
-    </Card>
+    <Accordion type="single" collapsible className={cn("mt-10", className)}>
+      <AccordionItem value="item-1">
+        <AccordionTrigger className="flex h-12 justify-between justify-items-center rounded-none border bg-card px-6 py-8 text-card-foreground">
+          Auditoria
+        </AccordionTrigger>
+        <AccordionContent className="rounded-none border bg-card p-0 text-card-foreground">
+          <Suspense fallback={<SpinnerLoading />}>
+            <Table>
+              <TableHeader className="bg-white">
+                <TableRow>
+                  <TableHead className="w-[100px]">Tipo</TableHead>
+                  <TableHead>Responsável</TableHead>
+                  <TableHead>Data</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {revisions.map(revision => {
+                  const revisionDetails = getRevisionTypeDetails(revision.revisionType)
+                  return (
+                    <TableRow key={revision.revisionId}>
+                      <TableCell className="flex items-center justify-start px-4">
+                        <div
+                          className={`flex size-6 w-auto items-center justify-center space-x-1 rounded-sm px-1 py-2 ${revisionDetails.color}`}>
+                          <LucideIcon size={16} name={revisionDetails.icon} />
+                          <span className="text-xs">{revisionDetails.description.toUpperCase()}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="px-4">
+                        {revision.cpf} - {revision.username}
+                      </TableCell>
+                      <TableCell className="px-4">{dateUtils.formatDateTime(revision.revisionDate)}</TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </Suspense>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   )
 }

@@ -21,6 +21,21 @@ const routes = {
     edit: (id: string) => `/menu-items/${id}/edit`,
     show: (id: string) => `/menu-items/${id}`,
   },
+  users: {
+    index: "/users",
+    admin: {
+      index: "/users/admin",
+      create: "/users/admin/create",
+      edit: (id: string) => `/users/admin/${id}/edit`,
+      show: (id: string) => `/users/admin/${id}`,
+    },
+    customer: {
+      index: "/users/customer",
+      create: "/users/customer/create",
+      edit: (id: string) => `/users/customer/${id}/edit`,
+      show: (id: string) => `/users/customer/${id}`,
+    },
+  },
 }
 
 /**

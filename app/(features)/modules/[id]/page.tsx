@@ -31,7 +31,7 @@ export default async function ShowModulePage({ params }: { params: Promise<{ id:
       <PageTitle>Visualizar Módulo</PageTitle>
       <ButtonBack href={routes.modules.index} />
 
-      <Card className="w-full">
+      <Card className="mt-3">
         <CardHeader>
           <CardTitle>{modulez?.name}</CardTitle>
         </CardHeader>
