@@ -1,22 +1,22 @@
 import React, { Suspense } from "react"
+import { Service } from "@/services/service"
 import { Revision, RevisionType } from "@/types"
-import { Trash } from "lucide-react"
 
+import { BaseEntity } from "@/types/model-types"
 import { dateUtils } from "@/lib/date-utils"
 import { cn } from "@/lib/utils"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { actionButtoncolorClasses } from "@/components/ui/action-button"
 import { LucideIcon } from "@/components/ui/lucide-icon"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import ToolTipButton from "@/components/ui/tool-tip-button"
 import SpinnerLoading from "@/components/layout/spinner-loading"
 import RevisionDetail from "@/components/revision-detail"
 
-type RevisionListProps<T> = {
+type RevisionListProps<T extends BaseEntity> = {
   revisions: Revision<T>[]
+  service: Service<T>
 } & React.HTMLAttributes<HTMLDivElement>
 
-export default function Revisions<T>({ revisions, className }: RevisionListProps<T>) {
+export default function Revisions<T extends BaseEntity>({ revisions, className, service }: RevisionListProps<T>) {
   function getRevisionTypeDetails(revisionType: RevisionType): {
     description: string
     color: string
@@ -83,7 +83,9 @@ export default function Revisions<T>({ revisions, className }: RevisionListProps
                       </TableCell>
                       <TableCell className="px-4">{dateUtils.formatDateTime(revision.revisionDate)}</TableCell>
                       <TableCell className="px-4">
-                        {revision.revisionType === RevisionType.MOD && <RevisionDetail revision={revision} />}
+                        {revision.revisionType === RevisionType.MOD && (
+                          <RevisionDetail revision={revision} service={service} />
+                        )}
                       </TableCell>
                     </TableRow>
                   )

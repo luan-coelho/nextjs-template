@@ -1,9 +1,9 @@
-"use client"
-
 import React from "react"
+import { Service } from "@/services/service"
 import { Revision, RevisionType } from "@/types"
-import { Eye } from "lucide-react"
+import { Eye, MoveRight } from "lucide-react"
 
+import { BaseEntity } from "@/types/model-types"
 import { dateUtils } from "@/lib/date-utils"
 import { actionButtoncolorClasses } from "@/components/ui/action-button"
 import {
@@ -17,8 +17,14 @@ import {
 import { Separator } from "@/components/ui/separator"
 import ToolTipButton from "@/components/ui/tool-tip-button"
 
-export default function RevisionDetail<T>({ revision }: { revision: Revision<T> }) {
+type RevisionDetailProps<T extends BaseEntity> = {
+  revision: Revision<T>
+  service: Service<T>
+}
+
+export default async function RevisionDetail<T extends BaseEntity>({ revision, service }: RevisionDetailProps<T>) {
   const revisionDetails = getRevisionTypeDetails(revision.revisionType)
+  const revisionComparison = await service.fetchCompareRevisions(revision.entity.id, revision.revisionId)
 
   function getRevisionTypeDetails(revisionType: RevisionType): {
     description: string
@@ -59,7 +65,7 @@ export default function RevisionDetail<T>({ revision }: { revision: Revision<T> 
           <Eye className="w-5" />
         </ToolTipButton>
       </DialogTrigger>
-      <DialogContent className="min-w-[1000px]">
+      <DialogContent className="h-screen max-w-screen-2xl md:h-auto md:min-w-[1000px]">
         <DialogHeader>
           <DialogTitle>Auditoria</DialogTitle>
           <DialogDescription>Informações sobre a revisão</DialogDescription>
@@ -82,6 +88,40 @@ export default function RevisionDetail<T>({ revision }: { revision: Revision<T> 
               {revision.cpf} - {revision.username}
             </div>
           </div>
+        </div>
+
+        <Separator />
+
+        <div className="flex flex-row items-center justify-between py-4">
+          <span>O que mudou?</span>
+          <div className={"mt-2 flex gap-4 text-sm text-gray-500"}>
+            <div className="flex items-center gap-2">
+              <div className="size-4 rounded bg-red-500 p-2"></div>
+              <span>Valor anterior</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <div className="size-4 rounded bg-green-500 p-2"></div>
+              <span>Novo valor</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          {revisionComparison.fieldChanges.map(fieldChange => (
+            <div key={fieldChange.label}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="text-sm font-medium">{fieldChange.label}</div>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-gray-500">
+                  <span className={"text-red-500"}>{fieldChange.oldValue}</span>
+                  <MoveRight />
+                  <span className={"text-green-500"}>{fieldChange.newValue}</span>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </DialogContent>
     </Dialog>

@@ -1,5 +1,6 @@
-import { DataPagination, Pageable, Revision } from "@/types"
+import { DataPagination, Pageable, Revision, RevisionComparison } from "@/types"
 
+import { BaseEntity } from "@/types/model-types"
 import apiClient from "@/lib/api-client"
 
 export abstract class Service<T> {
@@ -55,7 +56,11 @@ export abstract class Service<T> {
     return apiClient.patch(`${this.getUrl()}/${id}/disable`, undefined, options)
   }
 
-  async fetchAllRevisions(id: string, options?: RequestInit): Promise<Revision<T>[]> {
+  async fetchAllRevisions<T extends BaseEntity>(id: string, options?: RequestInit): Promise<Revision<T>[]> {
     return apiClient.get<Revision<T>[]>(`${this.getUrl()}/${id}/revisions`, options)
+  }
+
+  async fetchCompareRevisions(id: string, revisionId: number, options?: RequestInit): Promise<RevisionComparison> {
+    return apiClient.get<RevisionComparison>(`${this.getUrl()}/${id}/revisions/${revisionId}/compare`, options)
   }
 }

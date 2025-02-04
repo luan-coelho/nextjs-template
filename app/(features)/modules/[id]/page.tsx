@@ -40,7 +40,7 @@ export default async function ShowModulePage({ params }: { params: Promise<{ id:
         </CardContent>
       </Card>
 
-      <Revisions revisions={revisions} />
+      <Revisions revisions={revisions} service={moduleService} />
     </React.Fragment>
   )
 }
