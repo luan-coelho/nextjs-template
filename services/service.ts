@@ -60,7 +60,11 @@ export abstract class Service<T> {
     return apiClient.get<Revision<T>[]>(`${this.getUrl()}/${id}/revisions`, options)
   }
 
-  async fetchCompareRevisions(id: string, revisionId: number, options?: RequestInit): Promise<RevisionComparison> {
-    return apiClient.get<RevisionComparison>(`${this.getUrl()}/${id}/revisions/${revisionId}/compare`, options)
+  async fetchCompareRevisions<T extends BaseEntity>(
+    id: string,
+    revisionId: number,
+    options?: RequestInit,
+  ): Promise<RevisionComparison<T>> {
+    return apiClient.get<RevisionComparison<T>>(`${this.getUrl()}/${id}/revisions/${revisionId}/compare`, options)
   }
 }

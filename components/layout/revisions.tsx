@@ -1,5 +1,4 @@
 import React, { Suspense } from "react"
-import { Service } from "@/services/service"
 import { Revision, RevisionType } from "@/types"
 
 import { BaseEntity } from "@/types/model-types"
@@ -13,10 +12,9 @@ import RevisionDetail from "@/components/revision-detail"
 
 type RevisionListProps<T extends BaseEntity> = {
   revisions: Revision<T>[]
-  service: Service<T>
 } & React.HTMLAttributes<HTMLDivElement>
 
-export default function Revisions<T extends BaseEntity>({ revisions, className, service }: RevisionListProps<T>) {
+export default async function Revisions<T extends BaseEntity>({ revisions, className }: RevisionListProps<T>) {
   function getRevisionTypeDetails(revisionType: RevisionType): {
     description: string
     color: string
@@ -83,9 +81,7 @@ export default function Revisions<T extends BaseEntity>({ revisions, className, 
                       </TableCell>
                       <TableCell className="px-4">{dateUtils.formatDateTime(revision.revisionDate)}</TableCell>
                       <TableCell className="px-4">
-                        {revision.revisionType === RevisionType.MOD && (
-                          <RevisionDetail revision={revision} service={service} />
-                        )}
+                        {revision.revisionType === RevisionType.MOD && <RevisionDetail revision={revision} />}
                       </TableCell>
                     </TableRow>
                   )

@@ -1,30 +1,30 @@
-import React from "react"
-import { Service } from "@/services/service"
+"use client"
+
+import React, { useState } from "react"
+import moduleService from "@/services/module-service"
 import { Revision, RevisionType } from "@/types"
+import { useQuery } from "@tanstack/react-query"
 import { Eye, MoveRight } from "lucide-react"
 
 import { BaseEntity } from "@/types/model-types"
 import { dateUtils } from "@/lib/date-utils"
 import { actionButtoncolorClasses } from "@/components/ui/action-button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+import { DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator"
 import ToolTipButton from "@/components/ui/tool-tip-button"
+import { FullscreenDialog } from "@/components/fullscreen-dialog"
 
-type RevisionDetailProps<T extends BaseEntity> = {
-  revision: Revision<T>
-  service: Service<T>
-}
-
-export default async function RevisionDetail<T extends BaseEntity>({ revision, service }: RevisionDetailProps<T>) {
+export default function RevisionDetail<T extends BaseEntity>({ revision }: { revision: Revision<T> }) {
+  const [isOpen, setIsOpen] = useState(false)
   const revisionDetails = getRevisionTypeDetails(revision.revisionType)
-  const revisionComparison = await service.fetchCompareRevisions(revision.entity.id, revision.revisionId)
+  const {
+    data: revisionComparasion,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["revision-detail", revision.revisionId],
+    queryFn: () => moduleService.fetchCompareRevisions(revision.entity.id, revision.revisionId),
+  })
 
   function getRevisionTypeDetails(revisionType: RevisionType): {
     description: string
@@ -59,71 +59,75 @@ export default async function RevisionDetail<T extends BaseEntity>({ revision, s
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild={true}>
+    <FullscreenDialog>
+      <FullscreenDialog.Trigger onClick={() => setIsOpen(true)}>
         <ToolTipButton className={actionButtoncolorClasses.blue} tooltipText="Visualizar">
           <Eye className="w-5" />
         </ToolTipButton>
-      </DialogTrigger>
-      <DialogContent className="h-screen max-w-screen-2xl md:h-auto md:min-w-[1000px]">
-        <DialogHeader>
-          <DialogTitle>Auditoria</DialogTitle>
-          <DialogDescription>Informações sobre a revisão</DialogDescription>
-        </DialogHeader>
+      </FullscreenDialog.Trigger>
+
+      <FullscreenDialog.Content isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <h1 className="text-xl font-semibold">Detalhes da Revisão</h1>
 
         <Separator />
 
-        <div className="flex items-center justify-between py-4">
-          <div className="flex flex-col items-start">
-            {revisionDetails.description}
-            <div className="flex flex-col">
-              <div className="text-sm text-gray-500">
-                Realizada em {dateUtils.formatDateTime(revision.revisionDate)}
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col items-start">
-            Responsável
-            <div className="text-sm text-gray-500">
-              {revision.cpf} - {revision.username}
-            </div>
-          </div>
-        </div>
-
-        <Separator />
-
-        <div className="flex flex-row items-center justify-between py-4">
-          <span>O que mudou?</span>
-          <div className={"mt-2 flex gap-4 text-sm text-gray-500"}>
-            <div className="flex items-center gap-2">
-              <div className="size-4 rounded bg-red-500 p-2"></div>
-              <span>Valor anterior</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <div className="size-4 rounded bg-green-500 p-2"></div>
-              <span>Novo valor</span>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          {revisionComparison.fieldChanges.map(fieldChange => (
-            <div key={fieldChange.label}>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="text-sm font-medium">{fieldChange.label}</div>
+        {isLoading && <div>Carregando...</div>}
+        {error && <div>Erro ao carregar</div>}
+        {revisionComparasion?.fieldChanges && (
+          <React.Fragment>
+            <div className="flex items-center justify-between py-4">
+              <div className="flex flex-col items-start">
+                {revisionDetails.description}
+                <div className="flex flex-col">
+                  <div className="text-sm text-gray-500">
+                    Realizada em {dateUtils.formatDateTime(revision.revisionDate)}
+                  </div>
                 </div>
-                <div className="flex items-center gap-3 text-sm text-gray-500">
-                  <span className={"text-red-500"}>{fieldChange.oldValue}</span>
-                  <MoveRight />
-                  <span className={"text-green-500"}>{fieldChange.newValue}</span>
+              </div>
+              <div className="flex flex-col items-start">
+                Responsável
+                <div className="text-sm text-gray-500">
+                  {revision.cpf} - {revision.username}
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-      </DialogContent>
-    </Dialog>
+
+            <Separator />
+
+            <div className="flex flex-row items-center justify-between py-4">
+              <span>O que mudou?</span>
+              <div className={"mt-2 flex gap-4 text-sm text-gray-500"}>
+                <div className="flex items-center gap-2">
+                  <div className="size-4 rounded bg-red-500 p-2"></div>
+                  <span>Valor anterior</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <div className="size-4 rounded bg-green-500 p-2"></div>
+                  <span>Novo valor</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              {revisionComparasion?.fieldChanges.map(fieldChange => (
+                <div key={fieldChange.label}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div className="text-sm font-medium">{fieldChange.label}</div>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-gray-500">
+                      <span className={"text-red-500"}>{fieldChange.oldValue}</span>
+                      <MoveRight />
+                      <span className={"text-green-500"}>{fieldChange.newValue}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </React.Fragment>
+        )}
+      </FullscreenDialog.Content>
+    </FullscreenDialog>
   )
 }

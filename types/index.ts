@@ -1,5 +1,3 @@
-import { DateTime } from "@auth/core/providers/kakao"
-
 import { BaseEntity } from "@/types/model-types"
 
 export interface BreadcrumbContentItem {
@@ -63,11 +61,9 @@ export interface Revision<T extends BaseEntity> {
   entity: T extends BaseEntity ? T : BaseEntity
 }
 
-export interface RevisionComparison {
-  revisionAuthor: string
-  revisionDateTime: Date
+export interface RevisionComparison<T extends BaseEntity> {
+  revision: Revision<T>
   fieldChanges: FieldChange[]
-  revisionType: string
 }
 
 interface FieldChange {
