@@ -67,4 +67,11 @@ export abstract class Service<T> {
   ): Promise<RevisionComparison<T>> {
     return apiClient.get<RevisionComparison<T>>(`${this.getUrl()}/${id}/revisions/${revisionId}/compare`, options)
   }
+
+  async fetchAllRevisionComparisons<T extends BaseEntity>(
+    id: string,
+    options?: RequestInit,
+  ): Promise<RevisionComparison<T>[]> {
+    return apiClient.get<RevisionComparison<T>[]>(`${this.getUrl()}/${id}/revisions/comparisons`, options)
+  }
 }
