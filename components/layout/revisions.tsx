@@ -1,20 +1,28 @@
-import React, { Suspense } from "react"
-import { Revision, RevisionType } from "@/types"
+import React, { Suspense } from "react";
+import { Revision, RevisionType } from "@/types";
 
 import { BaseEntity } from "@/types/model-types"
-import { dateUtils } from "@/lib/date-utils"
 import { cn } from "@/lib/utils"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { LucideIcon } from "@/components/ui/lucide-icon"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import SpinnerLoading from "@/components/layout/spinner-loading"
-import RevisionDetail from "@/components/revision-detail"
+import RevisionItem from "@/components/revision-item"
+import SpinnerLoading from "@/components/layout/spinner-loading";
+import { Separator } from "@/components/ui/separator";
+import { MoveRight } from "lucide-react";
+import moduleService from "@/services/module-service";
 
 type RevisionListProps<T extends BaseEntity> = {
   revisions: Revision<T>[]
 } & React.HTMLAttributes<HTMLDivElement>
 
-export default async function Revisions<T extends BaseEntity>({ revisions, className }: RevisionListProps<T>) {
+export default function Revisions<T extends BaseEntity>({ revisions, className }: RevisionListProps<T>) {
+  const revisionDetails = getRevisionTypeDetails(revision.revisionType)
+  let revisionComparasion
+  try {
+    revisionComparasion = await moduleService.fetchCompareRevisions(revision.entity.id, revision.revisionId)
+  } catch (error) {
+    return <div>Erro ao buscar detalhes da revisão</div>
+  }
+
   function getRevisionTypeDetails(revisionType: RevisionType): {
     description: string
     color: string
@@ -53,41 +61,54 @@ export default async function Revisions<T extends BaseEntity>({ revisions, class
         <AccordionTrigger className="flex h-12 justify-between justify-items-center rounded-none border bg-card px-6 py-8 text-card-foreground">
           Auditoria
         </AccordionTrigger>
-        <AccordionContent className="rounded-none border bg-card p-0 text-card-foreground">
+        <AccordionContent className="rounded-none border bg-card px-8 py-2 text-card-foreground">
           <Suspense fallback={<SpinnerLoading />}>
-            <Table>
-              <TableHeader className="bg-white">
-                <TableRow>
-                  <TableHead className="w-[100px]">Tipo</TableHead>
-                  <TableHead>Responsável</TableHead>
-                  <TableHead>Data</TableHead>
-                  <TableHead></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {revisions.map(revision => {
-                  const revisionDetails = getRevisionTypeDetails(revision.revisionType)
-                  return (
-                    <TableRow key={revision.revisionId}>
-                      <TableCell className="flex items-center justify-start px-4">
-                        <div
-                          className={`flex size-6 w-auto items-center justify-center space-x-1 rounded-sm px-1 py-2 ${revisionDetails.color}`}>
-                          <LucideIcon size={16} name={revisionDetails.icon} />
-                          <span className="text-xs">{revisionDetails.description.toUpperCase()}</span>
+            {revisionComparasion?.fieldChanges && (
+              <React.Fragment>
+                <div className="flex items-center justify-between py-4">
+                  <div className="flex flex-col items-start">
+                    Responsável
+                    <div className="text-sm text-gray-500">
+                      {revision.cpf} - {revision.username}
+                    </div>
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="flex flex-row items-center justify-between py-4">
+                  <span>O que mudou?</span>
+                  <div className={"mt-2 flex gap-4 text-sm text-gray-500"}>
+                    <div className="flex items-center gap-2">
+                      <div className="size-4 rounded bg-red-500 p-2"></div>
+                      <span>Valor anterior</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <div className="size-4 rounded bg-green-500 p-2"></div>
+                      <span>Novo valor</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  {revisionComparasion?.fieldChanges.map(fieldChange => (
+                    <div key={fieldChange.label}>
+                      <div className="flex flex-col items-center justify-center">
+                        <div className="flex items-center">
+                          <div className="text-sm font-medium">{fieldChange.label}</div>
                         </div>
-                      </TableCell>
-                      <TableCell className="px-4">
-                        {revision.cpf} - {revision.username}
-                      </TableCell>
-                      <TableCell className="px-4">{dateUtils.formatDateTime(revision.revisionDate)}</TableCell>
-                      <TableCell className="px-4">
-                        {revision.revisionType === RevisionType.MOD && <RevisionDetail revision={revision} />}
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
-              </TableBody>
-            </Table>
+                        <div className="flex items-center gap-3 text-sm text-gray-500">
+                          <span className={"text-red-500"}>{fieldChange.oldValue}</span>
+                          <MoveRight />
+                          <span className={"text-green-500"}>{fieldChange.newValue}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </React.Fragment>
+            )}
           </Suspense>
         </AccordionContent>
       </AccordionItem>

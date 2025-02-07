@@ -33,14 +33,16 @@ export default async function ShowModulePage({ params }: { params: Promise<{ id:
 
       <Card className="mt-3">
         <CardHeader>
-          <CardTitle>{modulez?.name}</CardTitle>
+          <CardTitle>Módulo</CardTitle>
         </CardHeader>
         <CardContent>
           <Suspense fallback={<SpinnerLoading />}>{getMenuItems()}</Suspense>
         </CardContent>
       </Card>
 
-      <Revisions revisions={revisions} service={moduleService} />
+      <Suspense fallback={<SpinnerLoading />}>
+        <Revisions revisions={revisions} />
+      </Suspense>
     </React.Fragment>
   )
 }
