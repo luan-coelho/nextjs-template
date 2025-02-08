@@ -1,10 +1,12 @@
 import React, { Suspense } from "react"
+import Link from "next/link"
 import { routes } from "@/routes"
 import moduleService from "@/services/module-service"
 import { AlertCircle } from "lucide-react"
 
 import { orderMenuItems } from "@/lib/utils"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import ButtonBack from "@/components/layout/button-back"
 import BreadcrumbContent from "@/components/layout/content-breadcrumb"
@@ -20,9 +22,12 @@ export default async function ShowModulePage({ params }: { params: Promise<{ id:
   async function getRevisions() {
     try {
       const revisionsComparasion = await moduleService.fetchAllRevisionComparisons(id)
+      console.log(revisionsComparasion)
+      if (!revisionsComparasion.length) {
+        return null
+      }
       return <Revisions revisionsComparasion={revisionsComparasion} />
     } catch (error) {
-      console.error(error)
       return (
         <Alert className={"mt-3"} variant="destructive">
           <AlertCircle className="size-4" />
@@ -53,7 +58,14 @@ export default async function ShowModulePage({ params }: { params: Promise<{ id:
           <CardTitle>Módulo</CardTitle>
         </CardHeader>
         <CardContent>
-          <Suspense fallback={<SpinnerLoading />}>{getMenuItems()}</Suspense>
+          <Suspense fallback={<SpinnerLoading />}>
+            {getMenuItems()}
+            <div className="mt-3 flex justify-end">
+              <Link className={buttonVariants()} href={routes.modules.edit(id)}>
+                Editar
+              </Link>
+            </div>
+          </Suspense>
         </CardContent>
       </Card>
 

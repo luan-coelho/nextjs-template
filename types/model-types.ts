@@ -26,4 +26,6 @@ export interface User extends BaseEntity {
   password: string
   primaryPhone: string
   secondaryPhone: string
+  accessStartDate: Date
+  accessEndDate: Date
 }

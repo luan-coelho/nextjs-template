@@ -1,4 +1,4 @@
-import { BaseEntity } from "@/types/model-types"
+import { BaseEntity, User } from "@/types/model-types"
 
 export interface BreadcrumbContentItem {
   label: string
@@ -53,11 +53,10 @@ export enum RevisionType {
 }
 
 export interface Revision<T extends BaseEntity> {
-  revisionId: number
-  revisionType: RevisionType
-  revisionDate: Date
-  username: string
-  cpf: string
+  id: number
+  type: RevisionType
+  date: Date
+  user: User
   entity: T extends BaseEntity ? T : BaseEntity
 }
 
