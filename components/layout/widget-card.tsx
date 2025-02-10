@@ -8,7 +8,7 @@ const WidgetCard = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
     <div
       ref={ref}
       className={cn(
-        "relative w-64 overflow-hidden rounded-lg bg-gradient-to-r from-green-400 to-blue-500 px-6 py-10",
+        "relative h-32 w-64 overflow-hidden rounded-lg bg-gradient-to-r from-green-400 to-blue-500 px-6 py-10",
         className,
       )}
       {...props}

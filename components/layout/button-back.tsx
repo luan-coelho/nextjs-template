@@ -19,7 +19,7 @@ export default function ButtonBack({ href, children }: ButtonBackProps) {
           buttonVariants({
             size: "sm",
           }),
-          "w-full border border-blue-500 bg-blue-100 text-blue-500 hover:border-blue-500 hover:bg-blue-100 hover:text-blue-500 sm:w-auto",
+          "w-full rounded-none border border-blue-500 bg-blue-100 text-blue-500 hover:border-blue-500 hover:bg-blue-100 hover:text-blue-500 sm:w-auto",
         )}>
         <ArrowLeft />
         {children || "Voltar"}
