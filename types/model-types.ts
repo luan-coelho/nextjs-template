@@ -21,8 +21,8 @@ export interface MenuItem extends BaseEntity {
 
 export interface User extends BaseEntity {
   name: string
-  email: string
   cpf: string
+  email: string
   password: string
   primaryPhone: string
   secondaryPhone: string
