@@ -13,6 +13,7 @@ import { toast } from "sonner"
 import { z } from "zod"
 
 import { User } from "@/types/model-types"
+import isValidCPF from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -21,11 +22,17 @@ const schema = z.object({
   name: z.string().min(1, {
     message: "O nome é obrigatório.",
   }),
+  surname: z.string().min(1, {
+    message: "O sobrenome é obrigatório.",
+  }),
   cpf: z
     .string({
       required_error: "O CPF é obrigatório.",
     })
     .min(14, {
+      message: "O CPF é inválido.",
+    })
+    .refine(val => isValidCPF(val), {
       message: "O CPF é inválido.",
     }),
   email: z
@@ -55,6 +62,7 @@ export default function UserForm({ user }: { user?: User }) {
     resolver: zodResolver(schema),
     defaultValues: {
       name: user?.name || "",
+      surname: user?.surname || "",
       cpf: user?.cpf || "",
       email: user?.email || "",
       primaryPhone: user?.primaryPhone || "",
@@ -130,6 +138,21 @@ export default function UserForm({ user }: { user?: User }) {
         <div className="col-span-12 md:col-span-6">
           <FormField
             control={form.control}
+            name="surname"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Sobrenome</FormLabel>
+                <FormControl>
+                  <Input placeholder="Informe o sobrenome" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="col-span-12 md:col-span-6">
+          <FormField
+            control={form.control}
             name="cpf"
             render={({ field }) => (
               <FormItem>
@@ -142,7 +165,7 @@ export default function UserForm({ user }: { user?: User }) {
             )}
           />
         </div>
-        <div className="col-span-12">
+        <div className="col-span-12 md:col-span-6">
           <FormField
             control={form.control}
             name="email"
