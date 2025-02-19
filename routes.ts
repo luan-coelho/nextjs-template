@@ -23,7 +23,7 @@ const routes = {
   },
   users: {
     index: "/users",
-    admin: {
+    administrator: {
       index: "/users/admin",
       create: "/users/admin/create",
       edit: (id: string) => `/users/admin/${id}/edit`,
@@ -43,12 +43,12 @@ const routes = {
  */
 
 const apiRoutes = {
-  users: {
-    all: "/users",
-    create: "/users",
-    edit: (id: string) => `/users/${id}`,
-    show: (id: string) => `/users/${id}`,
-    modules: (id: string) => `/users/${id}/modules`,
+  administratorUsers: {
+    index: "/users/admin",
+    all: "/users/admin/all",
+    create: "/users/admin",
+    edit: (id: string) => `/users/admin/${id}/edit`,
+    show: (id: string) => `/users/admin/${id}`,
   },
   modules: {
     index: "/modules",

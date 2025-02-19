@@ -3,9 +3,10 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { apiRoutes, routes } from "@/routes"
-import moduleService from "@/services/module-service"
+import administratorUserService from "@/services/administrator-user-service"
 import { ApiError } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { InputMask } from "@react-input/mask"
 import { useQueryClient } from "@tanstack/react-query"
 import { FormProvider, useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -24,7 +25,7 @@ const schema = z.object({
     .string({
       required_error: "O CPF é obrigatório.",
     })
-    .min(11, {
+    .min(14, {
       message: "O CPF é inválido.",
     }),
   email: z
@@ -41,7 +42,7 @@ const schema = z.object({
     .min(10, {
       message: "O telefone é inválido.",
     }),
-  secondaryPhone: z.string(),
+  secondaryPhone: z.string().optional(),
 })
 
 type UserSchema = z.infer<typeof schema>
@@ -54,11 +55,15 @@ export default function UserForm({ user }: { user?: User }) {
     resolver: zodResolver(schema),
     defaultValues: {
       name: user?.name || "",
+      cpf: user?.cpf || "",
+      email: user?.email || "",
+      primaryPhone: user?.primaryPhone || "",
+      secondaryPhone: user?.secondaryPhone || "",
     },
   })
 
   async function onSubmit(data: UserSchema) {
-    if (module && module.id) {
+    if (user && user.id) {
       await updateUser(data)
     } else {
       await createUser(data)
@@ -67,11 +72,11 @@ export default function UserForm({ user }: { user?: User }) {
 
   async function createUser(data: UserSchema) {
     try {
-      const createdUser = await moduleService.create(data)
-      router.replace(routes.modules.show(createdUser.id))
+      const createdUser = await administratorUserService.create(data)
+      router.replace(routes.users.administrator.show(createdUser.id))
       toast.success("Usuário cadastrado com sucesso.")
       await queryClient.invalidateQueries({
-        queryKey: [apiRoutes.modules.index],
+        queryKey: [apiRoutes.administratorUsers.index],
       })
     } catch (error) {
       const apiError = error as ApiError
@@ -81,17 +86,27 @@ export default function UserForm({ user }: { user?: User }) {
 
   async function updateUser(data: UserSchema) {
     try {
-      const updatedUser = await moduleService.updateById(module?.id ?? "", data)
+      const updatedUser = await administratorUserService.updateById(user?.id ?? "", data)
       await queryClient.invalidateQueries({
-        queryKey: [apiRoutes.modules.index],
+        queryKey: [apiRoutes.administratorUsers.index],
         exact: false,
       })
-      router.replace(routes.modules.show(updatedUser.id))
+      router.replace(routes.users.administrator.show(updatedUser.id))
       toast.success("Usuário atualizado com sucesso.")
     } catch (error) {
       const apiError = error as ApiError
       toast.error(`Erro ao atualizar: ${apiError.detail || "Erro inesperado. Tente novamente mais tarde."}`)
     }
+  }
+
+  const cpfMaskOptions = {
+    mask: "___.___.___-__",
+    replacement: { _: /\d/ },
+  }
+
+  const phoneMaskOptions = {
+    mask: "(__) _________",
+    replacement: { _: /\d/ },
   }
 
   return (
@@ -120,7 +135,7 @@ export default function UserForm({ user }: { user?: User }) {
               <FormItem>
                 <FormLabel>CPF</FormLabel>
                 <FormControl>
-                  <Input placeholder="Informe o CPF" {...field} />
+                  <InputMask {...cpfMaskOptions} placeholder="Informe o CPF" {...field} component={Input} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -150,7 +165,12 @@ export default function UserForm({ user }: { user?: User }) {
               <FormItem>
                 <FormLabel>Telefone principal</FormLabel>
                 <FormControl>
-                  <Input placeholder="Informe o telefone" {...field} />
+                  <InputMask
+                    {...phoneMaskOptions}
+                    placeholder="Informe seu telefone principal"
+                    {...field}
+                    component={Input}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -165,7 +185,12 @@ export default function UserForm({ user }: { user?: User }) {
               <FormItem>
                 <FormLabel>Telefone secundário</FormLabel>
                 <FormControl>
-                  <Input placeholder="Informe o telefone" {...field} />
+                  <InputMask
+                    {...phoneMaskOptions}
+                    placeholder="Informe seu telefone secundário"
+                    {...field}
+                    component={Input}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -173,7 +198,7 @@ export default function UserForm({ user }: { user?: User }) {
           />
         </div>
         <div className="col-span-12 flex items-center justify-end gap-2">
-          <Link className={buttonVariants({ variant: "secondary" })} href={routes.modules.index}>
+          <Link className={buttonVariants({ variant: "secondary" })} href={routes.users.administrator.index}>
             Cancelar
           </Link>
           <Button type="submit">Salvar</Button>

@@ -14,7 +14,7 @@ export default async function UsersPage() {
       <PageTitle>Usuários por Categoria</PageTitle>
 
       <div className={"mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"}>
-        <Link href={routes.users.admin.index}>
+        <Link href={routes.users.administrator.index}>
           <WidgetCard className="w-auto bg-gradient-to-br from-blue-300 to-blue-600 text-white">
             <WidgetCardIcon src={SystemUsers} alt="Usuários Sistema" />
             <WidgetCardContent>

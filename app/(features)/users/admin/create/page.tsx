@@ -16,7 +16,7 @@ export default function CreateUserPage() {
           { label: "Usuários", href: routes.users.index },
           {
             label: "Administração",
-            href: routes.users.admin.index,
+            href: routes.users.administrator.index,
           },
           { label: "Cadastrar" },
         ]}
