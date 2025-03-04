@@ -25,12 +25,28 @@ export interface Pageable {
   filters?: string
 }
 
-export interface ApiError {
+export class ApiError {
   type?: string
   title: string
   status: number
   detail: string
   instance?: string
+  errors?: Record<string, string[]>
+
+  constructor(error: Partial<ApiError>) {
+    Object.assign(this, error)
+  }
+
+  applyErrorsToForm<T>(setError: (name: keyof T, error: { type: string; message: string }) => void) {
+    if (this.errors) {
+      Object.entries(this.errors).forEach(([field, messages]) => {
+        setError(field as keyof T, {
+          type: "manual",
+          message: messages.join(" "),
+        })
+      })
+    }
+  }
 }
 
 export type SWRDataPaginationResponse<T> = {

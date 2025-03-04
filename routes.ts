@@ -43,12 +43,16 @@ const routes = {
  */
 
 const apiRoutes = {
-  administratorUsers: {
-    index: "/users/admin",
-    all: "/users/admin/all",
-    create: "/users/admin",
-    edit: (id: string) => `/users/admin/${id}/edit`,
-    show: (id: string) => `/users/admin/${id}`,
+  users: {
+    admin: {
+      index: "/users/admin",
+      all: "/users/admin/all",
+      create: "/users/admin",
+      edit: (id: string) => `/users/admin/${id}/edit`,
+      show: (id: string) => `/users/admin/${id}`,
+      existsByCpf: (cpf: string) => `/users/admin/exists/cpf/${cpf}`,
+      existsByEmail: (email: string) => `/users/admin/exists/email/${email}`,
+    },
   },
   modules: {
     index: "/modules",

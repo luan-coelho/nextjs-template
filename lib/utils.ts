@@ -81,3 +81,11 @@ export default function isValidCPF(value: string): boolean {
   // O CPF é válido se, e somente se, os dígitos verificadores estão corretos
   return getVerifyingDigit(digits.slice(0, 9)) === digits[9] && getVerifyingDigit(digits.slice(0, 10)) === digits[10]
 }
+
+/**
+ * Verifica se o e-mail é válido
+ * @param value E-mail a ser validado
+ */
+export function isValidEmail(value: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+}
