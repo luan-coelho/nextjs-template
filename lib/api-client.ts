@@ -15,7 +15,7 @@ class ApiClient {
   }
 
   async fetch<T>(endpoint: string, options?: RequestInit): Promise<T> {
-    const headers = new Headers(options?.headers)
+    const headers: Headers = new Headers(options?.headers)
     const body = options?.body
 
     const isPlainObject =
@@ -40,7 +40,7 @@ class ApiClient {
       headers.delete("Content-Type")
     }
 
-    const res = await this.fetcher(endpoint, {
+    const res: Response = await this.fetcher(endpoint, {
       ...options,
       headers,
     })
@@ -56,11 +56,11 @@ class ApiClient {
   }
 
   async buildResponseError(res: Response): Promise<ApiError> {
-    const errorBody: ApiError = {
+    const errorBody: ApiError = new ApiError({
       title: "Erro desconhecido",
       detail: res.statusText,
       status: res.status,
-    }
+    })
     try {
       const json = await res.json()
       return json as ApiError

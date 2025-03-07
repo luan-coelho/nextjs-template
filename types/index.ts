@@ -25,16 +25,18 @@ export interface Pageable {
   filters?: string
 }
 
-export class ApiError {
+export class ApiError extends Error {
   type?: string
-  title: string
-  status: number
-  detail: string
+  title: string | undefined
+  status: number | undefined
+  detail: string | undefined
   instance?: string
   errors?: Record<string, string[]>
 
   constructor(error: Partial<ApiError>) {
+    super()
     Object.assign(this, error)
+    Object.setPrototypeOf(this, ApiError.prototype)
   }
 
   applyErrorsToForm<T>(setError: (name: keyof T, error: { type: string; message: string }) => void) {

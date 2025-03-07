@@ -23,8 +23,8 @@ export class UserService extends Service<User> {
     return data.exists
   }
 
-  getModulesByUserId(id: string): Promise<Module[]> {
-    return apiClient.get<Module[]>(`/users/${id}/modules`)
+  async getModulesByUserId(id: string): Promise<Module[]> {
+    return await apiClient.get<Module[]>(`/users/${id}/modules`)
   }
 }
 
