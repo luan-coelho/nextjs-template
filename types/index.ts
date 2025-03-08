@@ -51,7 +51,7 @@ export class ApiError extends Error {
   }
 }
 
-export type SWRDataPaginationResponse<T> = {
+export type QueryResult<T> = {
   data: T[]
   error: any
   isLoading: boolean

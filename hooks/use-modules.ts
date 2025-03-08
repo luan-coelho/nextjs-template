@@ -1,21 +1,17 @@
 import { apiRoutes } from "@/routes"
 import moduleService from "@/services/module-service"
-import { DEFAULT_PAGEABLE, Pageable, SWRDataPaginationResponse } from "@/types"
+import { DEFAULT_PAGEABLE, Pageable, QueryResult } from "@/types"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { Module } from "@/types/model-types"
 
-export function useModules(pageable: Pageable): SWRDataPaginationResponse<Module> {
+export function useModules(pageable: Pageable): QueryResult<Module> {
   const queryClient = useQueryClient()
 
   const { data, isLoading, error } = useQuery({
     queryKey: [apiRoutes.modules.index],
     queryFn: () => moduleService.fetchAllWithPagination(pageable || DEFAULT_PAGEABLE),
   })
-
-  if (error) {
-    error.message = "Falha ao buscar módulos"
-  }
 
   return {
     data: data?.content || [],
@@ -27,7 +23,7 @@ export function useModules(pageable: Pageable): SWRDataPaginationResponse<Module
         queryKey: [apiRoutes.modules.index],
       })
     },
-  } as SWRDataPaginationResponse<Module>
+  } as QueryResult<Module>
 }
 
 export function useModule(id: string) {

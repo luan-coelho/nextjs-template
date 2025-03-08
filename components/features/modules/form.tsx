@@ -83,7 +83,7 @@ export default function ModuleForm({ module }: { module?: Module }) {
               <FormItem>
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
-                  <Input placeholder="Informe o nome" {...field} />
+                  <Input placeholder="Informe o nome" {...field} showIcon />
                 </FormControl>
                 <FormMessage />
               </FormItem>

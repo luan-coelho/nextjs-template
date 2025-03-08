@@ -1,11 +1,11 @@
 import { apiRoutes } from "@/routes"
 import menuItemService from "@/services/menu-item-service"
-import { DEFAULT_PAGEABLE, Pageable, SWRDataPaginationResponse } from "@/types"
+import { DEFAULT_PAGEABLE, Pageable, QueryResult } from "@/types"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { MenuItem } from "@/types/model-types"
 
-export function useMenuItems(pageable: Pageable): SWRDataPaginationResponse<MenuItem> {
+export function useMenuItems(pageable: Pageable): QueryResult<MenuItem> {
   const queryClient = useQueryClient()
 
   const { data, isLoading, error } = useQuery({
@@ -27,7 +27,7 @@ export function useMenuItems(pageable: Pageable): SWRDataPaginationResponse<Menu
         queryKey: [apiRoutes.menuItems.index],
       })
     },
-  } as SWRDataPaginationResponse<MenuItem>
+  } as QueryResult<MenuItem>
 }
 
 export function useMenuItem(id: string) {

@@ -1,41 +1,46 @@
-import React, { Suspense } from "react"
-import { routes } from "@/routes"
-import { DEFAULT_PAGEABLE } from "@/types"
+"use client"
 
+import React from "react"
+import { useSearchParams } from "next/navigation"
+import { routes } from "@/routes"
+import { Pageable } from "@/types"
+
+import { extractPaginationQueryParams } from "@/lib/utils"
+import { useModules } from "@/hooks/use-modules"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ModuleDataTable } from "@/components/features/modules/module-data-table"
 import { CreateButtonLink } from "@/components/layout/create-button-link"
 import PageTitle from "@/components/layout/page-title"
-import SpinnerLoading from "@/components/layout/spinner-loading"
+import QueryResultAlert from "@/components/layout/query-result-alert"
 
-export default async function ModulesPage({
-  searchParams,
-}: {
-  params: Promise<{ slug: string }>
-  searchParams: Promise<{ [key: string]: string | undefined }>
-}) {
-  const queryParams = await searchParams
-  const page = Number(queryParams.page || DEFAULT_PAGEABLE.page)
-  const size = Number(queryParams.size || DEFAULT_PAGEABLE.size)
-  const sort = queryParams.sort || DEFAULT_PAGEABLE.sort
-  const filters = queryParams.filters || DEFAULT_PAGEABLE.filters
-  const pageable = { page, size, sort, filters }
+export default function ModulesPage() {
+  const searchParams = useSearchParams()
+  const pageable: Pageable = extractPaginationQueryParams(searchParams)
+  const queryResult = useModules(pageable)
+  const { error, mutate } = queryResult
+
+  function getModuleDataTable() {
+    if (queryResult.error) {
+      return <QueryResultAlert className="mt-2" message={error.message} onRetry={mutate} />
+    }
+    return (
+      <Card className="mt-2">
+        <CardHeader>
+          <CardTitle>Listagem</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <ModuleDataTable queryResult={queryResult} />
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <React.Fragment>
       <PageTitle>Módulos</PageTitle>
       <CreateButtonLink href={routes.modules.create} />
 
-      <Card className="mt-2">
-        <CardHeader>
-          <CardTitle>Listagem</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <Suspense fallback={<SpinnerLoading />}>
-            <ModuleDataTable pageable={pageable} />
-          </Suspense>
-        </CardContent>
-      </Card>
+      {getModuleDataTable()}
     </React.Fragment>
   )
 }

@@ -2,13 +2,12 @@
 
 import { routes } from "@/routes"
 import moduleService from "@/services/module-service"
-import { ApiError, Pageable } from "@/types"
-import { Activity, AlertCircle, CirclePower, Eye, Pencil, Trash } from "lucide-react"
+import { ApiError, QueryResult } from "@/types"
+import { Activity, CirclePower, Eye, Pencil, Trash } from "lucide-react"
 import { toast } from "sonner"
 
-import { useModules } from "@/hooks/use-modules"
+import { Module } from "@/types/model-types"
 import { ActionButton, actionButtoncolorClasses } from "@/components/ui/action-button"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import DataTable, { DataTableColumn } from "@/components/ui/data-table/data-table"
 import { TableCell, TableRow } from "@/components/ui/table"
 import ToolTipButton from "@/components/ui/tool-tip-button"
@@ -20,18 +19,8 @@ const columns: DataTableColumn[] = [
   { title: "Ações", position: "center", className: "w-1/6 text-center" },
 ]
 
-export function ModuleDataTable({ pageable }: { pageable: Pageable }) {
-  const { data, error, pagination, mutate } = useModules(pageable)
-
-  if (error) {
-    return (
-      <Alert variant="destructive" className="rounded-none">
-        <AlertCircle className="size-4" />
-        <AlertTitle>Erro ao buscar módulos</AlertTitle>
-        <AlertDescription>Motivo: {error}</AlertDescription>
-      </Alert>
-    )
-  }
+export function ModuleDataTable({ queryResult }: { queryResult: QueryResult<Module> }) {
+  const { data, pagination, mutate } = queryResult
 
   async function handleDelete(id: string) {
     try {

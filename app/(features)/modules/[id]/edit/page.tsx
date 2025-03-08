@@ -1,3 +1,4 @@
+import React from "react"
 import { routes } from "@/routes"
 import moduleService from "@/services/module-service"
 
@@ -8,12 +9,14 @@ import PageTitle from "@/components/layout/page-title"
 
 export default async function EditModulePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
+  console.log(id)
   const modulez = await moduleService.fetchById(id)
+  console.log(modulez)
 
   return (
-    <div>
+    <React.Fragment>
       <BreadcrumbContent items={[{ label: "Módulos", href: routes.modules.index }, { label: "Editar" }]} />
-      <PageTitle>Editar módulo</PageTitle>
+      <PageTitle>Editar Módulo</PageTitle>
 
       <Card className="mt-10">
         <CardHeader>
@@ -23,6 +26,6 @@ export default async function EditModulePage({ params }: { params: Promise<{ id:
           <ModuleForm module={modulez} />
         </CardContent>
       </Card>
-    </div>
+    </React.Fragment>
   )
 }
