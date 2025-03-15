@@ -1,16 +1,16 @@
-import React from "react"
-import { BreadcrumbContentItem } from "@/types"
+import React from 'react'
+import { BreadcrumbContentItem } from '@/types'
 
-import BreadcrumbContent from "@/components/layout/content-breadcrumb"
+import BreadcrumbContent from '@/components/layout/content-breadcrumb'
 
 export default function Profile() {
-  const breadcrumbItems: BreadcrumbContentItem[] = [{ label: "Dashboard", href: "/dashboard" }, { label: "Perfil" }]
+    const breadcrumbItems: BreadcrumbContentItem[] = [{ label: 'Dashboard', href: '/dashboard' }, { label: 'Perfil' }]
 
-  return (
-    <>
-      <BreadcrumbContent items={breadcrumbItems} />
+    return (
+        <>
+            <BreadcrumbContent items={breadcrumbItems} />
 
-      <h1>Perfil</h1>
-    </>
-  )
+            <h1>Perfil</h1>
+        </>
+    )
 }

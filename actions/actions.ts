@@ -1,15 +1,15 @@
-"use server"
+'use server'
 
-import { cookies } from "next/headers"
+import { cookies } from 'next/headers'
 
-import { Module } from "@/types/model-types"
+import { Module } from '@/types/model-types'
 
 export async function changeCurrentModuleCookie(module: Module) {
-  const cookieStore = await cookies()
-  cookieStore.set("CURRENT_MODULE", module.id)
+    const cookieStore = await cookies()
+    cookieStore.set('CURRENT_MODULE', module.id)
 }
 
 export async function getCurrentModuleCookieId() {
-  const cookieStore = await cookies()
-  return cookieStore.get("CURRENT_MODULE")
+    const cookieStore = await cookies()
+    return cookieStore.get('CURRENT_MODULE')
 }
