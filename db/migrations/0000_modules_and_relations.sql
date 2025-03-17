@@ -8,32 +8,29 @@ CREATE TABLE "menu_items" (
 	"active" boolean DEFAULT true NOT NULL
 );
 
---> statement-breakpoint
 CREATE TABLE "modules" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" varchar(100) NOT NULL,
 	"description" varchar(255) NOT NULL,
-	"menu_items_order" jsonb NULL,
+	"menu_items_order" jsonb,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"active" boolean DEFAULT true NOT NULL
 );
 
---> statement-breakpoint
 CREATE TABLE "modules_menu_items" (
 	"module_id" uuid NOT NULL,
 	"menu_item_id" uuid NOT NULL,
+	"order" integer NOT NULL,
 	CONSTRAINT "pk_modules_menu_items" PRIMARY KEY("module_id", "menu_item_id")
 );
 
---> statement-breakpoint
 ALTER TABLE
 	"modules_menu_items"
 ADD
-	CONSTRAINT "fk_module_id" FOREIGN KEY ("module_id") REFERENCES "public"."modules"("id") ON DELETE no action ON UPDATE no action;
+	CONSTRAINT "fk_modules_menu_items_module_id" FOREIGN KEY ("module_id") REFERENCES "public"."modules"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
---> statement-breakpoint
 ALTER TABLE
 	"modules_menu_items"
 ADD
-	CONSTRAINT "fk_menu_item_id" FOREIGN KEY ("menu_item_id") REFERENCES "public"."menu_items"("id") ON DELETE no action ON UPDATE no action;
+	CONSTRAINT "fk_modules_menu_items_menu_item_id" FOREIGN KEY ("menu_item_id") REFERENCES "public"."menu_items"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;

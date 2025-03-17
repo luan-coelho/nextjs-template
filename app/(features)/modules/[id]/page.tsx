@@ -1,12 +1,12 @@
 import React, { Suspense } from 'react'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import db from '@/db'
 import { routes } from '@/routes'
 import moduleService from '@/services/module-service'
 import { AlertCircle } from 'lucide-react'
 
-import { MenuItem, Module } from '@/types/model-types'
-import { orderMenuItems } from '@/lib/utils'
+import { Module } from '@/types/model-types'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -15,16 +15,23 @@ import BreadcrumbContent from '@/components/layout/content-breadcrumb'
 import PageTitle from '@/components/layout/page-title'
 import Revisions from '@/components/layout/revisions'
 import SpinnerLoading from '@/components/layout/spinner-loading'
-import MenuItemDraggableList, { MenuItemsOrder } from '@/components/menu-item-draggable-list'
+import MenuItemOrderList from '@/app/components/menu-item-order-list'
 
 export default async function ShowModulePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
     const modulez = await db.query.modules.findFirst({
         where: (modules, { eq }) => eq(modules.id, id),
+        with: {
+            menuItems: {
+                with: {
+                    menuItem: true,
+                },
+            },
+        },
     })
 
     if (!modulez) {
-        return <div>Módulo não encontrado</div>
+        return redirect(routes.modules.index)
     }
 
     async function getRevisions() {
@@ -46,14 +53,11 @@ export default async function ShowModulePage({ params }: { params: Promise<{ id:
     }
 
     function getMenuItems() {
-        if (!modulez) return null
-
-        if (modulez.menuItemsOrder) {
-            const menuItemsOrder: MenuItemsOrder[] = modulez.menuItemsOrder as MenuItemsOrder[]
-            modulez.menuItems = orderMenuItems(modulez.menuItems, menuItemsOrder) as MenuItem[]
+        if (!modulez) {
+            return null
         }
 
-        return <MenuItemDraggableList module={modulez as Module} />
+        return <MenuItemOrderList module={modulez as unknown as Module} />
     }
 
     return (

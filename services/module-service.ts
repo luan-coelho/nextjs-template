@@ -1,9 +1,8 @@
 import { apiRoutes } from '@/routes'
 import { Service } from '@/services/service'
 
-import { Module } from '@/types/model-types'
+import { MenuItemsOrder, Module } from '@/types/model-types'
 import apiClient from '@/lib/api-client'
-import { MenuItemsOrder } from '@/components/menu-item-draggable-list'
 
 export class ModuleService extends Service<Module> {
     getUrl(): string {

@@ -3,7 +3,7 @@ import db from '@/db'
 export default async function ModulesPage() {
     const modules = await db.query.modules.findMany({
         with: {
-            modulesToMenuItems: {
+            menuItems: {
                 with: {
                     menuItem: true,
                 },
@@ -20,7 +20,7 @@ export default async function ModulesPage() {
                         <div>
                             <strong>Menu Items:</strong>
                             <ul>
-                                {module.modulesToMenuItems.map(relation => (
+                                {module.menuItems.map(relation => (
                                     <li key={relation.menuItem.id}>
                                         {relation.menuItem.label} - {relation.menuItem.route}
                                     </li>

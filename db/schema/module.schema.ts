@@ -1,7 +1,7 @@
 import { relations, sql } from 'drizzle-orm'
-import { boolean, jsonb, pgTable, primaryKey, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
+import { boolean, integer, jsonb, pgTable, primaryKey, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
 
-import { MenuItemsOrder } from '@/components/menu-item-draggable-list'
+import { MenuItemsOrder } from '@/types/model-types'
 
 export const modules = pgTable('modules', {
     id: uuid('id')
@@ -36,17 +36,17 @@ export const modulesToMenuItems = pgTable(
         menuItemId: uuid('menu_item_id')
             .notNull()
             .references(() => menuItems.id),
+        order: integer('order').notNull(),
     },
     t => [primaryKey({ columns: [t.moduleId, t.menuItemId] })],
 )
 
 export const modulesRelations = relations(modules, ({ many }) => ({
-    modulesToMenuItems: many(modulesToMenuItems),
+    menuItems: many(modulesToMenuItems),
 }))
 
 export const menuItemsRelations = relations(menuItems, ({ many }) => ({
-    modulesToMenuItems: many(modulesToMenuItems),
-    subItems: many(menuItems),
+    modules: many(modulesToMenuItems),
 }))
 
 export const modulesToMenuItemsRelations = relations(modulesToMenuItems, ({ one }) => ({

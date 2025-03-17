@@ -1,5 +1,5 @@
 {
-    "id": "f78cb81d-26c1-4f76-b9b7-428fb8c22e49",
+    "id": "9f5e5428-3c14-47c7-8279-280d4125d399",
     "prevId": "00000000-0000-0000-0000-000000000000",
     "version": "7",
     "dialect": "postgresql",
@@ -90,7 +90,7 @@
                     "name": "menu_items_order",
                     "type": "jsonb",
                     "primaryKey": false,
-                    "notNull": true
+                    "notNull": false
                 },
                 "created_at": {
                     "name": "created_at",
@@ -135,6 +135,12 @@
                 "menu_item_id": {
                     "name": "menu_item_id",
                     "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "order": {
+                    "name": "order",
+                    "type": "integer",
                     "primaryKey": false,
                     "notNull": true
                 }
