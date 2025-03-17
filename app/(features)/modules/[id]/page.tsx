@@ -1,9 +1,11 @@
 import React, { Suspense } from 'react'
 import Link from 'next/link'
+import db from '@/db'
 import { routes } from '@/routes'
 import moduleService from '@/services/module-service'
 import { AlertCircle } from 'lucide-react'
 
+import { MenuItem, Module } from '@/types/model-types'
 import { orderMenuItems } from '@/lib/utils'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { buttonVariants } from '@/components/ui/button'
@@ -17,12 +19,17 @@ import MenuItemDraggableList, { MenuItemsOrder } from '@/components/menu-item-dr
 
 export default async function ShowModulePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
-    const modulez = await moduleService.fetchById(id)
+    const modulez = await db.query.modules.findFirst({
+        where: (modules, { eq }) => eq(modules.id, id),
+    })
+
+    if (!modulez) {
+        return <div>Módulo não encontrado</div>
+    }
 
     async function getRevisions() {
         try {
             const revisionsComparasion = await moduleService.fetchAllRevisionComparisons(id)
-            console.log(revisionsComparasion)
             if (!revisionsComparasion.length) {
                 return null
             }
@@ -39,12 +46,14 @@ export default async function ShowModulePage({ params }: { params: Promise<{ id:
     }
 
     function getMenuItems() {
+        if (!modulez) return null
+
         if (modulez.menuItemsOrder) {
-            const menuItemsOrder: MenuItemsOrder[] = JSON.parse(modulez.menuItemsOrder)
-            modulez.menuItems = orderMenuItems(modulez.menuItems, menuItemsOrder)
+            const menuItemsOrder: MenuItemsOrder[] = modulez.menuItemsOrder as MenuItemsOrder[]
+            modulez.menuItems = orderMenuItems(modulez.menuItems, menuItemsOrder) as MenuItem[]
         }
 
-        return <MenuItemDraggableList module={modulez} />
+        return <MenuItemDraggableList module={modulez as Module} />
     }
 
     return (

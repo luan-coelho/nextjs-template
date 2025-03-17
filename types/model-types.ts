@@ -1,3 +1,5 @@
+import { MenuItemsOrder } from '@/components/menu-item-draggable-list'
+
 export interface BaseEntity {
     id: string
     createdAt: Date
@@ -7,8 +9,9 @@ export interface BaseEntity {
 
 export interface Module extends BaseEntity {
     name: string
+    description: string
     menuItems: MenuItem[]
-    menuItemsOrder: string
+    menuItemsOrder: MenuItemsOrder[]
 }
 
 export interface MenuItem extends BaseEntity {

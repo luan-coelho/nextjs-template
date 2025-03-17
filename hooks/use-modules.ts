@@ -8,8 +8,6 @@ import { Module } from '@/types/model-types'
 export function useModules(pageable: Pageable): QueryResult<Module> {
     const queryClient = useQueryClient()
 
-    db.modules
-
     const { data, isLoading, error } = useQuery({
         queryKey: [apiRoutes.modules.index],
         queryFn: () => moduleService.fetchAllWithPagination(pageable || DEFAULT_PAGEABLE),
