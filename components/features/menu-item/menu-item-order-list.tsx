@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import menuItemService from '@/services/menu-item-service'
 import moduleService from '@/services/module-service'
-import { ChevronDown, ChevronUp, PlusCircle } from 'lucide-react'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { MenuItem, MenuItemsOrder, Module } from '@/types/model-types'
@@ -12,8 +12,8 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 interface MenuItemOrderListProps {
     module: Module
@@ -24,10 +24,12 @@ export default function MenuItemOrderList({ module }: MenuItemOrderListProps) {
     const [menuItems, setMenuItems] = useState<MenuItem[]>(module.menuItems || [])
     const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
     const [isSaving, setIsSaving] = useState(false)
-    const [dialogOpen, setDialogOpen] = useState(false)
     const [availableMenuItems, setAvailableMenuItems] = useState<MenuItem[]>([])
     const [selectedMenuItemIds, setSelectedMenuItemIds] = useState<string[]>([])
+    const [itemsToRemove, setItemsToRemove] = useState<string[]>([])
     const [isLoading, setIsLoading] = useState(false)
+    const [activeTab, setActiveTab] = useState<string>('ordem')
+    const [isRemoveMode, setIsRemoveMode] = useState(false)
 
     // Buscar todos os itens de menu disponíveis
     useEffect(() => {
@@ -42,17 +44,16 @@ export default function MenuItemOrderList({ module }: MenuItemOrderListProps) {
 
                 setAvailableMenuItems(filteredItems)
             } catch (error) {
-                console.error('Erro ao carregar itens de menu disponíveis:', error)
                 toast.error('Não foi possível carregar a lista de itens de menu')
             } finally {
                 setIsLoading(false)
             }
         }
 
-        if (dialogOpen) {
+        if (activeTab === 'adicionar') {
             fetchAvailableMenuItems()
         }
-    }, [dialogOpen, menuItems])
+    }, [activeTab, menuItems])
 
     const handleSelectItem = (id: string) => {
         setSelectedItemId(id === selectedItemId ? null : id)
@@ -78,7 +79,7 @@ export default function MenuItemOrderList({ module }: MenuItemOrderListProps) {
         setMenuItems(newMenuItems)
     }
 
-    const saveOrder = async () => {
+    async function saveOrder() {
         try {
             setIsSaving(true)
 
@@ -95,7 +96,6 @@ export default function MenuItemOrderList({ module }: MenuItemOrderListProps) {
 
             router.refresh()
         } catch (error) {
-            console.error('Erro ao salvar a ordem dos itens:', error)
             toast.error('Ocorreu um erro ao salvar a ordem dos itens de menu')
         } finally {
             setIsSaving(false)
@@ -106,7 +106,7 @@ export default function MenuItemOrderList({ module }: MenuItemOrderListProps) {
         setSelectedMenuItemIds(prev => (prev.includes(id) ? prev.filter(itemId => itemId !== id) : [...prev, id]))
     }
 
-    const addSelectedMenuItems = async () => {
+    async function addSelectedMenuItems() {
         try {
             setIsSaving(true)
 
@@ -114,37 +114,152 @@ export default function MenuItemOrderList({ module }: MenuItemOrderListProps) {
             const selectedItems = availableMenuItems.filter(item => selectedMenuItemIds.includes(item.id))
 
             // Adicionar itens ao módulo
-            await moduleService.addMenuItemsToModule(module.id, selectedMenuItemIds)
+            await moduleService.addMenuItems(module.id, selectedMenuItemIds)
 
             // Atualizar a lista local
             setMenuItems(prev => [...prev, ...selectedItems])
 
             toast.success('Itens de menu adicionados com sucesso')
-            setDialogOpen(false)
+            setActiveTab('ordem')
             setSelectedMenuItemIds([])
 
             router.refresh()
         } catch (error) {
-            console.error('Erro ao adicionar itens de menu:', error)
             toast.error('Ocorreu um erro ao adicionar os itens de menu')
         } finally {
             setIsSaving(false)
         }
     }
 
+    function toggleItemToRemove(id: string) {
+        setItemsToRemove(prev => (prev.includes(id) ? prev.filter(itemId => itemId !== id) : [...prev, id]))
+    }
+
+    async function removeSelectedItems() {
+        try {
+            setIsSaving(true)
+
+            // Chamar o serviço para remover os itens selecionados
+            await moduleService.removeMenuItems(module.id, itemsToRemove)
+
+            // Atualizar a lista local
+            setMenuItems(prev => prev.filter(item => !itemsToRemove.includes(item.id)))
+
+            toast.success('Itens de menu removidos com sucesso')
+            setItemsToRemove([])
+            setIsRemoveMode(false)
+
+            router.refresh()
+        } catch (error) {
+            toast.error('Ocorreu um erro ao remover os itens de menu')
+        } finally {
+            setIsSaving(false)
+        }
+    }
+
+    function cancelRemove() {
+        setItemsToRemove([])
+        setIsRemoveMode(false)
+    }
+
     return (
         <div className="space-y-4">
-            <div className="mb-4 flex justify-between">
-                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button variant="outline">
-                            <PlusCircle className="mr-2 size-4" /> Adicionar Itens de Menu
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-md">
-                        <DialogHeader>
-                            <DialogTitle>Adicionar Itens de Menu</DialogTitle>
-                        </DialogHeader>
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="ordem">Ordenar Itens</TabsTrigger>
+                    <TabsTrigger value="adicionar">Adicionar Itens</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="ordem">
+                    <div className="mb-4 flex justify-between">
+                        {isRemoveMode ? (
+                            <div className="flex space-x-2">
+                                <Button
+                                    variant="destructive"
+                                    onClick={removeSelectedItems}
+                                    disabled={itemsToRemove.length === 0 || isSaving}>
+                                    {isSaving ? 'Removendo...' : 'Remover Selecionados'}
+                                </Button>
+                                <Button variant="outline" onClick={cancelRemove}>
+                                    Cancelar
+                                </Button>
+                            </div>
+                        ) : (
+                            <Button
+                                variant="outline"
+                                onClick={() => setIsRemoveMode(true)}
+                                disabled={menuItems.length === 0}>
+                                Remover Itens
+                            </Button>
+                        )}
+
+                        <div className="flex space-x-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => moveItem('up')}
+                                disabled={!selectedItemId || isSaving || isRemoveMode}>
+                                <ChevronUp className="mr-1 size-4" /> Mover para cima
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => moveItem('down')}
+                                disabled={!selectedItemId || isSaving || isRemoveMode}>
+                                <ChevronDown className="mr-1 size-4" /> Mover para baixo
+                            </Button>
+                            <Button onClick={saveOrder} disabled={isSaving || isRemoveMode || menuItems.length === 0}>
+                                {isSaving ? 'Salvando...' : 'Salvar ordem'}
+                            </Button>
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        {menuItems.map(item => (
+                            <Card
+                                key={item.id}
+                                className={cn(
+                                    'cursor-pointer transition-colors',
+                                    selectedItemId === item.id && !isRemoveMode ? 'border-primary' : '',
+                                    itemsToRemove.includes(item.id) ? 'border-destructive' : '',
+                                )}
+                                onClick={() =>
+                                    isRemoveMode ? toggleItemToRemove(item.id) : handleSelectItem(item.id)
+                                }>
+                                <CardContent className="p-4">
+                                    <div className="flex items-center">
+                                        {isRemoveMode && (
+                                            <Checkbox
+                                                className="mr-2"
+                                                checked={itemsToRemove.includes(item.id)}
+                                                onCheckedChange={() => toggleItemToRemove(item.id)}
+                                                onClick={e => e.stopPropagation()}
+                                            />
+                                        )}
+                                        <div className="flex-1">
+                                            <div className="font-medium">{item.label}</div>
+                                            {item.description && (
+                                                <div className="mt-1 text-sm text-muted-foreground">
+                                                    {item.description}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+
+                    {menuItems.length === 0 && (
+                        <div className="py-8 text-center text-muted-foreground">
+                            Nenhum item de menu encontrado para este módulo.
+                        </div>
+                    )}
+                </TabsContent>
+
+                <TabsContent value="adicionar">
+                    <div className="mb-4">
+                        <h3 className="mb-2 text-lg font-medium">Itens de Menu Disponíveis</h3>
 
                         {isLoading ? (
                             <div className="py-6 text-center">Carregando itens de menu...</div>
@@ -184,8 +299,8 @@ export default function MenuItemOrderList({ module }: MenuItemOrderListProps) {
                                     </ScrollArea>
                                 )}
 
-                                <DialogFooter>
-                                    <Button variant="secondary" onClick={() => setDialogOpen(false)}>
+                                <div className="mt-4 flex justify-end space-x-2">
+                                    <Button variant="secondary" onClick={() => setActiveTab('ordem')}>
                                         Cancelar
                                     </Button>
                                     <Button
@@ -193,57 +308,12 @@ export default function MenuItemOrderList({ module }: MenuItemOrderListProps) {
                                         disabled={selectedMenuItemIds.length === 0 || isSaving}>
                                         {isSaving ? 'Adicionando...' : 'Adicionar Itens'}
                                     </Button>
-                                </DialogFooter>
+                                </div>
                             </>
                         )}
-                    </DialogContent>
-                </Dialog>
-
-                <div className="flex space-x-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => moveItem('up')}
-                        disabled={!selectedItemId || isSaving}>
-                        <ChevronUp className="mr-1 size-4" /> Mover para cima
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => moveItem('down')}
-                        disabled={!selectedItemId || isSaving}>
-                        <ChevronDown className="mr-1 size-4" /> Mover para baixo
-                    </Button>
-                    <Button onClick={saveOrder} disabled={isSaving}>
-                        {isSaving ? 'Salvando...' : 'Salvar ordem'}
-                    </Button>
-                </div>
-            </div>
-
-            <div className="space-y-2">
-                {menuItems.map(item => (
-                    <Card
-                        key={item.id}
-                        className={cn(
-                            'cursor-pointer transition-colors',
-                            selectedItemId === item.id ? 'border-primary' : '',
-                        )}
-                        onClick={() => handleSelectItem(item.id)}>
-                        <CardContent className="p-4">
-                            <div className="font-medium">{item.label}</div>
-                            {item.description && (
-                                <div className="mt-1 text-sm text-muted-foreground">{item.description}</div>
-                            )}
-                        </CardContent>
-                    </Card>
-                ))}
-            </div>
-
-            {menuItems.length === 0 && (
-                <div className="py-8 text-center text-muted-foreground">
-                    Nenhum item de menu encontrado para este módulo.
-                </div>
-            )}
+                    </div>
+                </TabsContent>
+            </Tabs>
         </div>
     )
 }

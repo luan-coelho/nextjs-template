@@ -51,14 +51,13 @@ export default async function Revisions<T extends BaseEntity>({
     return (
         <Accordion type="single" collapsible className={cn('mt-3', className)}>
             <AccordionItem value="item-root">
-                <AccordionTrigger className="flex h-12 justify-between justify-items-center rounded-t-lg border border-t-[3px] border-t-green-700 bg-card px-6 py-8 text-card-foreground">
+                <AccordionTrigger className="flex h-12 justify-between justify-items-center rounded-t border border-t-[3px] border-t-green-700 bg-card px-6 py-8 text-card-foreground">
                     Auditoria
                 </AccordionTrigger>
                 <AccordionContent className="rounded-none border-none bg-card p-0 text-card-foreground">
                     <Suspense fallback={<SpinnerLoading />}>
                         <Accordion type="single" collapsible>
                             {revisionsComparasion.map((comparison, index) => {
-                                console.log(comparison)
                                 const comparisonDetails = getRevisionTypeDetails(comparison.revision.type)
                                 return (
                                     <AccordionItem

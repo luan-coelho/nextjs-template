@@ -1,7 +1,6 @@
 import React, { Suspense } from 'react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import db from '@/db'
 import { routes } from '@/routes'
 import moduleService from '@/services/module-service'
 import { AlertCircle } from 'lucide-react'
@@ -10,27 +9,20 @@ import { Module } from '@/types/model-types'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import MenuItemOrderList from '@/components/features/menu-item/menu-item-order-list'
 import ButtonBack from '@/components/layout/button-back'
 import BreadcrumbContent from '@/components/layout/content-breadcrumb'
 import PageTitle from '@/components/layout/page-title'
 import Revisions from '@/components/layout/revisions'
 import SpinnerLoading from '@/components/layout/spinner-loading'
-import MenuItemOrderList from '@/app/components/menu-item-order-list'
 
 export default async function ShowModulePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
-    const modulez = await db.query.modules.findFirst({
-        where: (modules, { eq }) => eq(modules.id, id),
-        with: {
-            menuItems: {
-                with: {
-                    menuItem: true,
-                },
-            },
-        },
-    })
+    let modulez: Module | null = null
 
-    if (!modulez) {
+    try {
+        modulez = await moduleService.fetchById(id)
+    } catch (error) {
         return redirect(routes.modules.index)
     }
 

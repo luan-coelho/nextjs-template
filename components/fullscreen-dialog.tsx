@@ -33,7 +33,7 @@ FullscreenDialog.Content = function Content({
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.3 }}
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
                     <motion.div
                         initial={{ y: 50 }}
                         animate={{ y: 0 }}

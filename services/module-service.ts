@@ -20,6 +20,14 @@ export class ModuleService extends Service<Module> {
     async removeMenuItem(id: string, menuItemId: string): Promise<Module> {
         return apiClient.patch(`${this.getUrl()}/${id}/remove-menu-item/${menuItemId}`)
     }
+
+    async addMenuItems(id: string, menuItemIds: string[]): Promise<Module> {
+        return apiClient.patch(`${this.getUrl()}/${id}/add-menu-items`, { menuItemIds })
+    }
+
+    async removeMenuItems(id: string, menuItemIds: string[]): Promise<Module> {
+        return apiClient.patch(`${this.getUrl()}/${id}/remove-menu-items`, menuItemIds)
+    }
 }
 
 const moduleService = new ModuleService()

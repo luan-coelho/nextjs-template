@@ -9,9 +9,7 @@ import PageTitle from '@/components/layout/page-title'
 
 export default async function EditModulePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
-    console.log(id)
     const modulez = await moduleService.fetchById(id)
-    console.log(modulez)
 
     return (
         <React.Fragment>
