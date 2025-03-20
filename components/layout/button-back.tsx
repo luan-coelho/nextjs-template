@@ -1,25 +1,27 @@
-import React from 'react'
+import React, { HTMLAttributes } from 'react'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
 
-type ButtonBackProps = {
+interface ButtonBackProps extends HTMLAttributes<HTMLAnchorElement> {
     href: string
     children?: React.ReactNode
+    className?: string
 }
 
-export default function ButtonBack({ href, children }: ButtonBackProps) {
+export default function ButtonBack({ href, children, className }: ButtonBackProps) {
     return (
-        <div className="mt-5 flex items-center justify-end sm:mt-0">
+        <div className={className}>
             <Link
                 href={href}
                 className={cn(
                     buttonVariants({
                         size: 'sm',
                     }),
-                    'w-full rounded-none border border-blue-500 bg-blue-100 text-blue-500 hover:border-blue-500 hover:bg-blue-100 hover:text-blue-500 sm:w-auto',
+                    'w-full border border-gray-300 bg-white text-gray-500 hover:bg-gray-200 hover:text-gray-600',
+                    className,
                 )}>
                 <ArrowLeft />
                 {children || 'Voltar'}

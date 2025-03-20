@@ -10,7 +10,7 @@ export class ModuleService extends Service<Module> {
     }
 
     async updateMenuItemsOrder(id: string, menuItemsOrder: MenuItemsOrder[]): Promise<Module> {
-        return apiClient.patch(`${this.getUrl()}/${id}/update-menu-items-order`, menuItemsOrder)
+        return apiClient.patch(`${this.getUrl()}/${id}/update-menu-items-order`, { menuItemsOrder })
     }
 
     async addMenuItem(id: string, menuItemId: string): Promise<Module> {

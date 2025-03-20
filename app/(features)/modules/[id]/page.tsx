@@ -6,6 +6,7 @@ import { AlertCircle } from 'lucide-react'
 
 import { Module } from '@/types/model-types'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import MenuItemOrderList from '@/components/features/menu-item/menu-item-order-list'
 import ButtonBack from '@/components/layout/button-back'
@@ -54,9 +55,15 @@ export default async function ShowModulePage({ params }: { params: Promise<{ id:
         <React.Fragment>
             <BreadcrumbContent items={[{ label: 'Módulos', href: routes.modules.index }, { label: 'Visualizar' }]} />
             <PageTitle>Visualizar Módulo</PageTitle>
-            <ButtonBack href={routes.modules.index} />
 
-            <Card className="mt-3">
+            <div className="grid grid-cols-6 gap-2">
+                <Button size="sm" className="col-start-5">
+                    Revisões
+                </Button>
+                <ButtonBack href={routes.modules.index} className="col-start-6" />
+            </div>
+
+            <Card className="mt-2">
                 <CardHeader>
                     <CardTitle>{modulez?.name}</CardTitle>
                 </CardHeader>
