@@ -25,6 +25,21 @@ class ApiClient {
             !(body instanceof Blob) &&
             !(body instanceof ArrayBuffer) &&
             !(body instanceof URLSearchParams) &&
+            !(body instanceof File) &&
+            !(body instanceof ReadableStream) &&
+            !(body instanceof Array) &&
+            !(body instanceof Set) &&
+            !(body instanceof Map) &&
+            !(body instanceof Promise) &&
+            !(body instanceof RegExp) &&
+            !(body instanceof Date) &&
+            !(body instanceof Error) &&
+            !(body instanceof Promise) &&
+            !(body instanceof Map) &&
+            !(body instanceof WeakMap) &&
+            !(body instanceof WeakSet) &&
+            !(body instanceof Symbol) &&
+            !(body instanceof BigInt) &&
             body.constructor === Object
 
         if (isPlainObject) {

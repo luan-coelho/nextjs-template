@@ -21,4 +21,4 @@ const moduleSchema = z.object({
 
 type ModuleSchema = z.infer<typeof moduleSchema>
 
-export { moduleSchema as schema, type ModuleSchema }
+export { moduleSchema, type ModuleSchema }

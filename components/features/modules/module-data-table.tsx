@@ -15,6 +15,7 @@ import StatusBadge from '@/components/layout/status-badge'
 
 const columns: DataTableColumn[] = [
     { title: 'Nome', field: 'name', position: 'left', className: 'w-4/6' },
+    { title: 'Descrição', field: 'description', position: 'center', className: 'w-1/6' },
     { title: 'Situação', field: 'active', position: 'center', className: 'w-1/6' },
     { title: 'Ações', position: 'center', className: 'w-1/6 text-center' },
 ]
@@ -65,6 +66,7 @@ export function ModuleDataTable({ queryResult }: { queryResult: QueryResult<Modu
             {data.map(module => (
                 <TableRow key={module.id}>
                     <TableCell>{module.name}</TableCell>
+                    <TableCell>{module.description}</TableCell>
                     <TableCell>
                         <div className="flex items-center justify-center gap-2">
                             <StatusBadge status={module.active} />

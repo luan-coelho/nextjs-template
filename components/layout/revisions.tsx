@@ -1,12 +1,14 @@
 import React, { Suspense } from 'react'
 import { RevisionComparison, RevisionType } from '@/types'
-import { MoveRight } from 'lucide-react'
+import { AlertCircle, Clock, FileEdit, MoveRight, PlusCircle, Trash2 } from 'lucide-react'
 
 import { BaseEntity } from '@/types/model-types'
 import { dateUtils } from '@/lib/date-utils'
 import { cn } from '@/lib/utils'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { Separator } from '@/components/ui/separator'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import SpinnerLoading from '@/components/layout/spinner-loading'
 
 export default async function Revisions<T extends BaseEntity>({
@@ -19,119 +21,172 @@ export default async function Revisions<T extends BaseEntity>({
     function getRevisionTypeDetails(revisionType: RevisionType): {
         description: string
         color: string
-        icon: string
+        icon: React.ReactNode
     } {
         const details = {
             [RevisionType.ADD]: {
                 description: 'Cadastro',
-                color: 'bg-green-200 text-green-600',
-                icon: 'badge-plus',
+                color: 'bg-green-100 text-green-700 border-green-300',
+                icon: <PlusCircle className="size-4" />,
             },
             [RevisionType.MOD]: {
                 description: 'Modificação',
-                color: 'bg-yellow-200 text-yellow-600',
-                icon: 'pencil',
+                color: 'bg-amber-100 text-amber-700 border-amber-300',
+                icon: <FileEdit className="size-4" />,
             },
             [RevisionType.DEL]: {
                 description: 'Exclusão',
-                color: 'bg-red-200 text-red-600',
-                icon: 'trash',
+                color: 'bg-red-100 text-red-700 border-red-300',
+                icon: <Trash2 className="size-4" />,
             },
         }
 
         return (
             details[revisionType] || {
                 description: 'Desconhecido',
-                color: 'bg-gray-200 text-gray-600',
-                icon: 'x',
+                color: 'bg-gray-100 text-gray-700 border-gray-300',
+                icon: <AlertCircle className="size-4" />,
             }
         )
     }
 
     return (
-        <Accordion type="single" collapsible className={cn('mt-3', className)}>
-            <AccordionItem value="item-root">
-                <AccordionTrigger className="flex h-12 justify-between justify-items-center rounded-t border border-t-[3px] border-t-green-700 bg-card px-6 py-8 text-card-foreground">
-                    Auditoria
-                </AccordionTrigger>
-                <AccordionContent className="rounded-none border-none bg-card p-0 text-card-foreground">
-                    <Suspense fallback={<SpinnerLoading />}>
+        <Card className={cn('mt-3 shadow-sm', className)}>
+            <CardHeader className="border-b bg-muted/30 px-6 py-4">
+                <CardTitle className="flex items-center gap-2 text-base font-medium">
+                    <Clock className="size-5" />
+                    Histórico de Auditoria
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+                <Suspense fallback={<SpinnerLoading />}>
+                    {revisionsComparasion.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center p-8 text-center text-muted-foreground">
+                            <AlertCircle className="mb-2 size-8" />
+                            <p>Nenhum histórico de revisão encontrado.</p>
+                        </div>
+                    ) : (
                         <Accordion type="single" collapsible>
                             {revisionsComparasion.map((comparison, index) => {
                                 const comparisonDetails = getRevisionTypeDetails(comparison.revision.type)
+                                const userInitials = comparison.revision.user?.name
+                                    ? comparison.revision.user.name
+                                          .split(' ')
+                                          .map(n => n[0])
+                                          .join('')
+                                    : '??'
+
                                 return (
                                     <AccordionItem
                                         key={index}
                                         value={`item-${index}`}
-                                        disabled={comparison.revision.type !== RevisionType.MOD}>
+                                        disabled={comparison.revision.type !== RevisionType.MOD}
+                                        className="border-b last:border-b-0">
                                         <AccordionTrigger
-                                            className={`${comparisonDetails.color} flex justify-between justify-items-center rounded-none border border-y-0 bg-card px-6 py-4 text-xs font-normal uppercase`}>
-                                            <span>{dateUtils.formatDateTime(comparison.revision.date)}</span>
-                                            {comparisonDetails.description}
+                                            className={cn(
+                                                'group flex justify-between gap-2 px-6 py-3 text-sm hover:bg-muted/10',
+                                                comparison.revision.type !== RevisionType.MOD && 'cursor-default',
+                                            )}>
+                                            <div className="flex items-center gap-3">
+                                                <Badge
+                                                    variant="outline"
+                                                    className={cn(
+                                                        comparisonDetails.color,
+                                                        'flex items-center gap-1 px-2',
+                                                    )}>
+                                                    {comparisonDetails.icon}
+                                                    <span>{comparisonDetails.description}</span>
+                                                </Badge>
+                                                <span className="text-xs text-muted-foreground">
+                                                    {dateUtils.formatDateTime(comparison.revision.date)}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <Avatar className="size-6">
+                                                    <AvatarFallback className="text-xs">{userInitials}</AvatarFallback>
+                                                </Avatar>
+                                                <span className="max-w-40 truncate text-xs text-muted-foreground">
+                                                    {comparison.revision.user?.name || 'Usuário desconhecido'}
+                                                </span>
+                                            </div>
                                         </AccordionTrigger>
-                                        <AccordionContent className="rounded-none border bg-card px-8 py-2 text-card-foreground">
-                                            <React.Fragment>
-                                                <div className="flex items-center justify-between py-4">
-                                                    <div className="flex flex-col items-start">
-                                                        Responsável
-                                                        <div className="text-sm text-gray-500">
-                                                            {comparison.revision.user?.cpf || ''} -{' '}
-                                                            {comparison.revision.user?.name || ''}
+
+                                        {comparison.revision.type === RevisionType.MOD && (
+                                            <AccordionContent className="border-t bg-card/50 px-6 py-4">
+                                                <div className="flex flex-col space-y-4">
+                                                    <div className="flex justify-between rounded-md bg-muted/30 p-3">
+                                                        <div className="flex flex-col">
+                                                            <span className="text-xs font-medium">Responsável:</span>
+                                                            <span className="text-sm text-muted-foreground">
+                                                                {comparison.revision.user?.name || 'Não informado'}
+                                                            </span>
                                                         </div>
-                                                    </div>
-                                                </div>
-
-                                                {comparison.fieldChanges.length > 0 && (
-                                                    <React.Fragment>
-                                                        <Separator />
-                                                        <div className="flex flex-row items-center justify-between py-4">
-                                                            <span>Alterações</span>
-                                                            <div className={'mt-2 flex gap-4 text-sm text-gray-500'}>
-                                                                <div className="flex items-center gap-2">
-                                                                    <div className="size-4 rounded bg-red-500 p-2"></div>
-                                                                    <span>Valor anterior</span>
-                                                                </div>
-
-                                                                <div className="flex items-center gap-2">
-                                                                    <div className="size-4 rounded bg-green-500 p-2"></div>
-                                                                    <span>Novo valor</span>
-                                                                </div>
+                                                        {comparison.revision.user?.cpf && (
+                                                            <div className="flex flex-col">
+                                                                <span className="text-xs font-medium">CPF:</span>
+                                                                <span className="text-sm text-muted-foreground">
+                                                                    {comparison.revision.user.cpf}
+                                                                </span>
                                                             </div>
-                                                        </div>
-                                                    </React.Fragment>
-                                                )}
+                                                        )}
+                                                    </div>
 
-                                                <div>
-                                                    {comparison?.fieldChanges.map(fieldChange => (
-                                                        <div key={fieldChange.label}>
-                                                            <div className="flex flex-col items-center justify-center">
-                                                                <div className="flex items-center">
-                                                                    <div className="text-sm font-medium">
-                                                                        {fieldChange.label}
+                                                    {comparison.fieldChanges.length > 0 && (
+                                                        <div className="space-y-3">
+                                                            <div className="flex items-center justify-between">
+                                                                <span className="text-sm font-medium">Alterações</span>
+                                                                <div className="flex gap-3 text-xs">
+                                                                    <div className="flex items-center gap-1.5">
+                                                                        <div className="size-3 rounded-full bg-red-500"></div>
+                                                                        <span>Valor anterior</span>
+                                                                    </div>
+                                                                    <div className="flex items-center gap-1.5">
+                                                                        <div className="size-3 rounded-full bg-green-500"></div>
+                                                                        <span>Novo valor</span>
                                                                     </div>
                                                                 </div>
-                                                                <div className="flex items-center gap-3 text-sm text-gray-500">
-                                                                    <span className={'text-red-500'}>
-                                                                        {fieldChange.oldValue}
-                                                                    </span>
-                                                                    <MoveRight />
-                                                                    <span className={'text-green-500'}>
-                                                                        {fieldChange.newValue}
-                                                                    </span>
-                                                                </div>
+                                                            </div>
+
+                                                            <div className="space-y-3">
+                                                                {comparison.fieldChanges.map(fieldChange => (
+                                                                    <div
+                                                                        key={fieldChange.label}
+                                                                        className="rounded-md border p-2 hover:bg-muted/10">
+                                                                        <div className="mb-1.5 text-xs font-medium">
+                                                                            {fieldChange.label}
+                                                                        </div>
+                                                                        <div className="flex items-center gap-2 text-sm">
+                                                                            <div className="flex-1 break-all rounded border border-red-200 bg-red-50 px-2 py-1 text-red-600">
+                                                                                {fieldChange.oldValue || (
+                                                                                    <span className="italic text-gray-400">
+                                                                                        Vazio
+                                                                                    </span>
+                                                                                )}
+                                                                            </div>
+                                                                            <MoveRight className="size-4 shrink-0 text-muted-foreground" />
+                                                                            <div className="flex-1 break-all rounded border border-green-200 bg-green-50 px-2 py-1 text-green-600">
+                                                                                {fieldChange.newValue || (
+                                                                                    <span className="italic text-gray-400">
+                                                                                        Vazio
+                                                                                    </span>
+                                                                                )}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
                                                             </div>
                                                         </div>
-                                                    ))}
+                                                    )}
                                                 </div>
-                                            </React.Fragment>
-                                        </AccordionContent>
+                                            </AccordionContent>
+                                        )}
                                     </AccordionItem>
                                 )
                             })}
                         </Accordion>
-                    </Suspense>
-                </AccordionContent>
-            </AccordionItem>
-        </Accordion>
+                    )}
+                </Suspense>
+            </CardContent>
+        </Card>
     )
 }

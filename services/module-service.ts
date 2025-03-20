@@ -26,7 +26,7 @@ export class ModuleService extends Service<Module> {
     }
 
     async removeMenuItems(id: string, menuItemIds: string[]): Promise<Module> {
-        return apiClient.patch(`${this.getUrl()}/${id}/remove-menu-items`, menuItemIds)
+        return apiClient.patch(`${this.getUrl()}/${id}/remove-menu-items`, { menuItemIds })
     }
 }
 

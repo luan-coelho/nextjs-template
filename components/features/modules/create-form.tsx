@@ -9,42 +9,26 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
 import { FormProvider, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { z } from 'zod'
 
-import { Module } from '@/types/model-types'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { ModuleSchema, moduleSchema } from '@/app/(features)/modules/schema'
 
-const schema = z.object({
-    name: z.string().min(1, {
-        message: 'O nome é obrigatório.',
-    }),
-    description: z.string().min(1, {
-        message: 'A descrição é obrigatória.',
-    }),
-})
-
-type ModuleSchema = z.infer<typeof schema>
-
-export default function ModuleForm({ module }: { module?: Module }) {
+export default function CreateModuleForm() {
     const queryClient = useQueryClient()
     const router = useRouter()
 
     const form = useForm<ModuleSchema>({
-        resolver: zodResolver(schema),
+        resolver: zodResolver(moduleSchema),
         defaultValues: {
-            name: module?.name || '',
-            description: module?.description || '',
+            name: '',
+            description: '',
         },
     })
 
     async function onSubmit(data: ModuleSchema) {
-        if (module && module.id) {
-            await updateModule(data)
-        } else {
-            await createModule(data)
-        }
+        await createModule(data)
     }
 
     async function createModule(data: ModuleSchema) {
@@ -58,21 +42,6 @@ export default function ModuleForm({ module }: { module?: Module }) {
         } catch (error) {
             const apiError = error as ApiError
             toast.error(`Erro ao cadastrar: ${apiError.detail || 'Erro inesperado. Tente novamente mais tarde.'}`)
-        }
-    }
-
-    async function updateModule(data: ModuleSchema) {
-        try {
-            const updatedModule = await moduleService.updateById(module?.id ?? '', data)
-            await queryClient.invalidateQueries({
-                queryKey: [apiRoutes.modules.index],
-                exact: false,
-            })
-            router.replace(routes.modules.show(updatedModule.id))
-            toast.success('Módulo atualizado com sucesso.')
-        } catch (error) {
-            const apiError = error as ApiError
-            toast.error(`Erro ao atualizar: ${apiError.detail || 'Erro inesperado. Tente novamente mais tarde.'}`)
         }
     }
 
@@ -113,7 +82,7 @@ export default function ModuleForm({ module }: { module?: Module }) {
                     <Link className={buttonVariants({ variant: 'secondary' })} href={routes.modules.index}>
                         Cancelar
                     </Link>
-                    <Button type="submit">Salvar</Button>
+                    <Button type="submit">Cadastrar</Button>
                 </div>
             </form>
         </FormProvider>

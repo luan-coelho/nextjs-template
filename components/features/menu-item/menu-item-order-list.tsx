@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import menuItemService from '@/services/menu-item-service'
 import moduleService from '@/services/module-service'
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronDown, ChevronUp, Loader2, Save, Trash, X } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { MenuItem, MenuItemsOrder, Module } from '@/types/model-types'
@@ -22,6 +22,7 @@ interface MenuItemOrderListProps {
 export default function MenuItemOrderList({ module }: MenuItemOrderListProps) {
     const router = useRouter()
     const [menuItems, setMenuItems] = useState<MenuItem[]>(module.menuItems || [])
+    const [originalOrder, setOriginalOrder] = useState<string[]>([])
     const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
     const [isSaving, setIsSaving] = useState(false)
     const [availableMenuItems, setAvailableMenuItems] = useState<MenuItem[]>([])
@@ -30,6 +31,22 @@ export default function MenuItemOrderList({ module }: MenuItemOrderListProps) {
     const [isLoading, setIsLoading] = useState(false)
     const [activeTab, setActiveTab] = useState<string>('ordem')
     const [isRemoveMode, setIsRemoveMode] = useState(false)
+
+    // Armazenar a ordem original dos itens quando o componente é montado
+    useEffect(() => {
+        if (module.menuItems) {
+            setOriginalOrder(module.menuItems.map(item => item.id))
+        }
+    }, [module.menuItems])
+
+    // Verificar se a ordem foi alterada
+    const hasOrderChanged = () => {
+        const currentOrder = menuItems.map(item => item.id)
+
+        if (currentOrder.length !== originalOrder.length) return true
+
+        return currentOrder.some((id, index) => id !== originalOrder[index])
+    }
 
     // Buscar todos os itens de menu disponíveis
     useEffect(() => {
@@ -165,89 +182,113 @@ export default function MenuItemOrderList({ module }: MenuItemOrderListProps) {
     return (
         <div className="space-y-4">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="ordem">Ordenar Itens</TabsTrigger>
-                    <TabsTrigger value="adicionar">Adicionar Itens</TabsTrigger>
-                </TabsList>
+                <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
+                    <TabsList className="grid w-full grid-cols-2 md:w-auto">
+                        <TabsTrigger value="ordem">Ordenar Itens</TabsTrigger>
+                        <TabsTrigger value="adicionar">Adicionar Itens</TabsTrigger>
+                    </TabsList>
+                </div>
 
                 <TabsContent value="ordem">
-                    <div className="mb-4 flex justify-between">
-                        {isRemoveMode ? (
-                            <div className="flex space-x-2">
-                                <Button
-                                    variant="destructive"
-                                    onClick={removeSelectedItems}
-                                    disabled={itemsToRemove.length === 0 || isSaving}>
-                                    {isSaving ? 'Removendo...' : 'Remover Selecionados'}
-                                </Button>
-                                <Button variant="outline" onClick={cancelRemove}>
-                                    Cancelar
-                                </Button>
-                            </div>
-                        ) : (
-                            <Button
-                                variant="outline"
-                                onClick={() => setIsRemoveMode(true)}
-                                disabled={menuItems.length === 0}>
-                                Remover Itens
-                            </Button>
-                        )}
-
-                        <div className="flex space-x-2">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => moveItem('up')}
-                                disabled={!selectedItemId || isSaving || isRemoveMode}>
-                                <ChevronUp className="mr-1 size-4" /> Mover para cima
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => moveItem('down')}
-                                disabled={!selectedItemId || isSaving || isRemoveMode}>
-                                <ChevronDown className="mr-1 size-4" /> Mover para baixo
-                            </Button>
-                            <Button onClick={saveOrder} disabled={isSaving || isRemoveMode || menuItems.length === 0}>
-                                {isSaving ? 'Salvando...' : 'Salvar ordem'}
-                            </Button>
-                        </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        {menuItems.map(item => (
-                            <Card
-                                key={item.id}
-                                className={cn(
-                                    'cursor-pointer transition-colors',
-                                    selectedItemId === item.id && !isRemoveMode ? 'border-primary' : '',
-                                    itemsToRemove.includes(item.id) ? 'border-destructive' : '',
-                                )}
-                                onClick={() =>
-                                    isRemoveMode ? toggleItemToRemove(item.id) : handleSelectItem(item.id)
-                                }>
-                                <CardContent className="p-4">
-                                    <div className="flex items-center">
-                                        {isRemoveMode && (
-                                            <Checkbox
-                                                className="mr-2"
-                                                checked={itemsToRemove.includes(item.id)}
-                                                onCheckedChange={() => toggleItemToRemove(item.id)}
-                                                onClick={e => e.stopPropagation()}
-                                            />
-                                        )}
-                                        <div className="flex-1">
-                                            <div className="font-medium">{item.label}</div>
-                                            {item.description && (
-                                                <div className="mt-1 text-sm text-muted-foreground">
-                                                    {item.description}
+                    <div className="flex flex-row gap-2">
+                        <ScrollArea className="max-h-[60vh] w-full">
+                            {menuItems.map(item => (
+                                <Card
+                                    key={item.id}
+                                    className={cn(
+                                        'w-full cursor-pointer border-t border-t-gray-200 transition-colors hover:bg-gray-50',
+                                        selectedItemId === item.id && !isRemoveMode
+                                            ? 'border-l-4 border-primary bg-primary/5'
+                                            : 'border-l-4 border-l-transparent',
+                                        itemsToRemove.includes(item.id)
+                                            ? 'border-l-4 border-destructive bg-destructive/5'
+                                            : '',
+                                    )}
+                                    onClick={() =>
+                                        isRemoveMode ? toggleItemToRemove(item.id) : handleSelectItem(item.id)
+                                    }>
+                                    <CardContent className="p-3 sm:p-4">
+                                        <div className="flex w-full items-center justify-between">
+                                            <div className="flex flex-1 items-center">
+                                                {isRemoveMode && (
+                                                    <Checkbox
+                                                        className="mr-2"
+                                                        checked={itemsToRemove.includes(item.id)}
+                                                        onCheckedChange={() => toggleItemToRemove(item.id)}
+                                                        onClick={e => e.stopPropagation()}
+                                                    />
+                                                )}
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="flex flex-wrap items-center font-medium">
+                                                        <span
+                                                            className={cn(
+                                                                'mr-2 shrink-0 rounded px-2 py-1 text-xs font-semibold sm:text-sm',
+                                                                selectedItemId === item.id && !isRemoveMode
+                                                                    ? 'bg-primary text-white'
+                                                                    : 'bg-gray-200 text-gray-700',
+                                                            )}>
+                                                            {menuItems.findIndex(mi => mi.id === item.id) + 1}
+                                                        </span>
+                                                        <span className="truncate">{item.label}</span>
+                                                    </div>
+                                                    {item.description && (
+                                                        <div className="ml-0 mt-1 border-l-2 border-gray-200 pl-2 text-xs text-muted-foreground sm:ml-8 sm:text-sm">
+                                                            {item.description}
+                                                        </div>
+                                                    )}
                                                 </div>
-                                            )}
+                                            </div>
                                         </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </ScrollArea>
+                        <div className="flex flex-col justify-start gap-2">
+                            <Button
+                                size="icon"
+                                onClick={() => moveItem('up')}
+                                disabled={!selectedItemId || isSaving || isRemoveMode || menuItems.length <= 1}>
+                                <ChevronUp />
+                            </Button>
+                            <Button
+                                size="icon"
+                                onClick={() => moveItem('down')}
+                                disabled={!selectedItemId || isSaving || isRemoveMode || menuItems.length <= 1}>
+                                <ChevronDown />
+                            </Button>
+                            <Button
+                                className="bg-green-500 hover:bg-green-600"
+                                size="icon"
+                                onClick={saveOrder}
+                                disabled={isSaving || isRemoveMode || menuItems.length === 0 || !hasOrderChanged()}>
+                                {isSaving ? <Loader2 /> : <Save />}
+                            </Button>
+
+                            <div className="flex flex-wrap justify-end gap-2">
+                                {isRemoveMode ? (
+                                    <div className="flex w-full flex-wrap gap-2 sm:w-auto">
+                                        <Button
+                                            size="icon"
+                                            variant="destructive"
+                                            onClick={removeSelectedItems}
+                                            disabled={itemsToRemove.length === 0 || isSaving}>
+                                            {isSaving ? <Loader2 /> : <Trash />}
+                                        </Button>
+                                        <Button size="icon" variant="outline" onClick={cancelRemove}>
+                                            <X />
+                                        </Button>
                                     </div>
-                                </CardContent>
-                            </Card>
-                        ))}
+                                ) : (
+                                    <Button
+                                        size="icon"
+                                        className="border-red-500 bg-red-500 text-white hover:bg-red-600 hover:text-white"
+                                        onClick={() => setIsRemoveMode(true)}
+                                        disabled={menuItems.length === 0}>
+                                        <Trash />
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
                     {menuItems.length === 0 && (
@@ -259,7 +300,9 @@ export default function MenuItemOrderList({ module }: MenuItemOrderListProps) {
 
                 <TabsContent value="adicionar">
                     <div className="mb-4">
-                        <h3 className="mb-2 text-lg font-medium">Itens de Menu Disponíveis</h3>
+                        {availableMenuItems.length > 0 && (
+                            <h3 className="mb-2 text-center text-base font-medium">Itens de Menu Disponíveis</h3>
+                        )}
 
                         {isLoading ? (
                             <div className="py-6 text-center">Carregando itens de menu...</div>
@@ -281,14 +324,14 @@ export default function MenuItemOrderList({ module }: MenuItemOrderListProps) {
                                                         checked={selectedMenuItemIds.includes(item.id)}
                                                         onCheckedChange={() => toggleMenuItemSelection(item.id)}
                                                     />
-                                                    <div className="flex-1">
+                                                    <div className="min-w-0 flex-1">
                                                         <label
                                                             htmlFor={`item-${item.id}`}
-                                                            className="block cursor-pointer font-medium">
+                                                            className="block cursor-pointer truncate font-medium">
                                                             {item.label}
                                                         </label>
                                                         {item.description && (
-                                                            <p className="text-sm text-muted-foreground">
+                                                            <p className="truncate text-xs text-muted-foreground sm:text-sm">
                                                                 {item.description}
                                                             </p>
                                                         )}
@@ -299,13 +342,17 @@ export default function MenuItemOrderList({ module }: MenuItemOrderListProps) {
                                     </ScrollArea>
                                 )}
 
-                                <div className="mt-4 flex justify-end space-x-2">
-                                    <Button variant="secondary" onClick={() => setActiveTab('ordem')}>
+                                <div className="mt-4 flex flex-col justify-end gap-2 sm:flex-row">
+                                    <Button
+                                        variant="secondary"
+                                        onClick={() => setActiveTab('ordem')}
+                                        className="w-full sm:w-auto">
                                         Cancelar
                                     </Button>
                                     <Button
                                         onClick={addSelectedMenuItems}
-                                        disabled={selectedMenuItemIds.length === 0 || isSaving}>
+                                        disabled={selectedMenuItemIds.length === 0 || isSaving}
+                                        className="w-full sm:w-auto">
                                         {isSaving ? 'Adicionando...' : 'Adicionar Itens'}
                                     </Button>
                                 </div>

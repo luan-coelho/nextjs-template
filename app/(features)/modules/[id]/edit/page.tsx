@@ -3,7 +3,7 @@ import { routes } from '@/routes'
 import moduleService from '@/services/module-service'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import CreateModuleForm from '@/components/features/modules/form'
+import EditModuleForm from '@/components/features/modules/edit-form'
 import BreadcrumbContent from '@/components/layout/content-breadcrumb'
 import PageTitle from '@/components/layout/page-title'
 
@@ -21,7 +21,7 @@ export default async function EditModulePage({ params }: { params: Promise<{ id:
                     <CardTitle>Formulário</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <CreateModuleForm module={modulez} />
+                    <EditModuleForm module={modulez} />
                 </CardContent>
             </Card>
         </React.Fragment>

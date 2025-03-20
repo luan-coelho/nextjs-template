@@ -2,7 +2,7 @@ import React from 'react'
 import { routes } from '@/routes'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import CreateModuleForm from '@/components/features/modules/form'
+import CreateModuleForm from '@/components/features/modules/create-form'
 import BreadcrumbContent from '@/components/layout/content-breadcrumb'
 import PageTitle from '@/components/layout/page-title'
 

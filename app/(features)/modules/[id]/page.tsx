@@ -1,5 +1,4 @@
 import React, { Suspense } from 'react'
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { routes } from '@/routes'
 import moduleService from '@/services/module-service'
@@ -7,7 +6,6 @@ import { AlertCircle } from 'lucide-react'
 
 import { Module } from '@/types/model-types'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import MenuItemOrderList from '@/components/features/menu-item/menu-item-order-list'
 import ButtonBack from '@/components/layout/button-back'
@@ -60,17 +58,10 @@ export default async function ShowModulePage({ params }: { params: Promise<{ id:
 
             <Card className="mt-3">
                 <CardHeader>
-                    <CardTitle>Módulo</CardTitle>
+                    <CardTitle>{modulez?.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <Suspense fallback={<SpinnerLoading />}>
-                        {getMenuItems()}
-                        <div className="mt-3 flex justify-end">
-                            <Link className={buttonVariants()} href={routes.modules.edit(id)}>
-                                Editar
-                            </Link>
-                        </div>
-                    </Suspense>
+                    <Suspense fallback={<SpinnerLoading />}>{getMenuItems()}</Suspense>
                 </CardContent>
             </Card>
 
