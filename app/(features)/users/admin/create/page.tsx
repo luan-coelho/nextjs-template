@@ -1,10 +1,8 @@
-'use client'
-
 import React from 'react'
 import { routes } from '@/routes'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import UserForm from '@/components/features/users/admin/form'
+import CreateUserForm from '@/components/features/users/admin/create-form'
 import BreadcrumbContent from '@/components/layout/content-breadcrumb'
 import PageTitle from '@/components/layout/page-title'
 
@@ -27,7 +25,9 @@ export default function CreateUserPage() {
                 <CardHeader>
                     <CardTitle>Formulário</CardTitle>
                 </CardHeader>
-                <CardContent>{<UserForm />}</CardContent>
+                <CardContent>
+                    <CreateUserForm />
+                </CardContent>
             </Card>
         </React.Fragment>
     )

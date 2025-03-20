@@ -8,6 +8,7 @@ import { ApiError } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
 import { FormProvider, useForm } from 'react-hook-form'
+import { ClipLoader } from 'react-spinners'
 import { toast } from 'sonner'
 
 import { Button, buttonVariants } from '@/components/ui/button'
@@ -22,6 +23,7 @@ export default function CreateMenuItemForm() {
 
     const form = useForm<MenuItemSchema>({
         resolver: zodResolver(menuItemSchema),
+        mode: 'onSubmit',
         defaultValues: {
             label: '',
             description: '',
@@ -41,8 +43,9 @@ export default function CreateMenuItemForm() {
                 queryKey: [apiRoutes.menuItems.index],
             })
         } catch (error) {
-            const apiError = error as ApiError
+            const apiError = new ApiError(error as ApiError)
             toast.error(`Erro ao cadastrar: ${apiError.detail || 'Erro inesperado. Tente novamente mais tarde.'}`)
+            apiError.applyErrorsToForm<MenuItemSchema>(form.setError)
         }
     }
 
@@ -114,7 +117,9 @@ export default function CreateMenuItemForm() {
                     <Link className={buttonVariants({ variant: 'secondary' })} href={routes.menuItems.index}>
                         Cancelar
                     </Link>
-                    <Button type="submit">Cadastrar</Button>
+                    <Button type="submit" disabled={form.formState.isSubmitting}>
+                        {form.formState.isSubmitting ? <ClipLoader color="#FFF" size={20} /> : 'Cadastrar'}
+                    </Button>
                 </div>
             </form>
         </FormProvider>

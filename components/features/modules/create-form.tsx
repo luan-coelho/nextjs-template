@@ -8,6 +8,7 @@ import { ApiError } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
 import { FormProvider, useForm } from 'react-hook-form'
+import { ClipLoader } from 'react-spinners'
 import { toast } from 'sonner'
 
 import { Button, buttonVariants } from '@/components/ui/button'
@@ -27,9 +28,7 @@ export default function CreateModuleForm() {
         },
     })
 
-    async function onSubmit(data: ModuleSchema) {
-        await createModule(data)
-    }
+    const { handleSubmit, control, formState } = form
 
     async function createModule(data: ModuleSchema) {
         try {
@@ -47,10 +46,10 @@ export default function CreateModuleForm() {
 
     return (
         <FormProvider {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-12 gap-4">
+            <form onSubmit={handleSubmit(createModule)} className="grid grid-cols-12 gap-4">
                 <div className="col-span-12">
                     <FormField
-                        control={form.control}
+                        control={control}
                         name="name"
                         render={({ field }) => (
                             <FormItem>
@@ -65,7 +64,7 @@ export default function CreateModuleForm() {
                 </div>
                 <div className="col-span-12">
                     <FormField
-                        control={form.control}
+                        control={control}
                         name="description"
                         render={({ field }) => (
                             <FormItem>
@@ -82,7 +81,9 @@ export default function CreateModuleForm() {
                     <Link className={buttonVariants({ variant: 'secondary' })} href={routes.modules.index}>
                         Cancelar
                     </Link>
-                    <Button type="submit">Cadastrar</Button>
+                    <Button type="submit" disabled={formState.isSubmitting}>
+                        {formState.isSubmitting ? <ClipLoader color="#FFF" size={20} /> : 'Cadastrar'}
+                    </Button>
                 </div>
             </form>
         </FormProvider>

@@ -13,48 +13,80 @@ import { TableCell, TableRow } from '@/components/ui/table'
 import ToolTipButton from '@/components/ui/tool-tip-button'
 import StatusBadge from '@/components/layout/status-badge'
 
-const columns: DataTableColumn[] = [
+// Constantes movidas para fora do componente
+const COLUMNS: DataTableColumn[] = [
     { title: 'Nome', field: 'name', position: 'left', className: 'w-4/6' },
     { title: 'Descrição', field: 'description', position: 'center', className: 'w-1/6' },
     { title: 'Situação', field: 'active', position: 'center', className: 'w-1/6' },
     { title: 'Ações', position: 'center', className: 'w-1/6 text-center' },
 ]
 
+// Componente de ação do módulo para reduzir a complexidade
+type ModuleActionProps = {
+    module: Module
+    onDelete: (id: string) => Promise<void>
+    onDisable: (id: string) => Promise<void>
+    onActivate: (id: string) => Promise<void>
+}
+
+function ModuleActions({ module, onDelete, onDisable, onActivate }: ModuleActionProps) {
+    return (
+        <div className="flex flex-row justify-center gap-2">
+            <ActionButton link={routes.modules.show(module.id)} color="blue" tooltip="Visualizar">
+                <Eye className="w-5" />
+            </ActionButton>
+            <ActionButton link={routes.modules.edit(module.id)} color="purple" tooltip="Editar">
+                <Pencil className="w-5" />
+            </ActionButton>
+            <ToolTipButton
+                onClick={() => onDelete(module.id)}
+                className={actionButtoncolorClasses.red}
+                tooltipText="Deletar">
+                <Trash className="w-5" />
+            </ToolTipButton>
+            {module.active ? (
+                <ToolTipButton
+                    onClick={() => onDisable(module.id)}
+                    className={actionButtoncolorClasses.red}
+                    tooltipText="Desativar">
+                    <CirclePower className="w-5" />
+                </ToolTipButton>
+            ) : (
+                <ToolTipButton
+                    onClick={() => onActivate(module.id)}
+                    className={actionButtoncolorClasses.green}
+                    tooltipText="Ativar">
+                    <Activity className="w-5" />
+                </ToolTipButton>
+            )}
+        </div>
+    )
+}
+
 export function ModuleDataTable({ queryResult }: { queryResult: QueryResult<Module> }) {
     const { data, pagination, mutate } = queryResult
 
-    async function handleDelete(id: string) {
+    // Funções de manipulação com tratamento de erros simplificado
+    async function performModuleAction(action: (id: string) => Promise<any>, id: string, successMessage: string) {
         try {
-            await moduleService.deleteById(id)
-            toast.success('Módulo deletado com sucesso.')
+            await action(id)
+            toast.success(successMessage)
             await mutate()
         } catch (error) {
             const apiError = error as ApiError
-            toast.error(`Erro ao deletar: ${apiError.detail || 'Erro inesperado. Tente novamente mais tarde.'}`)
+            toast.error(`Erro: ${apiError.detail || 'Erro inesperado. Tente novamente mais tarde.'}`)
         }
     }
 
-    async function handleDisable(id: string) {
-        try {
-            await moduleService.disableById(id)
-            toast.success('Módulo desativado com sucesso.')
-            await mutate()
-        } catch (error) {
-            const apiError = error as ApiError
-            toast.error(`Erro ao desativar: ${apiError.detail || 'Erro inesperado. Tente novamente mais tarde.'}`)
-        }
-    }
+    // Handlers simplificados usando a função genérica
+    const handleDelete = (id: string) =>
+        performModuleAction(moduleService.deleteById, id, 'Módulo deletado com sucesso.')
 
-    async function handleActivate(id: string) {
-        try {
-            await moduleService.activateById(id)
-            toast.success('Módulo ativado com sucesso.')
-            await mutate()
-        } catch (error) {
-            const apiError = error as ApiError
-            toast.error(`Erro ao ativar: ${apiError.detail || 'Erro inesperado. Tente novamente mais tarde.'}`)
-        }
-    }
+    const handleDisable = (id: string) =>
+        performModuleAction(moduleService.disableById, id, 'Módulo desativado com sucesso.')
+
+    const handleActivate = (id: string) =>
+        performModuleAction(moduleService.activateById, id, 'Módulo ativado com sucesso.')
 
     return (
         <DataTable
@@ -62,7 +94,7 @@ export function ModuleDataTable({ queryResult }: { queryResult: QueryResult<Modu
                 content: data,
                 pagination: pagination,
             }}
-            columns={columns}>
+            columns={COLUMNS}>
             {data.map(module => (
                 <TableRow key={module.id}>
                     <TableCell>{module.name}</TableCell>
@@ -72,34 +104,13 @@ export function ModuleDataTable({ queryResult }: { queryResult: QueryResult<Modu
                             <StatusBadge status={module.active} />
                         </div>
                     </TableCell>
-                    <TableCell className="flex flex-row justify-center gap-2">
-                        <ActionButton link={routes.modules.show(module.id)} color="blue" tooltip="Visualizar">
-                            <Eye className="w-5" />
-                        </ActionButton>
-                        <ActionButton link={routes.modules.edit(module.id)} color="purple" tooltip="Editar">
-                            <Pencil className="w-5" />
-                        </ActionButton>
-                        <ToolTipButton
-                            onClick={() => handleDelete(module.id)}
-                            className={actionButtoncolorClasses.red}
-                            tooltipText="Deletar">
-                            <Trash className="w-5" />
-                        </ToolTipButton>
-                        {module.active ? (
-                            <ToolTipButton
-                                onClick={() => handleDisable(module.id)}
-                                className={actionButtoncolorClasses.red}
-                                tooltipText="Desativar">
-                                <CirclePower className="w-5" />
-                            </ToolTipButton>
-                        ) : (
-                            <ToolTipButton
-                                onClick={() => handleActivate(module.id)}
-                                className={actionButtoncolorClasses.green}
-                                tooltipText="Ativar">
-                                <Activity className="w-5" />
-                            </ToolTipButton>
-                        )}
+                    <TableCell>
+                        <ModuleActions
+                            module={module}
+                            onDelete={handleDelete}
+                            onDisable={handleDisable}
+                            onActivate={handleActivate}
+                        />
                     </TableCell>
                 </TableRow>
             ))}

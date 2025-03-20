@@ -53,6 +53,13 @@ const apiRoutes = {
             existsByCpf: (cpf: string) => `/users/admin/exists/cpf/${cpf}`,
             existsByEmail: (email: string) => `/users/admin/exists/email/${email}`,
         },
+        naturalPerson: {
+            index: '/users/natural-person',
+            all: '/users/natural-person/all',
+            create: '/users/natural-person',
+            edit: (id: string) => `/users/natural-person/${id}/edit`,
+            show: (id: string) => `/users/natural-person/${id}`,
+        },
     },
     modules: {
         index: '/modules',

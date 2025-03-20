@@ -243,52 +243,54 @@ export default function MenuItemOrderList({ module }: MenuItemOrderListProps) {
                                 </Card>
                             ))}
                         </ScrollArea>
-                        <div className="flex flex-col justify-start gap-2">
-                            <Button
-                                size="icon"
-                                onClick={() => moveItem('up')}
-                                disabled={!selectedItemId || isSaving || isRemoveMode || menuItems.length <= 1}>
-                                <ChevronUp />
-                            </Button>
-                            <Button
-                                size="icon"
-                                onClick={() => moveItem('down')}
-                                disabled={!selectedItemId || isSaving || isRemoveMode || menuItems.length <= 1}>
-                                <ChevronDown />
-                            </Button>
-                            <Button
-                                className="bg-green-500 hover:bg-green-600"
-                                size="icon"
-                                onClick={saveOrder}
-                                disabled={isSaving || isRemoveMode || menuItems.length === 0 || !hasOrderChanged()}>
-                                {isSaving ? <Loader2 /> : <Save />}
-                            </Button>
+                        {menuItems.length > 0 && (
+                            <div className="flex flex-col justify-start gap-2">
+                                <Button
+                                    size="icon"
+                                    onClick={() => moveItem('up')}
+                                    disabled={!selectedItemId || isSaving || isRemoveMode || menuItems.length <= 1}>
+                                    <ChevronUp />
+                                </Button>
+                                <Button
+                                    size="icon"
+                                    onClick={() => moveItem('down')}
+                                    disabled={!selectedItemId || isSaving || isRemoveMode || menuItems.length <= 1}>
+                                    <ChevronDown />
+                                </Button>
+                                <Button
+                                    className="bg-green-500 hover:bg-green-600"
+                                    size="icon"
+                                    onClick={saveOrder}
+                                    disabled={isSaving || isRemoveMode || menuItems.length === 0 || !hasOrderChanged()}>
+                                    {isSaving ? <Loader2 /> : <Save />}
+                                </Button>
 
-                            <div className="flex flex-wrap justify-end gap-2">
-                                {isRemoveMode ? (
-                                    <div className="flex w-full flex-wrap gap-2 sm:w-auto">
+                                <div className="flex flex-wrap justify-end gap-2">
+                                    {isRemoveMode ? (
+                                        <div className="flex w-full flex-wrap gap-2 sm:w-auto">
+                                            <Button
+                                                size="icon"
+                                                variant="destructive"
+                                                onClick={removeSelectedItems}
+                                                disabled={itemsToRemove.length === 0 || isSaving}>
+                                                {isSaving ? <Loader2 /> : <Trash />}
+                                            </Button>
+                                            <Button size="icon" variant="outline" onClick={cancelRemove}>
+                                                <X />
+                                            </Button>
+                                        </div>
+                                    ) : (
                                         <Button
                                             size="icon"
-                                            variant="destructive"
-                                            onClick={removeSelectedItems}
-                                            disabled={itemsToRemove.length === 0 || isSaving}>
-                                            {isSaving ? <Loader2 /> : <Trash />}
+                                            className="border-red-500 bg-red-500 text-white hover:bg-red-600 hover:text-white"
+                                            onClick={() => setIsRemoveMode(true)}
+                                            disabled={menuItems.length === 0}>
+                                            <Trash />
                                         </Button>
-                                        <Button size="icon" variant="outline" onClick={cancelRemove}>
-                                            <X />
-                                        </Button>
-                                    </div>
-                                ) : (
-                                    <Button
-                                        size="icon"
-                                        className="border-red-500 bg-red-500 text-white hover:bg-red-600 hover:text-white"
-                                        onClick={() => setIsRemoveMode(true)}
-                                        disabled={menuItems.length === 0}>
-                                        <Trash />
-                                    </Button>
-                                )}
+                                    )}
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
 
                     {menuItems.length === 0 && (

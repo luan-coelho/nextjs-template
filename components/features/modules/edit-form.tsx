@@ -9,6 +9,7 @@ import { ApiError } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
 import { FormProvider, useForm } from 'react-hook-form'
+import { ClipLoader } from 'react-spinners'
 import { toast } from 'sonner'
 
 import { Module } from '@/types/model-types'
@@ -38,7 +39,7 @@ export default function EditModuleForm({ module }: { module: Module }) {
         }
     }, [module, form])
 
-    const { handleSubmit, control } = form
+    const { handleSubmit, control, formState } = form
 
     async function updateModule(data: ModuleSchema) {
         try {
@@ -92,7 +93,9 @@ export default function EditModuleForm({ module }: { module: Module }) {
                     <Link className={buttonVariants({ variant: 'secondary' })} href={routes.modules.index}>
                         Cancelar
                     </Link>
-                    <Button type="submit">Atualizar</Button>
+                    <Button type="submit" disabled={formState.isSubmitting}>
+                        {formState.isSubmitting ? <ClipLoader color="#FFF" size={20} /> : 'Atualizar'}
+                    </Button>
                 </div>
             </form>
         </FormProvider>

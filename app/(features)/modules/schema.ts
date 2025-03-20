@@ -4,18 +4,18 @@ const moduleSchema = z.object({
     name: z
         .string()
         .min(1, {
-            message: 'O nome é obrigatório.',
+            message: 'O nome é obrigatório',
         })
         .max(100, {
-            message: 'O nome deve ter no máximo 100 caracteres.',
+            message: 'O nome deve ter no máximo 100 caracteres',
         }),
     description: z
         .string()
         .min(1, {
-            message: 'A descrição é obrigatória.',
+            message: 'A descrição é obrigatória',
         })
         .max(255, {
-            message: 'A descrição deve ter no máximo 255 caracteres.',
+            message: 'A descrição deve ter no máximo 255 caracteres',
         }),
 })
 

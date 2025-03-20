@@ -8,6 +8,7 @@ import { ApiError } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
 import { FormProvider, useForm } from 'react-hook-form'
+import { ClipLoader } from 'react-spinners'
 import { toast } from 'sonner'
 
 import { MenuItem } from '@/types/model-types'
@@ -23,6 +24,7 @@ export default function EditMenuItemForm({ menuItem }: { menuItem: MenuItem }) {
 
     const form = useForm<MenuItemSchema>({
         resolver: zodResolver(menuItemSchema),
+        mode: 'onSubmit',
         defaultValues: {
             label: menuItem.label,
             description: menuItem.description,
@@ -40,10 +42,12 @@ export default function EditMenuItemForm({ menuItem }: { menuItem: MenuItem }) {
             toast.success('Item de menu atualizado com sucesso.')
             await queryClient.invalidateQueries({
                 queryKey: [apiRoutes.menuItems.index, apiRoutes.menuItems.show(menuItem.id)],
+                exact: false,
             })
         } catch (error) {
-            const apiError = error as ApiError
+            const apiError = new ApiError(error as ApiError)
             toast.error(`Erro ao atualizar: ${apiError.detail || 'Erro inesperado. Tente novamente mais tarde.'}`)
+            apiError.applyErrorsToForm<MenuItemSchema>(form.setError)
         }
     }
 
@@ -115,7 +119,9 @@ export default function EditMenuItemForm({ menuItem }: { menuItem: MenuItem }) {
                     <Link className={buttonVariants({ variant: 'secondary' })} href={routes.menuItems.index}>
                         Cancelar
                     </Link>
-                    <Button type="submit">Salvar</Button>
+                    <Button type="submit" disabled={form.formState.isSubmitting}>
+                        {form.formState.isSubmitting ? <ClipLoader color="#FFF" size={20} /> : 'Salvar'}
+                    </Button>
                 </div>
             </form>
         </FormProvider>

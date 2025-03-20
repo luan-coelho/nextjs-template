@@ -58,3 +58,7 @@
         --chart-5: 340 75% 55%;
     }
 }
+
+.form-group {
+    @apply flex flex-col gap-2;
+}

@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react'
 import { RevisionComparison, RevisionType } from '@/types'
-import { AlertCircle, Clock, FileEdit, MoveRight, PlusCircle, Trash2 } from 'lucide-react'
+import { AlertCircle, FileEdit, MoveRight, PlusCircle, Trash2 } from 'lucide-react'
 
 import { BaseEntity } from '@/types/model-types'
 import { dateUtils } from '@/lib/date-utils'
@@ -53,10 +53,7 @@ export default async function Revisions<T extends BaseEntity>({
     return (
         <Card className={cn('mt-3 shadow-sm', className)}>
             <CardHeader className="border-b bg-muted/30 px-6 py-4">
-                <CardTitle className="flex items-center gap-2 text-base font-medium">
-                    <Clock className="size-5" />
-                    Histórico de Auditoria
-                </CardTitle>
+                <CardTitle className="text-base font-medium">Histórico de Auditoria</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
                 <Suspense fallback={<SpinnerLoading />}>
