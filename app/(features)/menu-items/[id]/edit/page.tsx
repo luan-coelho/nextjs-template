@@ -1,43 +1,20 @@
-'use client'
-
-import React from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import { apiRoutes, routes } from '@/routes'
+import { redirect } from 'next/navigation'
+import { routes } from '@/routes'
 import menuItemService from '@/services/menu-item-service'
-import { ApiError } from '@/types'
-import { useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
 
-import { useMenuItem } from '@/hooks/use-menu-items'
+import { MenuItem } from '@/types/model-types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import MenuItemForm, { MenuItemSchema } from '@/components/features/menu-item/form'
+import EditMenuItemForm from '@/components/features/menu-item/edit-form'
 import BreadcrumbContent from '@/components/layout/content-breadcrumb'
 import PageTitle from '@/components/layout/page-title'
-import SpinnerLoading from '@/components/layout/spinner-loading'
 
-export default function EditMenuItemPage() {
-    const queryClient = useQueryClient()
-    const router = useRouter()
-    const params = useParams<{ id: string }>()
-    const { data: menuItem, isLoading } = useMenuItem(params.id)
+export default async function EditMenuItemPage({ params }: { params: { id: string } }) {
+    let menuItem: MenuItem | null = null
 
-    async function onUpdate(data: MenuItemSchema) {
-        try {
-            const updatedMenuItem = await menuItemService.updateById(params.id, data)
-            await queryClient.invalidateQueries({
-                queryKey: [apiRoutes.menuItems.index],
-                exact: false,
-            })
-            router.replace(routes.menuItems.show(updatedMenuItem.id))
-            toast.success('Item de menu atualizado com sucesso.')
-        } catch (error) {
-            const apiError = error as ApiError
-            toast.error(`Erro ao atualizar: ${apiError.detail || 'Erro inesperado. Tente novamente mais tarde.'}`)
-        }
-    }
-
-    if (isLoading) {
-        return <SpinnerLoading />
+    try {
+        menuItem = await menuItemService.fetchById(params.id)
+    } catch (error) {
+        return redirect(routes.menuItems.index)
     }
 
     return (
@@ -52,7 +29,7 @@ export default function EditMenuItemPage() {
                     <CardTitle>Formulário</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <MenuItemForm menuItem={menuItem} onSubmit={onUpdate} />
+                    <EditMenuItemForm menuItem={menuItem} />
                 </CardContent>
             </Card>
         </div>

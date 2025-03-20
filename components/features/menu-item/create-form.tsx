@@ -1,53 +1,63 @@
-import React from 'react'
+'use client'
+
 import Link from 'next/link'
-import { routes } from '@/routes'
+import { useRouter } from 'next/navigation'
+import { apiRoutes, routes } from '@/routes'
+import menuItemService from '@/services/menu-item-service'
+import { ApiError } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQueryClient } from '@tanstack/react-query'
 import { FormProvider, useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { toast } from 'sonner'
 
 import { Button, buttonVariants } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import IconSelector from '@/components/features/menu-item/icon-selector'
+import { MenuItemSchema, menuItemSchema } from '@/app/(features)/menu-items/schema'
 
-const schema = z.object({
-    label: z.string().min(1, 'Label é obrigatório'),
-    description: z.string().min(1, 'Descrição é obrigatório'),
-    route: z.string().min(1, 'Rota é obrigatório'),
-    icon: z.string().min(1, 'Ícone é obrigatório'),
-})
+export default function CreateMenuItemForm() {
+    const queryClient = useQueryClient()
+    const router = useRouter()
 
-export type MenuItemSchema = z.infer<typeof schema>
-
-type MenuItemFormProps = {
-    menuItem?: MenuItemSchema
-    onSubmit: (data: MenuItemSchema) => void
-}
-
-export default function MenuItemForm({ menuItem, onSubmit }: MenuItemFormProps) {
     const form = useForm<MenuItemSchema>({
-        resolver: zodResolver(schema),
-        mode: 'onSubmit',
+        resolver: zodResolver(menuItemSchema),
         defaultValues: {
-            label: menuItem?.label || '',
-            description: menuItem?.description || '',
-            route: menuItem?.route || '',
-            icon: menuItem?.icon || '',
+            label: '',
+            description: '',
+            route: '',
+            icon: '',
         },
     })
 
+    const { handleSubmit, control } = form
+
+    async function createMenuItem(data: MenuItemSchema) {
+        try {
+            const createdMenuItem = await menuItemService.create(data)
+            router.replace(routes.menuItems.show(createdMenuItem.id))
+            toast.success('Item de menu cadastrado com sucesso.')
+            await queryClient.invalidateQueries({
+                queryKey: [apiRoutes.menuItems.index],
+            })
+        } catch (error) {
+            const apiError = error as ApiError
+            toast.error(`Erro ao cadastrar: ${apiError.detail || 'Erro inesperado. Tente novamente mais tarde.'}`)
+        }
+    }
+
     return (
         <FormProvider {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-12 gap-4">
+            <form onSubmit={handleSubmit(createMenuItem)} className="grid grid-cols-12 gap-4">
                 <div className="col-span-12 md:col-span-6">
                     <FormField
-                        control={form.control}
+                        control={control}
                         name="label"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Label</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Informe o label" {...field} />
+                                    <Input placeholder="Informe o label" {...field} showIcon />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -56,13 +66,13 @@ export default function MenuItemForm({ menuItem, onSubmit }: MenuItemFormProps) 
                 </div>
                 <div className="col-span-12 md:col-span-6">
                     <FormField
-                        control={form.control}
+                        control={control}
                         name="route"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Rota</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Informe a rota" {...field} />
+                                    <Input placeholder="Informe a rota" {...field} showIcon />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -71,13 +81,13 @@ export default function MenuItemForm({ menuItem, onSubmit }: MenuItemFormProps) 
                 </div>
                 <div className="col-span-12">
                     <FormField
-                        control={form.control}
+                        control={control}
                         name="description"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Descrição</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Informe a descrição" {...field} />
+                                    <Input placeholder="Informe a descrição" {...field} showIcon />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -86,7 +96,7 @@ export default function MenuItemForm({ menuItem, onSubmit }: MenuItemFormProps) 
                 </div>
                 <div className="col-span-12">
                     <FormField
-                        control={form.control}
+                        control={control}
                         name="icon"
                         render={({ field: { value, onChange } }) => (
                             <FormItem>
@@ -104,9 +114,7 @@ export default function MenuItemForm({ menuItem, onSubmit }: MenuItemFormProps) 
                     <Link className={buttonVariants({ variant: 'secondary' })} href={routes.menuItems.index}>
                         Cancelar
                     </Link>
-                    <Button className="w-full md:w-auto" type="submit">
-                        Salvar
-                    </Button>
+                    <Button type="submit">Cadastrar</Button>
                 </div>
             </form>
         </FormProvider>

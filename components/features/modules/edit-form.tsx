@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { apiRoutes, routes } from '@/routes'
@@ -23,10 +24,19 @@ export default function EditModuleForm({ module }: { module: Module }) {
     const form = useForm<ModuleSchema>({
         resolver: zodResolver(moduleSchema),
         defaultValues: {
-            name: module.name,
-            description: module.description,
+            name: module?.name || '',
+            description: module?.description || '',
         },
     })
+
+    React.useEffect(() => {
+        if (module) {
+            form.reset({
+                name: module.name,
+                description: module.description,
+            })
+        }
+    }, [module, form])
 
     const { handleSubmit, control } = form
 
