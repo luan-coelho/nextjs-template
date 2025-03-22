@@ -18,7 +18,10 @@ export default function MenuItemPage() {
     return (
         <React.Fragment>
             <PageTitle>Itens de Menu</PageTitle>
-            <CreateButtonLink href={routes.menuItems.create} />
+
+            <div className="grid grid-cols-6 gap-2">
+                <CreateButtonLink href={routes.menuItems.create} className="col-start-6" />
+            </div>
 
             <Card className="mt-2">
                 <CardHeader>

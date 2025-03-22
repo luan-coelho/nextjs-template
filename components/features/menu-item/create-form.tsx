@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { apiRoutes, routes } from '@/routes'
 import menuItemService from '@/services/menu-item-service'
@@ -11,7 +10,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { ClipLoader } from 'react-spinners'
 import { toast } from 'sonner'
 
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import IconSelector from '@/components/features/menu-item/icon-selector'
@@ -114,9 +113,6 @@ export default function CreateMenuItemForm() {
                 </div>
 
                 <div className="col-span-12 flex items-center justify-end gap-2">
-                    <Link className={buttonVariants({ variant: 'secondary' })} href={routes.menuItems.index}>
-                        Cancelar
-                    </Link>
                     <Button type="submit" disabled={form.formState.isSubmitting}>
                         {form.formState.isSubmitting ? <ClipLoader color="#FFF" size={20} /> : 'Cadastrar'}
                     </Button>

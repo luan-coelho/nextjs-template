@@ -31,7 +31,10 @@ export default async function ShowMenuItemPage({ params }: { params: Promise<{ i
                 items={[{ label: 'Itens de Menu', href: routes.menuItems.index }, { label: 'Visualizar' }]}
             />
             <PageTitle>Visualizar Item de Menu</PageTitle>
-            <ButtonBack href={routes.menuItems.index} />
+
+            <div className="grid grid-cols-6 gap-2">
+                <ButtonBack href={routes.menuItems.index} className="col-start-6" />
+            </div>
 
             <Card className="mt-2">
                 <CardHeader>

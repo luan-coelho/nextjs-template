@@ -38,7 +38,10 @@ export default function ModulesPage() {
     return (
         <React.Fragment>
             <PageTitle>Módulos</PageTitle>
-            <CreateButtonLink href={routes.modules.create} />
+
+            <div className="grid grid-cols-6 gap-2">
+                <CreateButtonLink className="col-start-6" href={routes.modules.create} />
+            </div>
 
             {getModuleDataTable()}
         </React.Fragment>

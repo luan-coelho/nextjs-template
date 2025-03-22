@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { apiRoutes, routes } from '@/routes'
 import moduleService from '@/services/module-service'
@@ -13,7 +12,7 @@ import { ClipLoader } from 'react-spinners'
 import { toast } from 'sonner'
 
 import { Module } from '@/types/model-types'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { ModuleSchema, moduleSchema } from '@/app/(features)/modules/schema'
@@ -90,9 +89,6 @@ export default function EditModuleForm({ module }: { module: Module }) {
                     />
                 </div>
                 <div className="col-span-12 flex items-center justify-end gap-2">
-                    <Link className={buttonVariants({ variant: 'secondary' })} href={routes.modules.index}>
-                        Cancelar
-                    </Link>
                     <Button type="submit" disabled={formState.isSubmitting}>
                         {formState.isSubmitting ? <ClipLoader color="#FFF" size={20} /> : 'Atualizar'}
                     </Button>

@@ -1,14 +1,23 @@
-import React from 'react'
+import { HTMLAttributes } from 'react'
 import Link from 'next/link'
 
+import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
 
-export function CreateButtonLink({ href }: { href: string }) {
+type CreateButtonLinkProps = HTMLAttributes<HTMLDivElement> & {
+    href: string
+}
+
+export function CreateButtonLink({ href, className }: CreateButtonLinkProps) {
     return (
-        <div className="flex items-center justify-end">
-            <Link className={buttonVariants({ variant: 'default' })} href={href}>
-                Cadastrar
-            </Link>
-        </div>
+        <Link
+            className={cn(
+                'flex w-auto items-center justify-end',
+                className,
+                buttonVariants({ variant: 'default', size: 'sm' }),
+            )}
+            href={href}>
+            Cadastrar
+        </Link>
     )
 }
