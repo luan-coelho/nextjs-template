@@ -30,9 +30,8 @@ export interface User extends BaseEntity {
     surname: string
     cpf: string
     email: string
-    password: string
     primaryPhone: string
-    secondaryPhone: string
-    accessStartDate: Date
-    accessEndDate: Date
+    secondaryPhone?: string
+    accessStartDate?: Date
+    accessEndDate?: Date
 }

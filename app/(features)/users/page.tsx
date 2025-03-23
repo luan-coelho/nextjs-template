@@ -23,7 +23,7 @@ export default async function UsersPage() {
                     </WidgetCard>
                 </Link>
 
-                <Link href={routes.users.customer.index}>
+                <Link href={routes.users.naturalPerson.index}>
                     <WidgetCard className="w-auto bg-gradient-to-br from-red-300 to-red-600 text-zinc-800">
                         <WidgetCardIcon src={BinessUsers} alt="Usuários Pessoa Física" />
                         <WidgetCardContent>

@@ -29,11 +29,17 @@ const routes = {
             edit: (id: string) => `/users/admin/${id}/edit`,
             show: (id: string) => `/users/admin/${id}`,
         },
-        customer: {
-            index: '/users/customer',
-            create: '/users/customer/create',
-            edit: (id: string) => `/users/customer/${id}/edit`,
-            show: (id: string) => `/users/customer/${id}`,
+        naturalPerson: {
+            index: '/users/natural-person',
+            create: '/users/natural-person/create',
+            edit: (id: string) => `/users/natural-person/${id}/edit`,
+            show: (id: string) => `/users/natural-person/${id}`,
+        },
+        legalPerson: {
+            index: '/users/legal-person',
+            create: '/users/legal-person/create',
+            edit: (id: string) => `/users/legal-person/${id}/edit`,
+            show: (id: string) => `/users/legal-person/${id}`,
         },
     },
 }

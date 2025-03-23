@@ -1,36 +1,36 @@
-'use client'
+import React from 'react'
+import { routes } from '@/routes'
 
-import { useActionState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import CreateNaturalPersonForm from '@/components/features/users/natural-person/create-form'
+import ButtonBack from '@/components/layout/button-back'
+import BreadcrumbContent from '@/components/layout/content-breadcrumb'
+import PageTitle from '@/components/layout/page-title'
 
-import { createUser } from './action'
-
-export type FormData = {
-    name: string
-}
-
-export type State = {
-    data: FormData
-    message: string
-    error: Record<string, string>
-}
-
-const initialState: State = {
-    data: {
-        name: '',
-    },
-    message: '',
-    error: {},
-}
-
-export function Signup() {
-    const [state, formAction, pending] = useActionState(createUser, initialState)
-
+export default function CreateNaturalPersonPage() {
     return (
-        <form action={formAction}>
-            <label htmlFor="email">Email</label>
-            <input type="text" id="email" name="email" required />
-            <p aria-live="polite">{state?.message}</p>
-            <button disabled={pending}>Sign up</button>
-        </form>
+        <React.Fragment>
+            <BreadcrumbContent
+                items={[
+                    { label: 'Usuários', href: routes.users.index },
+                    { label: 'Pessoa Física', href: routes.users.naturalPerson.index },
+                    { label: 'Cadastrar' },
+                ]}
+            />
+            <PageTitle>Cadastrar Usuário Pessoa Física</PageTitle>
+
+            <div className="grid grid-cols-6 gap-2">
+                <ButtonBack href={routes.users.naturalPerson.index} className="col-start-6" />
+            </div>
+
+            <Card className="mt-2">
+                <CardHeader>
+                    <CardTitle>Formulário</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <CreateNaturalPersonForm />
+                </CardContent>
+            </Card>
+        </React.Fragment>
     )
 }
