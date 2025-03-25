@@ -35,3 +35,12 @@ export interface User extends BaseEntity {
     accessStartDate?: Date
     accessEndDate?: Date
 }
+
+export interface NaturalPerson extends User {
+    name: string
+    surname: string
+    cpf: string
+    email: string
+    primaryPhone: string
+    secondaryPhone?: string
+}

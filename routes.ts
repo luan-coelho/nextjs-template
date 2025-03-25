@@ -60,11 +60,11 @@ const apiRoutes = {
             existsByEmail: (email: string) => `/users/admin/exists/email/${email}`,
         },
         naturalPerson: {
-            index: '/users/natural-person',
-            all: '/users/natural-person/all',
-            create: '/users/natural-person',
-            edit: (id: string) => `/users/natural-person/${id}/edit`,
-            show: (id: string) => `/users/natural-person/${id}`,
+            index: '/users/natural-persons',
+            all: '/users/natural-persons/all',
+            create: '/users/natural-persons',
+            edit: (id: string) => `/users/natural-persons/${id}/edit`,
+            show: (id: string) => `/users/natural-persons/${id}`,
         },
     },
     modules: {

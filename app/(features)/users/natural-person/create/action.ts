@@ -1,5 +1,6 @@
 'use server'
 
+import { redirect } from 'next/navigation'
 import naturalPersonService from '@/services/natural-person-service'
 import { ApiError } from '@/types'
 import { z } from 'zod'
@@ -9,19 +10,24 @@ import { FormState } from '@/components/features/users/natural-person/create-for
 
 import { adminUserSchema } from '../../admin/schema'
 
-export async function createUser(_: FormState, payload: FormData): Promise<FormState> {
-    try {
-        const formData = Object.fromEntries(payload)
+function extractFields(formData: Record<string, any>) {
+    const fields: Record<string, string> = {}
 
+    for (const key of Object.keys(formData)) {
+        fields[key] = formData[key].toString()
+    }
+
+    return fields
+}
+
+export async function createUser(_: FormState, payload: FormData) {
+    const formData = Object.fromEntries(payload)
+    try {
         const parsed = adminUserSchema.safeParse(formData)
 
         if (!parsed.success) {
+            const fields = extractFields(formData)
             const errors = parsed.error.flatten().fieldErrors
-            const fields: Record<string, string> = {}
-
-            for (const key of Object.keys(formData)) {
-                fields[key] = formData[key].toString()
-            }
 
             return {
                 success: false,
@@ -35,17 +41,13 @@ export async function createUser(_: FormState, payload: FormData): Promise<FormS
 
         try {
             const createdUser: User = await naturalPersonService.create(parsed.data)
-            return {
-                success: true,
-                fields: {
-                    ...createdUser,
-                },
-                errors: {},
-            }
+            redirect(`/users/natural-person/${createdUser.id}`)
         } catch (error) {
+            console.log(error)
             const apiError = error as ApiError
             return {
                 success: false,
+                fields: extractFields(formData),
                 errors: apiError.errors,
             }
         }
@@ -53,13 +55,8 @@ export async function createUser(_: FormState, payload: FormData): Promise<FormS
         if (error instanceof z.ZodError) {
             return {
                 success: false,
-                errors: error.issues.reduce(
-                    (acc, issue) => {
-                        acc[issue.path.join('.')] = [issue.message]
-                        return acc
-                    },
-                    {} as Record<string, string[]>,
-                ),
+                fields: extractFields(formData),
+                errors: error.flatten().fieldErrors,
             }
         }
     }
