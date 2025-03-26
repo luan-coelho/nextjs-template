@@ -30,10 +30,10 @@ const routes = {
             show: (id: string) => `/users/admin/${id}`,
         },
         naturalPerson: {
-            index: '/users/natural-person',
-            create: '/users/natural-person/create',
-            edit: (id: string) => `/users/natural-person/${id}/edit`,
-            show: (id: string) => `/users/natural-person/${id}`,
+            index: '/users/natural-persons',
+            create: '/users/natural-persons/create',
+            edit: (id: string) => `/users/natural-persons/${id}/edit`,
+            show: (id: string) => `/users/natural-persons/${id}`,
         },
         legalPerson: {
             index: '/users/legal-person',

@@ -6,7 +6,7 @@ import { ApiError } from '@/types'
 import { z } from 'zod'
 
 import { User } from '@/types/model-types'
-import { FormState } from '@/components/features/users/natural-person/create-form'
+import { FormState } from '@/components/features/users/natural-persons/create-form'
 
 import { adminUserSchema } from '../../admin/schema'
 

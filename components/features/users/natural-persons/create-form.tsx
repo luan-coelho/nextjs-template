@@ -8,7 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { createUser } from '@/app/(features)/users/natural-person/create/action'
+import { createUser } from '@/app/(features)/users/natural-persons/create/action'
 
 export type FormState = {
     success: boolean

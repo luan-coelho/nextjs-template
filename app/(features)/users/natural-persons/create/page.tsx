@@ -2,7 +2,7 @@ import React from 'react'
 import { routes } from '@/routes'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import CreateNaturalPersonForm from '@/components/features/users/natural-person/create-form'
+import CreateNaturalPersonForm from '@/components/features/users/natural-persons/create-form'
 import ButtonBack from '@/components/layout/button-back'
 import BreadcrumbContent from '@/components/layout/content-breadcrumb'
 import PageTitle from '@/components/layout/page-title'
