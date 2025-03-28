@@ -9,6 +9,8 @@ import { sortByToState, stateToSortBy } from '@/lib/table-sort-mapper'
 import { useFilters } from '@/hooks/use-filters'
 import Table from '@/components/layout/table'
 
+import { Button } from '../ui/button'
+
 interface DataTableProps<T> {
     service: Service<T>
     queryKey: string
@@ -69,12 +71,13 @@ export default function DataTable<T>({
                 )}
 
                 {showResetFilter && (
-                    <button
+                    <Button
+                        size="sm"
                         className="rounded border p-1 disabled:cursor-not-allowed disabled:text-gray-500"
                         onClick={resetFilters}
                         disabled={Object.keys(filters).length === 0}>
                         Resetar Filtros
-                    </button>
+                    </Button>
                 )}
             </div>
         </div>
